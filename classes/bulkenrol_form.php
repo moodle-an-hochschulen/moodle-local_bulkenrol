@@ -42,8 +42,8 @@ class bulkenrol_form extends moodleform {
         $mform = $this->_form;
 
         // Infotext.
-        $msg = get_string('infotext', 'local_bulkenrol');
-        $mform->addElement('html', '<div class="local_bulkenrol infotext">'.$msg.'</div>');
+        $msg = get_string('bulkenrol_form_intro', 'local_bulkenrol');
+        $mform->addElement('html', '<div class="local_bulkenrol_intro">'.$msg.'</div>');
 
         // Textarea für Emails.
         $mform->addElement('textarea', 'usermails',
@@ -54,14 +54,14 @@ class bulkenrol_form extends moodleform {
         $mform->setType('id', PARAM_RAW);
         $mform->setDefault('id', $this->_customdata['courseid']);
 
-        $this->add_action_buttons(true, get_string('submit'));
+        $this->add_action_buttons(true, get_string('enrol_users', 'local_bulkenrol'));
     }
 
     public function validation($data, $files) {
         $retval = array();
 
         if (empty($data['usermails'])) {
-            $retval['usermails'] = get_string('usermails_empty', 'local_bulkenrol');
+            $retval['usermails'] = get_string('error_usermails_empty', 'local_bulkenrol');
         }
 
         return $retval;

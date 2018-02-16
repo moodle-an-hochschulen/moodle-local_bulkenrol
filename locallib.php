@@ -73,7 +73,7 @@ function local_bulkenrol_check_user_mails($emailstextfield) {
                 $a = new stdClass();
                 $a->line = $linecnt;
                 $a->content = $emailline;
-                $error = get_string('no_email', 'local_bulkenrol', $a);
+                $error = get_string('error_no_email', 'local_bulkenrol', $a);
                 $checkedemails->error_messages[$linecnt] = $error;
 
                 // One email in row/line.
@@ -88,7 +88,7 @@ function local_bulkenrol_check_user_mails($emailstextfield) {
                     $a = new stdClass();
                     $a->row = $linecnt;
                     $a->email = $email;
-                    $error = get_string('invalid_email', 'local_bulkenrol', $a);
+                    $error = get_string('error_invalid_email', 'local_bulkenrol', $a);
                     $checkedemails->error_messages[$linecnt] = $error;
                     $checkedemails->emails_to_ignore[] = $email;
 
@@ -138,7 +138,7 @@ function local_bulkenrol_check_user_mails($emailstextfield) {
                             $a->row = $linecnt;
                             $a->email = $email;
 
-                            $error = get_string('invalid_email', 'local_bulkenrol', $a);
+                            $error = get_string('error_invalid_email', 'local_bulkenrol', $a);
 
                             $checkedemails->emails_to_ignore[] = $email;
 
@@ -211,12 +211,12 @@ function local_bulkenrol_get_user($email) {
             if (!empty($count)) {
                 // More than one user with email -> ignore email and don't enrol users later!
                 if ($count > 1) {
-                    $error = get_string('more_than_one_record_for_email', 'local_bulkenrol', $email);
+                    $error = get_string('error_more_than_one_record_for_email', 'local_bulkenrol', $email);
                 } else{
                     $userrecord = current($userrecords);
                 }
             } else{
-                $error = get_string('no_record_found_for_email', 'local_bulkenrol', $email);
+                $error = get_string('error_no_record_found_for_email', 'local_bulkenrol', $email);
             }
         } catch (Exception $e) {
             $error = get_string('error_getting_user_for_email', 'local_bulkenrol', $email).local_bulkenrol_get_exception_info($e);
@@ -235,13 +235,13 @@ function local_bulkenrol_get_exception_info($e) {
         return '';
     }
 
-    return " ".get_string('exception_info', 'local_bulkenrol').": ".$e->getMessage()." -> ".$e->getTraceAsString();
+    return " ".get_string('error_exception_info', 'local_bulkenrol').": ".$e->getMessage()." -> ".$e->getTraceAsString();
 }
 
 function local_bulkenrol_users($localbulkenrolkey) {
     global $CFG, $DB, $SESSION;
 
-    $error = 'no_data';
+    $error = 'error_no_data';
 
     if (!empty($localbulkenrolkey)) {
         if (!empty($localbulkenrolkey) && !empty($SESSION->local_bulkenrol) &&
@@ -346,7 +346,7 @@ function local_bulkenrol_users($localbulkenrolkey) {
                         }
                     }
                 } else{
-                    $error = 'no_courseid_or_no_users_to_enrol';
+                    $error = 'error_no_courseid_or_no_users_to_enrol';
                 }
             }
         }
@@ -391,14 +391,14 @@ function local_bulkenrol_display_table($localbulkenroldata, $key){
                 $table->id = "localbulkenrol_hints";
                 $table->attributes['class'] = 'generaltable';
                 $table->tablealign = 'center';
-                $table->summary = get_string('hints_label', 'local_bulkenrol');
+                $table->summary = get_string('hints', 'local_bulkenrol');
                 $table->size = array('10%', '90%');
                 $table->head = array();
                 $table->head[] = get_string('row', 'local_bulkenrol');
-                $table->head[] = get_string('hints_label', 'local_bulkenrol');
+                $table->head[] = get_string('hints', 'local_bulkenrol');
                 $table->data = $data;
 
-                echo $OUTPUT->heading(get_string('hints_label', 'local_bulkenrol'), 3);
+                echo $OUTPUT->heading(get_string('hints', 'local_bulkenrol'), 3);
                 echo html_writer::tag('div', html_writer::table($table), array('class' => 'flexible-wrap'));
 
             break;
@@ -430,7 +430,7 @@ function local_bulkenrol_display_table($localbulkenroldata, $key){
                 $table->id = "localbulkenrol_enrolusers";
                 $table->attributes['class'] = 'generaltable';
                 $table->tablealign = 'center';
-                $table->summary = get_string('users_to_enrol_in_course_label', 'local_bulkenrol');
+                $table->summary = get_string('users_to_enrol_in_course', 'local_bulkenrol');
                 $table->size = array('33%', '33%', '33%');
                 $table->head = array();
                 $table->head[] = get_string('email');
@@ -438,7 +438,7 @@ function local_bulkenrol_display_table($localbulkenroldata, $key){
                 $table->head[] = get_string('lastname');
                 $table->data = $data;
 
-                echo $OUTPUT->heading(get_string('users_to_enrol_in_course_label', 'local_bulkenrol'), 3);
+                echo $OUTPUT->heading(get_string('users_to_enrol_in_course', 'local_bulkenrol'), 3);
                 echo html_writer::tag('div', html_writer::table($table), array('class' => 'flexible-wrap'));
                 break;
 

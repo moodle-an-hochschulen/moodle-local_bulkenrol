@@ -22,34 +22,26 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['pluginname'] = 'Bulkenrol';
+defined('MOODLE_INTERNAL') || die();
 
-$string['bulkenrol_auth'] = 'Emails';
-
-$string['enrolplugin'] = 'Bulkenrol Plugin';
-$string['enrolplugin_desc'] = 'Das für die Einschreibungen zu nutzende Einschreibeplugin. Falls das konfigurierte Einschreibeplugin nicht aktiv ist im Kurs wird es während des Imports aktiviert / hinzugefügt.';
-
-$string['infotext'] = 'Hier kommt der Hinweistext mit Nutzungshinweisen zum Plugin';
-$string['usermails'] = 'Emails';
-
-$string['hints_label'] = 'Hinweise';
-$string['row'] = 'Zeile';
-$string['users_to_enrol_in_course_label'] = 'In den Kurs einzuschreibende Nutzer';
-$string['enrol_users'] = 'Nutzer einschreiben';
-$string['enrol_users_successful'] = 'Nutzer Einschreibung erfolgreich';
-
-// Errors
-$string['no_email'] = 'Keine Email in Zeile {$a->line} -> "{$a->content}"';
-$string['invalid_email'] = 'Ungültige Email in Zeile {$a->row}: "{$a->email}" -> Email-Adresse wird ignoriert';
-$string['more_than_one_record_for_email'] = 'Mehr als ein Moodle-User für Email "{$a}" -> Email-Adresse wird ignoriert und keiner der Nutzer mit dieser Email wird eingeschrieben.';
-$string['no_record_found_for_email'] = 'Kein Moodle-User für Email "{$a}" -> Email-Adresse wird ignoriert und es wird kein neuer Nutzer angelegt.';
-$string['error_getting_user_for_email'] = 'Fehler beim Abfragen der DB nach User zur Email "{$a}".';
-$string['exception_info'] = 'Exception info';
-$string['error_enrol_users'] = 'Fehler beim Einschreiben der User in den Kurs.';
-$string['error_group_add_members'] = 'Fehler beim Einschreiben der User in Kursgruppen.';
-
-$string['no_data'] = 'Keine Benutzer zum Einschreiben in den Kurs.';
-$string['no_courseid_or_no_users_to_enrol'] = 'Keine KursId oder keine Benutzer zum Einschreiben in den Kurs.';
-
-$string['usermails_empty'] = 'Keine Emails eingetragen';
-
+$string['bulkenrol_form_intro'] = 'TODO: Write instructions how to use this form';
+$string['enrol_users_successful'] = 'Enrolment successful';
+$string['enrol_users'] = 'Enrol users';
+$string['enrolplugin'] = 'Enrolment plugin';
+$string['enrolplugin_desc'] = 'The enrolment method to be used to bulk enrol the users. If the configured enrolment method is not active / added in the course when the users are bulk-enrolled, it is automatically added / activated.';
+$string['error_enrol_users'] = 'There was a problem when enrolling the user to the course.';
+$string['error_exception_info'] = 'Exception information';
+$string['error_getting_user_for_email'] = 'There was a problem when getting the user record for e-mail adress <em>{$a}</em> from the database.';
+$string['error_group_add_members'] = 'There was a problem when adding the user to the course group(s).';
+$string['error_invalid_email'] = 'Invalid e-mail adress found in line {$a->row} (<em>{$a->email}</em>). This line will be ignored.';
+$string['error_more_than_one_record_for_email'] = 'More than one existing Moodle user account with e-mail adress <em>{$a}</em>em> found.<br /> This line will be ignored, none of the existing Moodle users will be enrolled.';
+$string['error_no_courseid_or_no_users_to_enrol'] = 'Keine KursId oder keine Benutzer zum Einschreiben in den Kurs.'; // TODO: Eliminate the need for this string.
+$string['error_no_data'] = 'Keine Benutzer zum Einschreiben in den Kurs.'; // TODO: Eliminate the need for this string.
+$string['error_no_email'] = 'No e-mail adress found in line {$a->line} (<em>{$a->content}</em>). This line will be ignored.';
+$string['error_no_record_found_for_email'] = 'No existing Moodle user account with e-mail adress <em>{$a}</em>em>.<br />This line will be ignored, there won\'be a Moodle user account created on-the-fly.';
+$string['error_usermails_empty'] = 'List of e-mail adresses is empty. Please add at least one e-mail adress.';
+$string['pluginname'] = 'User bulk enrolment';
+$string['hints'] = 'Hints';
+$string['row'] = 'Row';
+$string['usermails'] = 'List of e-mail adresses';
+$string['users_to_enrol_in_course'] = 'Users to be enrolled into the course';
