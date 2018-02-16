@@ -43,7 +43,7 @@ class bulkenrol_form extends moodleform {
 
         // Infotext.
         $msg = get_string('bulkenrol_form_intro', 'local_bulkenrol');
-        $mform->addElement('html', '<div class="local_bulkenrol_intro">'.$msg.'</div>');
+        $mform->addElement('html', '<div id="intro">'.$msg.'</div>');
 
         // Textarea für Emails.
         $mform->addElement('textarea', 'usermails',
