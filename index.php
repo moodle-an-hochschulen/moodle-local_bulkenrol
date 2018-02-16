@@ -22,12 +22,13 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use local_bulkenrol\bulkenrol_form;
+use local_bulkenrol\confirm_form;
+
 require_once('../../config.php');
 
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->dirroot.'/local/bulkenrol/locallib.php');
-require_once($CFG->dirroot.'/local/bulkenrol/bulkenrol_form.php');
-require_once($CFG->dirroot.'/local/bulkenrol/confirm_form.php');
 
 
 $id = optional_param('id', 0, PARAM_INT); // This are required.
@@ -55,7 +56,7 @@ $PAGE->set_pagelayout('incourse');
 
 
 if (empty($localbulkenrolkey)) {
-    $form = new local_bulkenrol_form(null, array('courseid' => $id));
+    $form = new bulkenrol_form(null, array('courseid' => $id));
     if ($formdata = $form->get_data()) {
         $emails = $formdata->usermails;
         $courseid = $formdata->id;
@@ -85,7 +86,7 @@ if (empty($localbulkenrolkey)) {
 }
 
 if ($localbulkenrolkey) {
-    $form2 = new local_bulkenrol_confirm_form(null, array('local_bulkenrol_key' => $localbulkenrolkey, 'courseid' => $id));
+    $form2 = new confirm_form(null, array('local_bulkenrol_key' => $localbulkenrolkey, 'courseid' => $id));
 
     if ($formdata = $form2->get_data()) {
         global $SESSION;
