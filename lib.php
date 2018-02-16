@@ -25,32 +25,24 @@
 defined('MOODLE_INTERNAL') || die();
 
 function local_bulkenrol_extend_navigation_course($navigation, $course, $context) {
-    global $DB, $SITE, $USER;
-    
-    if(!has_capability('local/bulkenrol:enrolusers', $context)){
+    if (!has_capability('local/bulkenrol:enrolusers', $context)) {
         return;
     }
-    
-    
+
     if (!$usersnode = $navigation->get("users")) {
         return;
     }
     if (!$coursecontext = $context->get_course_context(false)) {
         return;
     }
-    
-    $nodeproperties = array(
-                    'text'          => get_string('pluginname','local_bulkenrol'),
-                    'shorttext'     => get_string('pluginname','local_bulkenrol'),
-                    // icon         - The icon to display for the node
-                    // type         - The type of the node
-                    // key          - The key to use to identify the node
-                    // parent       - A reference to the nodes parent
-                    'action'        => new moodle_url('/local/bulkenrol/index.php', array('id' => $coursecontext->instanceid))
-    );
-    
-    $integrationnode = new navigation_node($nodeproperties);
-    
-    $usersnode->add_node($integrationnode);
 
+    $nodeproperties = array(
+            'text' => get_string('pluginname','local_bulkenrol'),
+            'shorttext' => get_string('pluginname','local_bulkenrol'),
+            'action' => new moodle_url('/local/bulkenrol/index.php', array('id' => $coursecontext->instanceid))
+    );
+
+    $integrationnode = new navigation_node($nodeproperties);
+
+    $usersnode->add_node($integrationnode);
 }
