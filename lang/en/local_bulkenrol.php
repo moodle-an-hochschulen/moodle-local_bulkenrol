@@ -26,8 +26,8 @@ $string['pluginname'] = 'Bulkenrol';
 
 $string['bulkenrol_auth'] = 'Emails';
 
-$string['bulkenrol_enrolment'] = 'Bulkenrol Plugin';
-$string['bulkenrol_enrolment_description'] = 'Das für die Einschreibungen zu nutzende Einschreibeplugin. Falls das konfigurierte Einschreibeplugin nicht aktiv ist im Kurs wird es während des Imports aktiviert / hinzugefügt.';
+$string['enrolplugin'] = 'Bulkenrol Plugin';
+$string['enrolplugin_desc'] = 'Das für die Einschreibungen zu nutzende Einschreibeplugin. Falls das konfigurierte Einschreibeplugin nicht aktiv ist im Kurs wird es während des Imports aktiviert / hinzugefügt.';
 
 $string['infotext'] = 'Hier kommt der Hinweistext mit Nutzungshinweisen zum Plugin';
 $string['usermails'] = 'Emails';

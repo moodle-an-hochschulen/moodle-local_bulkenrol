@@ -28,22 +28,22 @@ if ($hassiteconfig) {
     $settings = new admin_settingpage('local_bulkenrol', get_string('pluginname', 'local_bulkenrol', null, true));
 
     if ($ADMIN->fulltree) {
-        $enrol_options = array();
+
+        // Create enrolment chooser widget.
+        $enroloptions = array();
         foreach (enrol_get_plugins(true) as $name => $plugin) {
-            $enrol_options[$name] = get_string('pluginname', 'enrol_'.$name);
+            $enroloptions[$name] = get_string('pluginname', 'enrol_'.$name);
         }
-        
         $settings->add(
                 new admin_setting_configselect(
-                        'local_bulkenrol/bulkenrol_enrolment',
-                        get_string('bulkenrol_enrolment', 'local_bulkenrol'),
-                        get_string('bulkenrol_enrolment_description', 'local_bulkenrol'),
+                        'local_bulkenrol/enrolplugin',
+                        get_string('enrolplugin', 'local_bulkenrol'),
+                        get_string('enrolplugin_desc', 'local_bulkenrol'),
                         '',
-                        $enrol_options)
+                        $enroloptions)
         );
-        unset($enrol_options);
+        unset($enroloptions);
     }
-    
-    $ADMIN->add('localplugins', $settings);
 
+    $ADMIN->add('enrolments', $settings);
 }
