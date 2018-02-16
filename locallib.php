@@ -24,12 +24,12 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-define("LOCALBULKENROL_HINT", 'hint');
-define("LOCALBULKENROL_ENROLUSERS", 'enrolusers');
+define('LOCALBULKENROL_HINT', 'hint');
+define('LOCALBULKENROL_ENROLUSERS', 'enrolusers');
 
 /**
  * @param unknown $emails textfield value to be checked for emails
- * @return stdClass Object containing information to be displayed on confirm page and being used for bulkenrol 
+ * @return stdClass Object containing information to be displayed on confirm page and being used for bulkenrol
  */
 function local_bulkenrol_check_user_mails($emailstextfield) {
 
@@ -38,7 +38,6 @@ function local_bulkenrol_check_user_mails($emailstextfield) {
     $checkedemails->error_messages = array();
     $checkedemails->moodleusers_for_email = array();
     $checkedemails->course_groups = array();
-
 
     $emaildelimiters = array(', ', ' ', ',');
 
@@ -63,7 +62,6 @@ function local_bulkenrol_check_user_mails($emailstextfield) {
                 $checkedemails->course_groups[$currentgroup] = array();
                 continue;
             }
-
 
             // Check number of emails in current row/line.
             $emailsinlinecnt = substr_count($emailline , '@');
@@ -212,10 +210,10 @@ function local_bulkenrol_get_user($email) {
                 // More than one user with email -> ignore email and don't enrol users later!
                 if ($count > 1) {
                     $error = get_string('error_more_than_one_record_for_email', 'local_bulkenrol', $email);
-                } else{
+                } else {
                     $userrecord = current($userrecords);
                 }
-            } else{
+            } else {
                 $error = get_string('error_no_record_found_for_email', 'local_bulkenrol', $email);
             }
         } catch (Exception $e) {
@@ -266,14 +264,14 @@ function local_bulkenrol_users($localbulkenrolkey) {
                         $enrolinstances = enrol_get_instances($course->id, false);
 
                         // Get enrolment for bulkenrol.
-                        $bulkenrol_plugin = get_config('local_bulkenrol','bulkenrol_enrolment');
-                        $plugin = enrol_get_plugin($bulkenrol_plugin);
+                        $bulkenrolplugin = get_config('local_bulkenrol', 'bulkenrol_enrolment');
+                        $plugin = enrol_get_plugin($bulkenrolplugin);
 
                         $enrolinstance = null;
 
                         foreach ($enrolinstances as $instance) {
                             // Check enrolment.
-                            if ($bulkenrol_plugin == $instance->enrol) {
+                            if ($bulkenrolplugin == $instance->enrol) {
                                 if ($instance->status != ENROL_INSTANCE_ENABLED) {
                                     $plugin->update_status($instance, ENROL_INSTANCE_ENABLED);
                                 }
@@ -322,7 +320,7 @@ function local_bulkenrol_users($localbulkenrolkey) {
                                 // Check if group already exists.
                                 $groupid = null;
                                 foreach ($existingcoursegroups as $key => $existingcoursegroup) {
-                                    if($groupname == $existingcoursegroup->name){
+                                    if ($groupname == $existingcoursegroup->name) {
                                         $groupid = $existingcoursegroup->id;
                                         break;
                                     }
@@ -336,7 +334,7 @@ function local_bulkenrol_users($localbulkenrolkey) {
                                 }
                                 if (!empty($groupid) && !empty($members)) {
                                     foreach ($members as $key => $member) {
-                                        $user_added = groups_add_member($groupid, $member->id);
+                                        $useradded = groups_add_member($groupid, $member->id);
                                     }
                                 }
                             }
@@ -345,7 +343,7 @@ function local_bulkenrol_users($localbulkenrolkey) {
                             echo html_writer::tag('div', $msg, array('class' => 'local_bulkenrol error'));
                         }
                     }
-                } else{
+                } else {
                     $error = 'error_no_courseid_or_no_users_to_enrol';
                 }
             }
@@ -355,13 +353,13 @@ function local_bulkenrol_users($localbulkenrolkey) {
     if (!empty($error)) {
         $msg = get_string($error, 'local_bulkenrol');
         echo html_writer::tag('div', $msg, array('class' => 'local_bulkenrol error'));
-    } else{
+    } else {
         $msg = get_string('enrol_users_successful', 'local_bulkenrol');
         echo html_writer::tag('div', $msg, array('class' => 'local_bulkenrol error'));
     }
 }
 
-function local_bulkenrol_display_table($localbulkenroldata, $key){
+function local_bulkenrol_display_table($localbulkenroldata, $key) {
     global $OUTPUT;
 
     if (!empty($localbulkenroldata) && !empty($key)) {
