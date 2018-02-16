@@ -31,7 +31,7 @@ require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->dirroot.'/local/bulkenrol/locallib.php');
 
 
-$id = optional_param('id', 0, PARAM_INT); // This are required.
+$id = required_param('id', PARAM_INT);
 $localbulkenrolkey = optional_param('key', 0, PARAM_RAW);
 
 $context = context_system::instance();
