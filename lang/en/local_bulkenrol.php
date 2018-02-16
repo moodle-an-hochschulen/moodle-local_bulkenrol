@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['bulkenrol_form_intro'] = 'TODO: Write instructions how to use this form';
+$string['bulkenrol_form_intro'] = 'Here, you can bulk enrol users to your course. A user to be enrolled is identified by his e-mail adress stored in his Moodle account.';
 $string['enrol_users_successful'] = 'Enrolment successful';
 $string['enrol_users'] = 'Enrol users';
 $string['enrolplugin'] = 'Enrolment plugin';
@@ -44,4 +44,5 @@ $string['pluginname'] = 'User bulk enrolment';
 $string['hints'] = 'Hints';
 $string['row'] = 'Row';
 $string['usermails'] = 'List of e-mail adresses';
+$string['usermails_help'] = 'To enrol an existing Moodle user into this course, add his e-mail adress to this form, one user / e-mail adress per line.<br /><br />Example:<br />foo@bar.com<br />bar@foo.com'; // TODO: Add instructions for groups.
 $string['users_to_enrol_in_course'] = 'Users to be enrolled into the course';

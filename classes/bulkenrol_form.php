@@ -49,6 +49,7 @@ class bulkenrol_form extends moodleform {
         $mform->addElement('textarea', 'usermails',
                 get_string('usermails', 'local_bulkenrol'), 'wrap="virtual" rows="10" cols="80"');
         $mform->addRule('usermails', null, 'required');
+        $mform->addHelpButton('usermails', 'usermails', 'local_bulkenrol');
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_RAW);
