@@ -45,7 +45,7 @@ class bulkenrol_form extends moodleform {
         $msg = get_string('bulkenrol_form_intro', 'local_bulkenrol');
         $mform->addElement('html', '<div id="intro">'.$msg.'</div>');
 
-        // Textarea für Emails.
+        // Textarea for Emails.
         $mform->addElement('textarea', 'usermails',
                 get_string('usermails', 'local_bulkenrol'), 'wrap="virtual" rows="10" cols="80"');
         $mform->addRule('usermails', null, 'required');
