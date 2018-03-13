@@ -264,7 +264,7 @@ function local_bulkenrol_users($localbulkenrolkey) {
                         $enrolinstances = enrol_get_instances($course->id, false);
 
                         // Get enrolment for bulkenrol.
-                        $bulkenrolplugin = get_config('local_bulkenrol', 'bulkenrol_enrolment');
+                        $bulkenrolplugin = get_config('local_bulkenrol', 'enrolplugin');
                         $plugin = enrol_get_plugin($bulkenrolplugin);
 
                         $enrolinstance = null;
