@@ -69,6 +69,18 @@ foo@bar.com
 bar@foo.com
 ```
 
+Optionally, the teacher will be able to create groups and add the enrolled users to the groups. All he has to do is to add a heading line with a hash sign and the group's name, separating the list of users.
+
+Example:
+```
+# Group 1
+foo@bar.com
+bar@foo.com
+# Group 2
+foobar@bar.com
+barfoo@foo.com
+```
+
 
 Limitations
 -----------

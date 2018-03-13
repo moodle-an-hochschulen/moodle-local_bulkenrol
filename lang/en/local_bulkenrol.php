@@ -44,5 +44,5 @@ $string['pluginname'] = 'User bulk enrolment';
 $string['hints'] = 'Hints';
 $string['row'] = 'Row';
 $string['usermails'] = 'List of e-mail adresses';
-$string['usermails_help'] = 'To enrol an existing Moodle user into this course, add his e-mail adress to this form, one user / e-mail adress per line.<br /><br />Example:<br />foo@bar.com<br />bar@foo.com'; // TODO: Add instructions for groups.
+$string['usermails_help'] = 'To enrol an existing Moodle user into this course, add his e-mail adress to this form, one user / e-mail adress per line.<br /><br />Example:<br />foo@bar.com<br />bar@foo.com<br /><br />Optionally, you are able to create groups and add the enrolled users to the groups. All you have to do is to add a heading line with a hash sign and the group\'s name, separating the list of users.<br /><br />Example:<br /># Group 1<br />foo@bar.com<br />bar@foo.com<br /># Group 2<br />foobar@bar.com<br />barfoo@foo.com';
 $string['users_to_enrol_in_course'] = 'Users to be enrolled into the course';
