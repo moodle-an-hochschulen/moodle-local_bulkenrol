@@ -388,7 +388,6 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
                 $table = new html_table();
                 $table->id = "localbulkenrol_hints";
                 $table->attributes['class'] = 'generaltable';
-                $table->tablealign = 'center';
                 $table->summary = get_string('hints', 'local_bulkenrol');
                 $table->size = array('10%', '90%');
                 $table->head = array();
@@ -427,7 +426,6 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
                 $table = new html_table();
                 $table->id = "localbulkenrol_enrolusers";
                 $table->attributes['class'] = 'generaltable';
-                $table->tablealign = 'center';
                 $table->summary = get_string('users_to_enrol_in_course', 'local_bulkenrol');
                 $table->size = array('33%', '33%', '33%');
                 $table->head = array();
