@@ -28,8 +28,10 @@ define('LOCALBULKENROL_HINT', 'hint');
 define('LOCALBULKENROL_ENROLUSERS', 'enrolusers');
 
 /**
- * @param unknown $emails textfield value to be checked for emails
- * @return stdClass Object containing information to be displayed on confirm page and being used for bulkenrol
+ * Check list of submitted user mails.
+ *
+ * @param string $emailstextfield Textfield value to be checked for emails.
+ * @return stdClass Object containing information to be displayed on confirm page and being used for bulkenrol.
  */
 function local_bulkenrol_check_user_mails($emailstextfield) {
 
@@ -225,7 +227,9 @@ function local_bulkenrol_get_user($email) {
 }
 
 /**
- * @param unknown $e should be of instanceof Exception
+ * Get an understandable reason from an exception which happened during bulkenrol.
+ *
+ * @param $e should be of instanceof Exception
  * @return string $e->getMessage()." -> ".$e->getTraceAsString()
  */
 function local_bulkenrol_get_exception_info($e) {

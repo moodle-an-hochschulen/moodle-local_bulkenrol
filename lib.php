@@ -24,6 +24,13 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * This function extends the course navigation with the bulkenrol item
+ *
+ * @param navigation_node $navigation The navigation node to extend
+ * @param stdClass $course The course to object for the report
+ * @param stdClass $context The context of the course
+ */
 function local_bulkenrol_extend_navigation_course($navigation, $course, $context) {
     if (has_capability('local/bulkenrol:enrolusers', $context)) {
         $url = new moodle_url('/local/bulkenrol/index.php', array('id' => $course->id));

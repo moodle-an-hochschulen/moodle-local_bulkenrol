@@ -32,8 +32,17 @@ global $CFG;
 
 require_once($CFG->libdir.'/formslib.php');
 
+/**
+ * Class confirm_form
+ * @package local_bulkenrol
+ * @copyright 2017 Soon Systems GmbH on behalf of Alexander Bias, Ulm University <alexander.bias@uni-ulm.de>
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class confirm_form extends moodleform {
 
+    /**
+     * Form definition. Abstract method - always override!
+     */
     protected function definition() {
         $localbulkenrolkey = $this->_customdata['local_bulkenrol_key'];
         $courseid = $this->_customdata['courseid'];

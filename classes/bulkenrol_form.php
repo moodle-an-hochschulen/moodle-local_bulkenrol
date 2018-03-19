@@ -32,8 +32,17 @@ global $CFG;
 
 require_once($CFG->libdir.'/formslib.php');
 
+/**
+ * Class bulkenrol_form
+ * @package local_bulkenrol
+ * @copyright 2017 Soon Systems GmbH on behalf of Alexander Bias, Ulm University <alexander.bias@uni-ulm.de>
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class bulkenrol_form extends moodleform {
 
+    /**
+     * Form definition. Abstract method - always override!
+     */
     protected function definition() {
         global $CFG;
 
@@ -58,6 +67,14 @@ class bulkenrol_form extends moodleform {
         $this->add_action_buttons(true, get_string('enrol_users', 'local_bulkenrol'));
     }
 
+    /**
+     * Get each of the rules to validate its own fields
+     *
+     * @param array $data array of ("fieldname"=>value) of submitted data
+     * @param array $files array of uploaded files "element_name"=>tmp_file_path
+     * @return array of "element_name"=>"error_description" if there are errors,
+     *         or an empty array if everything is OK (true allowed for backwards compatibility too).
+     */
     public function validation($data, $files) {
         $retval = array();
 
