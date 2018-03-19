@@ -4,7 +4,7 @@ moodle-local_bulkenrol
 Changes
 -------
 
-### Unreleased
+### v3.2-r2
 
 * 2018-03-19 - Make codechecker happier.
 
