@@ -24,6 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['bulkenrol:enrolusers'] = 'Use user bulk enrolment';
 $string['bulkenrol_form_intro'] = 'Here, you can bulk enrol users to your course. A user to be enrolled is identified by his e-mail adress stored in his Moodle account.';
 $string['enrol_users_successful'] = 'Enrolment successful';
 $string['enrol_users'] = 'Enrol users';

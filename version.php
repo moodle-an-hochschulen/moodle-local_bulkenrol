@@ -26,7 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_bulkenrol';
-$plugin->version = 2018031900;
+$plugin->version = 2018040400;
 $plugin->release = 'v3.2-r2';
 $plugin->requires = 2016120500;
 $plugin->maturity = MATURITY_STABLE;
