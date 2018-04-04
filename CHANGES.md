@@ -4,7 +4,7 @@ moodle-local_bulkenrol
 Changes
 -------
 
-### Unreleased
+### v3.2-r3
 
 * 2018-04-04 - Add a missing string to the language pack.
 
