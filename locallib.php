@@ -263,6 +263,7 @@ function local_bulkenrol_users($localbulkenrolkey) {
     global $CFG, $DB, $SESSION;
 
     $error = '';
+    $exceptions_msg = array();
 
     if (!empty($localbulkenrolkey)) {
         if (!empty($localbulkenrolkey) && !empty($SESSION->local_bulkenrol) &&
@@ -319,11 +320,20 @@ function local_bulkenrol_users($localbulkenrolkey) {
                             // Enrol users in course.
                             $roleid = $enrolinstance->roleid;
                             foreach ($userstoenrol as $user) {
-                                $plugin->enrol_user($enrolinstance, $user->id, $roleid);
+                                try {
+                                    $plugin->enrol_user($enrolinstance, $user->id, $roleid);
+                                } catch (Exception $e) {
+                                    $a = new stdClass();
+                                    $a->email = $user->email;
+                                    
+                                    $msg = get_string('error_enrol_user', 'local_bulkenrol', $a).local_bulkenrol_get_exception_info($e);
+                                    $exceptions_msg[] = $msg;
+                                }
                             }
                         }
                     } catch (Exception $e) {
                         $msg = get_string('error_enrol_users', 'local_bulkenrol').local_bulkenrol_get_exception_info($e);
+                        $exceptions_msg[] = $msg;
                     }
 
                     // Check for course groups to create.
@@ -356,12 +366,21 @@ function local_bulkenrol_users($localbulkenrolkey) {
                                 }
                                 if (!empty($groupid) && !empty($members)) {
                                     foreach ($members as $key => $member) {
-                                        $useradded = groups_add_member($groupid, $member->id);
+                                        try {
+                                            $useradded = groups_add_member($groupid, $member->id);
+                                        } catch (Exception $e) {
+                                            $a = new stdClass();
+                                            $a->email = $member->email;
+                                            $a->group = $groupname;
+                                            $msg = get_string('error_group_add_member', 'local_bulkenrol', $a).local_bulkenrol_get_exception_info($e);
+                                            $exceptions_msg[] = $msg;
+                                        }
                                     }
                                 }
                             }
                         } catch (Exception $e) {
                             $msg = get_string('error_group_add_members', 'local_bulkenrol').local_bulkenrol_get_exception_info($e);
+                            $exceptions_msg[] = $msg;
                         }
                     }
                 } else {
@@ -375,11 +394,22 @@ function local_bulkenrol_users($localbulkenrolkey) {
     $retval->status = '';
     $retval->text = '';
 
-    if (!empty($error)) {
+    if (!empty($error) || !empty($exceptions_msg)) {
         $retval->status = 'error';
-        $error_msg = get_string($error, 'local_bulkenrol');
-        $retval->text = $error_msg;
-    } else {
+
+        if(!empty($error)){
+            $error_msg = get_string($error, 'local_bulkenrol');
+            $retval->text = $error_msg;
+        }
+
+        if(!empty($exceptions_msg)){
+            if(!empty($error)){
+                $retval->text .= '<br>';
+            }
+            $retval->text .= implode('<br>', $exceptions_msg);
+        }
+    } 
+    else {
         $msg = get_string('enrol_users_successful', 'local_bulkenrol');
         $retval->text = $msg;
     }
