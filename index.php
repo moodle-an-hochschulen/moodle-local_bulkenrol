@@ -61,7 +61,7 @@ if (empty($localbulkenrolkey)) {
         $emails = $formdata->usermails;
         $courseid = $formdata->id;
 
-        $checkedmails = local_bulkenrol_check_user_mails($emails);
+        $checkedmails = local_bulkenrol_check_user_mails($emails, $courseid);
 
         // Create local_bulkenrol array in Session.
         if (!isset($SESSION->local_bulkenrol)) {
