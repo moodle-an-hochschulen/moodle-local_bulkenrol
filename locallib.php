@@ -28,9 +28,10 @@ define('LOCALBULKENROL_HINT', 'hint');
 define('LOCALBULKENROL_ENROLUSERS', 'enrolusers');
 
 /**
- * Check list of submitted user mails.
+ * Check list of submitted user mails and creates a data structure for displaying information on the confirm page and for performing the bulkenrol.
  *
- * @param string $emailstextfield Textfield value to be checked for emails.
+ * @param string $emailstextfield Text field value to be checked for emails and course groups.
+ * @param int $courseid ID of the course, used to determine the context for checking whether a user is already enroled. 
  * @return stdClass Object containing information to be displayed on confirm page and being used for bulkenrol.
  */
 function local_bulkenrol_check_user_mails($emailstextfield, $courseid) {
@@ -203,6 +204,13 @@ function local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $cur
     }
 }
 
+/**
+ * Takes input from text area containing a list of e-mail adresses (optionally group names starting with '#').
+ * Returns an array representation of the input.
+ *
+ * @param unknown $emails input value of the text area.
+ * @return array of e-emails and optional group names
+ */
 function local_bulkenrol_parse_emails($emails) {
     if (empty($emails)) {
         return array();
@@ -216,6 +224,12 @@ function local_bulkenrol_parse_emails($emails) {
     }
 }
 
+/**
+ * Takes an e-mail and returns a moodle user record and error string (if occured).
+ *
+ * @param string $email E-mail used to search for a user
+ * @return multitype:NULL |multitype:string mixed
+ */
 function local_bulkenrol_get_user($email) {
     global $DB;
 
@@ -261,6 +275,11 @@ function local_bulkenrol_get_exception_info($e) {
     return " ".get_string('error_exception_info', 'local_bulkenrol').": ".$e->getMessage()." -> ".$e->getTraceAsString();
 }
 
+/**
+ * Perform user enrolment into the course and optionally add users as member into course groups. Groups are created if necessary.
+ *
+ * @param unknown $localbulkenrolkey
+ */
 function local_bulkenrol_users($localbulkenrolkey) {
     global $CFG, $DB, $SESSION;
 
@@ -430,6 +449,11 @@ function local_bulkenrol_users($localbulkenrolkey) {
     return $retval;
 }
 
+/**
+ * According to the parameter, either a table with hints is displayed or a table with users to be written is displayed.
+ * @param unknown $localbulkenroldata
+ * @param unknown $key
+ */
 function local_bulkenrol_display_table($localbulkenroldata, $key) {
     global $OUTPUT;
 
