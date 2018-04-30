@@ -95,9 +95,14 @@ if ($localbulkenrolkey) {
                 array_key_exists($localbulkenrolkey, $SESSION->local_bulkenrol)) {
             set_time_limit(600);
 
-            local_bulkenrol_users($localbulkenrolkey);
+            $msg = local_bulkenrol_users($localbulkenrolkey);
 
-            redirect($CFG->wwwroot .'/local/bulkenrol/index.php?id='.$id, '', 0);
+            if ($msg->status == 'error') {
+                redirect('/user/index.php?id='.$id, "$msg->text", null, \core\output\notification::NOTIFY_ERROR);
+            } else {
+                redirect('/user/index.php?id='.$id, "$msg->text", null, \core\output\notification::NOTIFY_SUCCESS);
+            }
+
         } else {
             redirect($CFG->wwwroot .'/local/bulkenrol/index.php?id='.$id, '', 0);
         }

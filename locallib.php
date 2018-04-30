@@ -305,7 +305,6 @@ function local_bulkenrol_users($localbulkenrolkey) {
                         }
                     } catch (Exception $e) {
                         $msg = get_string('error_enrol_users', 'local_bulkenrol').local_bulkenrol_get_exception_info($e);
-                        echo html_writer::tag('div', $msg, array('class' => 'local_bulkenrol error'));
                     }
 
                     // Check for course groups to create.
@@ -344,7 +343,6 @@ function local_bulkenrol_users($localbulkenrolkey) {
                             }
                         } catch (Exception $e) {
                             $msg = get_string('error_group_add_members', 'local_bulkenrol').local_bulkenrol_get_exception_info($e);
-                            echo html_writer::tag('div', $msg, array('class' => 'local_bulkenrol error'));
                         }
                     }
                 } else {
@@ -354,13 +352,21 @@ function local_bulkenrol_users($localbulkenrolkey) {
         }
     }
 
+    $retval = new stdClass();
+    $retval->status = '';
+    $retval->text = '';
+
     if (!empty($error)) {
+        $retval->status = 'error';
         $msg = get_string($error, 'local_bulkenrol');
-        echo html_writer::tag('div', $msg, array('class' => 'local_bulkenrol error'));
+        $retval->text = $msg;
     } else {
+        $retval->status = 'success';
         $msg = get_string('enrol_users_successful', 'local_bulkenrol');
-        echo html_writer::tag('div', $msg, array('class' => 'local_bulkenrol error'));
+        $retval->text = $msg;
     }
+
+    return $retval;
 }
 
 function local_bulkenrol_display_table($localbulkenroldata, $key) {
