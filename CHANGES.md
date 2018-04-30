@@ -6,6 +6,7 @@ Changes
 
 ### Unreleased
 
+* 2018-04-30 - Improve information about users who are already enrolled and about group memberships
 * 2018-04-30 - Process expections which could happen within bulk enrolment
 * 2018-04-30 - Change feedback to use a redirect notification
 * 2018-04-30 - Show section headings on confirmation page only if needed
