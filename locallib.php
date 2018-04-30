@@ -243,7 +243,7 @@ function local_bulkenrol_get_exception_info($e) {
 function local_bulkenrol_users($localbulkenrolkey) {
     global $CFG, $DB, $SESSION;
 
-    $error = 'error_no_data';
+    $error = '';
 
     if (!empty($localbulkenrolkey)) {
         if (!empty($localbulkenrolkey) && !empty($SESSION->local_bulkenrol) &&

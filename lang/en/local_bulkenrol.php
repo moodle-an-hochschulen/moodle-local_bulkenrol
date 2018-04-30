@@ -37,7 +37,6 @@ $string['error_group_add_members'] = 'There was a problem when adding the user t
 $string['error_invalid_email'] = 'Invalid e-mail adress found in line {$a->row} (<em>{$a->email}</em>). This line will be ignored.';
 $string['error_more_than_one_record_for_email'] = 'More than one existing Moodle user account with e-mail adress <em>{$a}</em>em> found.<br /> This line will be ignored, none of the existing Moodle users will be enrolled.';
 $string['error_no_courseid_or_no_users_to_enrol'] = 'Keine KursId oder keine Benutzer zum Einschreiben in den Kurs.'; // TODO: Eliminate the need for this string.
-$string['error_no_data'] = 'Keine Benutzer zum Einschreiben in den Kurs.'; // TODO: Eliminate the need for this string.
 $string['error_no_email'] = 'No e-mail adress found in line {$a->line} (<em>{$a->content}</em>). This line will be ignored.';
 $string['error_no_record_found_for_email'] = 'No existing Moodle user account with e-mail adress <em>{$a}</em>.<br />This line will be ignored, there won\'t be a Moodle user account created on-the-fly.';
 $string['error_usermails_empty'] = 'List of e-mail adresses is empty. Please add at least one e-mail adress.';
