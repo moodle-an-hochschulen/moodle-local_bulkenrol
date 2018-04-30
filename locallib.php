@@ -395,6 +395,7 @@ function local_bulkenrol_users($localbulkenrolkey) {
                             $exceptionsmsg[] = $msg;
                         }
                     }
+                    // This should not happen.
                 } else {
                     $error = 'error_no_courseid_or_no_users_to_enrol';
                 }
