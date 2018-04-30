@@ -399,10 +399,11 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
                 $table->head[] = get_string('hints', 'local_bulkenrol');
                 $table->data = $data;
 
-                echo $OUTPUT->heading(get_string('hints', 'local_bulkenrol'), 3);
-                echo html_writer::tag('div', html_writer::table($table), array('class' => 'flexible-wrap'));
-
-            break;
+                if (!empty($data)) {
+                    echo $OUTPUT->heading(get_string('hints', 'local_bulkenrol'), 3);
+                    echo html_writer::tag('div', html_writer::table($table), array('class' => 'flexible-wrap'));
+                }
+                break;
 
             case LOCALBULKENROL_ENROLUSERS:
                 $data = array();
@@ -438,8 +439,10 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
                 $table->head[] = get_string('lastname');
                 $table->data = $data;
 
-                echo $OUTPUT->heading(get_string('users_to_enrol_in_course', 'local_bulkenrol'), 3);
-                echo html_writer::tag('div', html_writer::table($table), array('class' => 'flexible-wrap'));
+                if (!empty($data)) {
+                    echo $OUTPUT->heading(get_string('users_to_enrol_in_course', 'local_bulkenrol'), 3);
+                    echo html_writer::tag('div', html_writer::table($table), array('class' => 'flexible-wrap'));
+                }
                 break;
 
             default:

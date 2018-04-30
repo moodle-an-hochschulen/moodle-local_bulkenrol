@@ -6,6 +6,7 @@ Changes
 
 ### Unreleased
 
+* 2018-04-30 - Show section headings on confirmation page only if needed
 * 2018-04-30 - Eliminate an unneeded string from the language pack
 
 ### v3.2-r3
