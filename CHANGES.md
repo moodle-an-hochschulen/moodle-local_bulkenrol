@@ -4,7 +4,7 @@ moodle-local_bulkenrol
 Changes
 -------
 
-### Unreleased
+### v3.4-r1
 
 * 2018-04-30 - Check compatibility for Moodle 3.4, no functionality change
 * 2018-04-30 - Improve information about users who are already enrolled and about group memberships
