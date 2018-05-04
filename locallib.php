@@ -208,8 +208,8 @@ function local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $cur
  * Takes input from text area containing a list of e-mail adresses (optionally group names starting with '#').
  * Returns an array representation of the input.
  *
- * @param unknown $emails input value of the text area.
- * @return array of e-emails and optional group names
+ * @param mixed $emails input value of the text area.
+ * @return string[] e-emails and optional group names
  */
 function local_bulkenrol_parse_emails($emails) {
     if (empty($emails)) {
@@ -228,7 +228,7 @@ function local_bulkenrol_parse_emails($emails) {
  * Takes an e-mail and returns a moodle user record and error string (if occured).
  *
  * @param string $email E-mail used to search for a user
- * @return multitype:NULL |multitype:string mixed
+ * @return string,object[]
  */
 function local_bulkenrol_get_user($email) {
     global $DB;
@@ -265,7 +265,7 @@ function local_bulkenrol_get_user($email) {
  * Get an understandable reason from an exception which happened during bulkenrol.
  *
  * @param $e should be of instanceof Exception
- * @return string $e->getMessage()." -> ".$e->getTraceAsString()
+ * @return string readable form of an exception
  */
 function local_bulkenrol_get_exception_info($e) {
     if (empty($e) || !($e instanceof Exception) ) {
@@ -278,7 +278,7 @@ function local_bulkenrol_get_exception_info($e) {
 /**
  * Perform user enrolment into the course and optionally add users as member into course groups. Groups are created if necessary.
  *
- * @param unknown $localbulkenrolkey
+ * @param string $localbulkenrolkey
  */
 function local_bulkenrol_users($localbulkenrolkey) {
     global $CFG, $DB, $SESSION;
@@ -448,8 +448,9 @@ function local_bulkenrol_users($localbulkenrolkey) {
 
 /**
  * According to the parameter, either a table with hints is displayed or a table with users to be written is displayed.
- * @param unknown $localbulkenroldata
- * @param unknown $key
+ *  
+ * @param object $localbulkenroldata
+ * @param string $key
  */
 function local_bulkenrol_display_table($localbulkenroldata, $key) {
     global $OUTPUT;
@@ -562,8 +563,9 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
 /**
  * Checks whether a user with id $userid can be found in members list of the course group with name $groupname.
  *
+ * @param int $courseid id of the course
  * @param string $groupname
- * @param id $userid
+ * @param int $userid id of the user
  * @return multitype:NULL |multitype:string mixed Data structure containing flag 'already_member' and 'error'.
  */
 function local_bulkenrol_is_already_member($courseid, $groupname, $userid) {
