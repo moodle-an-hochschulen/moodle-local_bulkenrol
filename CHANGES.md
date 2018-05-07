@@ -4,6 +4,10 @@ moodle-local_bulkenrol
 Changes
 -------
 
+### Unreleased
+
+* 2018-05-07 - Eliminate an unneeded string from the language pack
+
 ### v3.4-r1
 
 * 2018-04-30 - Check compatibility for Moodle 3.4, no functionality change
