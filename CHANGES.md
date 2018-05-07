@@ -6,6 +6,7 @@ Changes
 
 ### Unreleased
 
+* 2018-05-07 - Finish PHPDoc in locallib.php
 * 2018-05-07 - Eliminate an unneeded string from the language pack
 
 ### v3.4-r1
