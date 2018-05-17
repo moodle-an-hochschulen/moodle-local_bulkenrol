@@ -43,6 +43,7 @@ $string['error_no_record_found_for_email'] = 'No existing Moodle user account wi
 $string['error_usermails_empty'] = 'List of e-mail adresses is empty. Please add at least one e-mail adress.';
 $string['error_check_is_already_member'] = 'Error checking if the user (<em>{$a->email}</em>) is already a member of group (<em>{$a->groupname}</em>). {$a->error}';
 $string['pluginname'] = 'User bulk enrolment';
+$string['privacy:metadata'] = 'The user bulk enrolment plugin acts as a tool to enrol users into courses, but does not store any personal data.';
 $string['hints'] = 'Hints';
 $string['row'] = 'Row';
 $string['usermails'] = 'List of e-mail adresses';

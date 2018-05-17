@@ -4,6 +4,10 @@ moodle-local_bulkenrol
 Changes
 -------
 
+### Unreleased
+
+* 2018-05-16 - Implement Privacy API.
+
 ### v3.4-r2
 
 * 2018-05-07 - Finish PHPDoc in locallib.php
