@@ -4,7 +4,7 @@ moodle-local_bulkenrol
 Changes
 -------
 
-### Unreleased
+### v3.4-r4
 
 * 2018-07-11 - Minor cleanups for approval in Moodle plugins repo, no functionality change.
 
