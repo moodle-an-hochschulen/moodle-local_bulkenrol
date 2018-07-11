@@ -4,6 +4,10 @@ moodle-local_bulkenrol
 Changes
 -------
 
+### Unreleased
+
+* 2018-07-11 - Minor cleanups for approval in Moodle plugins repo, no functionality change.
+
 ### v3.4-r3
 
 * 2018-05-16 - Implement Privacy API.
