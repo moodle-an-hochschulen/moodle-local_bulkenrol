@@ -32,7 +32,7 @@ require_once($CFG->dirroot.'/local/bulkenrol/locallib.php');
 
 
 $id = required_param('id', PARAM_INT);
-$localbulkenrolkey = optional_param('key', 0, PARAM_RAW);
+$localbulkenrolkey = optional_param('key', 0, PARAM_ALPHANUMEXT);
 
 $context = context_system::instance();
 
