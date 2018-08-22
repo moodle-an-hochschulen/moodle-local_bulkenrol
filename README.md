@@ -9,7 +9,7 @@ Moodle plugin which provides the possibility to bulk enrol a list of users who a
 Requirements
 ------------
 
-This plugin requires Moodle 3.4+
+This plugin requires Moodle 3.5+
 
 
 Motivation for this plugin
@@ -93,8 +93,8 @@ Additionally, this plugin only enrols users who already exist in Moodle. It won'
 Theme support
 -------------
 
-This plugin should work with all Bootstrap based Moodle themes.
-It has been developed on and tested with Moodle Core's Clean and Boost themes.
+It has been developed on and tested only with Moodle Core's Boost theme.
+While this plugin should also work with Moodle Core's legacy Clean theme or third party themes, we can't support any other theme than Boost.
 
 
 Plugin repositories
