@@ -198,9 +198,9 @@ function local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $cur
                 $alreadymember = $result->already_member;
                 $groupinfo = '';
                 if (empty($alreadymember)) {
-                    $groupinfo = " (" . get_string('user_groups_already', 'local_bulkenrol') . ")";
-                } else {
                     $groupinfo = " (" . get_string('user_groups_yes', 'local_bulkenrol') . ")";
+                } else {
+                    $groupinfo = " (" . get_string('user_groups_already', 'local_bulkenrol') . ")";
                 }
                 $checkedemails->user_groups[$email][] = $currentgroup . $groupinfo;
             }
