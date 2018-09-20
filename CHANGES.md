@@ -4,7 +4,7 @@ moodle-local_bulkenrol
 Changes
 -------
 
-### Unreleased
+### v3.5-r2
 
 * 2018-09-20 - Bugfix: Information about group membership when enrolling users was wrong
 
