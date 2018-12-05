@@ -4,6 +4,10 @@ moodle-local_bulkenrol
 Changes
 -------
 
+### Unreleased
+
+* 2018-12-05 - Changed travis.yml due to upstream changes.
+
 ### v3.5-r2
 
 * 2018-09-20 - Bugfix: Information about group membership when enrolling users was wrong
