@@ -6,6 +6,7 @@ Changes
 
 ### Unreleased
 
+* 2019-07-17 - Corrected typos.
 * 2019-07-16 - Prepare compatibility for Moodle 3.7.
 
 ### v3.6-r1
