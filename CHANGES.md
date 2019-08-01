@@ -6,6 +6,7 @@ Changes
 
 ### Unreleased
 
+* 2019-08-01 - Fixed bug with enrolment method.
 * 2019-07-17 - Corrected typos.
 * 2019-07-16 - Prepare compatibility for Moodle 3.7.
 

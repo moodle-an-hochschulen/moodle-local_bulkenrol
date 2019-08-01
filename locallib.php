@@ -315,6 +315,13 @@ function local_bulkenrol_users($localbulkenrolkey) {
 
                         // Get enrolment for bulkenrol.
                         $bulkenrolplugin = get_config('local_bulkenrol', 'enrolplugin');
+
+                        // Check if string contains "enrol_".
+                        if (strpos($bulkenrolplugin, 'enrol_') === 0) {
+                            // This is needed because enrol_get_plugin needs the string without the "enrol_".
+                            $bulkenrolplugin = substr($bulkenrolplugin, 6);
+                        }
+
                         $plugin = enrol_get_plugin($bulkenrolplugin);
 
                         $enrolinstance = null;
