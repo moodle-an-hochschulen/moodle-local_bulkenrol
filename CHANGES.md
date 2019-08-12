@@ -4,7 +4,7 @@ moodle-local_bulkenrol
 Changes
 -------
 
-### Unreleased
+### V3.7-r1
 
 * 2019-08-01 - Added behat tests.
 * 2019-08-01 - Fixed bug with enrolment method.
