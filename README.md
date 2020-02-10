@@ -9,7 +9,7 @@ Moodle plugin which provides the possibility to bulk enrol a list of users who a
 Requirements
 ------------
 
-This plugin requires Moodle 3.4+
+This plugin requires Moodle 3.7+
 
 
 Motivation for this plugin
@@ -65,8 +65,8 @@ To enrol existing Moodle users into the course, the teacher will then have to ad
 
 Example:
 ```
-foo@bar.com
-bar@foo.com
+alice@example.com
+bob@example.com
 ```
 
 Optionally, the teacher will be able to create groups and add the enrolled users to the groups. All he has to do is to add a heading line with a hash sign and the group's name, separating the list of users.
@@ -74,11 +74,11 @@ Optionally, the teacher will be able to create groups and add the enrolled users
 Example:
 ```
 # Group 1
-foo@bar.com
-bar@foo.com
+alice@example.com
+bob@example.com
 # Group 2
-foobar@bar.com
-barfoo@foo.com
+carol@example.com
+dave@example.com
 ```
 
 
@@ -93,8 +93,8 @@ Additionally, this plugin only enrols users who already exist in Moodle. It won'
 Theme support
 -------------
 
-This plugin should work with all Bootstrap based Moodle themes.
-It has been developed on and tested with Moodle Core's Clean and Boost themes.
+This plugin is developed and tested on Moodle Core's Boost theme.
+It should also work with Boost child themes, including Moodle Core's Classic theme. However, we can't support any other theme than Boost.
 
 
 Plugin repositories
@@ -172,6 +172,5 @@ www.soon-systems.de
 on behalf of
 
 Ulm University
-kiz - Media Department
-Team Web & Teaching Support
+Communication and Information Centre (kiz)
 Alexander Bias
