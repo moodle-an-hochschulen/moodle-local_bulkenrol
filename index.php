@@ -71,6 +71,14 @@ if (empty($localbulkenrolkey)) {
         $localbulkenrolkey = $courseid.'_'.time();
         $SESSION->local_bulkenrol[$localbulkenrolkey] = $checkedmails;
 
+        // #11916 Moodle plugin local_bulkenrol: Mehrere Probleme - Punkt 1
+        // Create local_bulkenrol_inputs array in Session.
+        if (!isset($SESSION->local_bulkenrol_inputs)) {
+            $SESSION->local_bulkenrol_inputs = array();
+        }
+        $localbulkenroldata = $localbulkenrolkey.'_data';
+        $SESSION->local_bulkenrol_inputs[$localbulkenroldata] = $emails;
+
     } else if ($form->is_cancelled()) {
         if (!empty($id)) {
             redirect($CFG->wwwroot .'/course/view.php?id='.$id, '', 0);
@@ -119,11 +127,26 @@ if ($localbulkenrolkey) {
 
             if (!empty($localbulkenroldata)) {
                 local_bulkenrol_display_table($localbulkenroldata, LOCALBULKENROL_HINT);
+                // #11916 Moodle plugin local_bulkenrol: Mehrere Probleme - Punkt 4
+                local_bulkenrol_display_table($localbulkenroldata, LOCALBULKENROL_GROUPINFOS);
                 local_bulkenrol_display_table($localbulkenroldata, LOCALBULKENROL_ENROLUSERS);
             }
         }
 
         echo $form2->display();
+        
+        // #11916 Moodle plugin local_bulkenrol: Mehrere Probleme - Punkt 1
+        if (!empty($localbulkenroldata) && isset($localbulkenroldata->validemailfound) && empty($localbulkenroldata->validemailfound)) {
+                echo '<div class="local_bulkenrol_hint">';
+                $a = new stdClass();               
+                $url = new moodle_url('/local/bulkenrol/index.php', array('id'=>$id, 'editlist' => $localbulkenrolkey));
+                $a->url = $url->__toString();
+                // #11916 Moodle plugin local_bulkenrol: Mehrere Probleme - Punkt 4
+                // Add <span> for badges
+                echo '<span class="badge badge-warning">'.get_string('error_no_valid_email_in_list', 'local_bulkenrol', $a).'</span>';
+                echo '</div>';
+        }
+        
         echo $OUTPUT->footer();
     }
 }
