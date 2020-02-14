@@ -26,6 +26,8 @@ defined('MOODLE_INTERNAL') || die();
 
 define('LOCALBULKENROL_HINT', 'hint');
 define('LOCALBULKENROL_ENROLUSERS', 'enrolusers');
+// #11916 Moodle plugin local_bulkenrol: Mehrere Probleme - Punkt 4
+define('LOCALBULKENROL_GROUPINFOS', 'groupinfos');
 
 /**
  * Check list of submitted user mails and creates a data structure for displaying information on the confirm page and
@@ -45,6 +47,9 @@ function local_bulkenrol_check_user_mails($emailstextfield, $courseid) {
     $checkedemails->course_groups = array();
     $checkedemails->user_groups = array();
     $checkedemails->user_enroled = array();
+
+    // #11916 Moodle plugin local_bulkenrol: Mehrere Probleme - Punkt 1
+    $checkedemails->validemailfound = 0;
 
     $emaildelimiters = array(', ', ' ', ',');
 
@@ -169,6 +174,9 @@ function local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $cur
                 $checkedemails->error_messages[$linecnt] = $error;
             }
         } else if (!empty($userrecord) && !empty($userrecord->id)) {
+            // #11916 Moodle plugin local_bulkenrol: Mehrere Probleme - Punkt 1
+            $checkedemails->validemailfound += 1;
+            
             $useralreadyenroled = false;
             if (!empty($context) && !empty($userrecord)) {
                 $useralreadyenroled = is_enrolled($context, $userrecord->id);
@@ -197,12 +205,14 @@ function local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $cur
                 }
                 $alreadymember = $result->already_member;
                 $groupinfo = '';
+                // #11916 Moodle plugin local_bulkenrol: Mehrere Probleme - Punkt 4
+                // Add <span> for badges
                 if (empty($alreadymember)) {
-                    $groupinfo = " (" . get_string('user_groups_yes', 'local_bulkenrol') . ")";
+                    $groupinfo = '<span class="badge badge-secondary">'. get_string('user_groups_yes', 'local_bulkenrol') . '</span>';
                 } else {
-                    $groupinfo = " (" . get_string('user_groups_already', 'local_bulkenrol') . ")";
+                    $groupinfo = '<span class="badge badge-success">'. get_string('user_groups_already', 'local_bulkenrol') . '</span>';
                 }
-                $checkedemails->user_groups[$email][] = $currentgroup . $groupinfo;
+                $checkedemails->user_groups[$email][] = $currentgroup .' '. $groupinfo;
             }
         }
     }
@@ -352,8 +362,20 @@ function local_bulkenrol_users($localbulkenrolkey) {
                         if (!empty($enrolinstance)) {
                             // Enrol users in course.
                             $roleid = $enrolinstance->roleid;
+                            
+                            // #11916 Moodle plugin local_bulkenrol: Mehrere Probleme - Punkt 3
+                            $coursecontext = context_course::instance($courseid);
+                            
                             foreach ($userstoenrol as $user) {
                                 try {
+                                    // #11916 Moodle plugin local_bulkenrol: Mehrere Probleme - Punkt 3
+                                    // Check if user is already enrolled
+                                    $userisenrolled = is_enrolled($coursecontext, $user->id, '', false);
+                                    // User is enrolled => continue to avoid a new enrolment for the user
+                                    if($userisenrolled){
+                                        continue;
+                                    }
+                                    
                                     $plugin->enrol_user($enrolinstance, $user->id, $roleid);
                                 } catch (Exception $e) {
                                     $a = new stdClass();
@@ -528,10 +550,12 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
 
                         $cell = new html_table_cell();
                         $cell->text = '';
+                        // #11916 Moodle plugin local_bulkenrol: Mehrere Probleme - Punkt 4
+                        // Add <span> for badges
                         if (!empty($localbulkenroldata->user_enroled[$email])) {
-                            $cell->text = get_string('user_enroled_yes', 'local_bulkenrol');
+                            $cell->text = '<span class="badge badge-secondary">' . get_string('user_enroled_yes', 'local_bulkenrol') .'</span>';
                         } else {
-                            $cell->text = get_string('user_enroled_already', 'local_bulkenrol');
+                            $cell->text = '<span class="badge badge-success">' . get_string('user_enroled_already', 'local_bulkenrol') . '</span>';
                         }
                         $row[] = $cell;
 
@@ -550,7 +574,9 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
                 $table->id = "localbulkenrol_enrolusers";
                 $table->attributes['class'] = 'generaltable';
                 $table->summary = get_string('users_to_enrol_in_course', 'local_bulkenrol');
-                $table->size = array('20%', '20%', '20%', '20%', '20%');
+                // #11916 Moodle plugin local_bulkenrol: Mehrere Probleme - Punkt 4
+                // Adjust col width
+                $table->size = array('20%', '17%', '17%', '20%', '26%');
                 $table->head = array();
                 $table->head[] = get_string('email');
                 $table->head[] = get_string('firstname');
@@ -561,6 +587,62 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
 
                 if (!empty($data)) {
                     echo $OUTPUT->heading(get_string('users_to_enrol_in_course', 'local_bulkenrol'), 3);
+                    echo html_writer::tag('div', html_writer::table($table), array('class' => 'flexible-wrap'));
+                }
+                break;
+
+            // #11916 Moodle plugin local_bulkenrol: Mehrere Probleme - Punkt 4
+            case LOCALBULKENROL_GROUPINFOS:
+                $data = array();
+
+                if (!empty($localbulkenroldata->course_groups)) {
+                    $courseid = required_param('id', PARAM_INT);
+                    $existingcoursegroups = groups_get_all_groups($courseid, 0, 0, 'id, name');
+
+                    foreach ($localbulkenroldata->course_groups as $name => $members) {
+                        $groupname = trim($name);
+
+                        // Check if group already exists.
+                        $groupexists = false;
+                        foreach ($existingcoursegroups as $key => $existingcoursegroup) {
+                            if ($groupname == $existingcoursegroup->name) {
+                                $groupexists = true;
+                                break;
+                            }
+                        }
+
+                        $row = array();
+
+                        $cell = new html_table_cell();
+                        $cell->text = $groupname;
+                        $row[] = $cell;
+
+                        $cell = new html_table_cell();
+                        // #11916 Moodle plugin local_bulkenrol: Mehrere Probleme - Punkt 4
+                        // Add <span> for badges
+                        if(empty($groupexists)){
+                            $cell->text = '<span class="badge badge-secondary">' . get_string('group_status_create', 'local_bulkenrol') . '</span>';
+                        } else {
+                            $cell->text = '<span class="badge badge-success">' . get_string('group_status_exists', 'local_bulkenrol') . '</span>';
+                        }
+                        
+                        $row[] = $cell;
+
+                        $data[] = $row;
+                    }
+                }
+
+                $table = new html_table();
+                $table->id = "localbulkenrol_groupinfos";
+                $table->attributes['class'] = 'generaltable';
+                $table->size = array('50%', '50%');
+                $table->head = array();
+                $table->head[] = get_string('group_name_headline', 'local_bulkenrol');
+                $table->head[] = get_string('status_headline', 'local_bulkenrol');
+                $table->data = $data;
+
+                if (!empty($data)) {
+                    echo $OUTPUT->heading(get_string('groupinfos_headline', 'local_bulkenrol'), 3);
                     echo html_writer::tag('div', html_writer::table($table), array('class' => 'flexible-wrap'));
                 }
                 break;

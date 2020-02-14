@@ -39,6 +39,8 @@ $string['error_group_add_member'] = 'There was a problem when adding the user wi
 $string['error_invalid_email'] = 'Invalid e-mail address found in line {$a->row} (<em>{$a->email}</em>). This line will be ignored.';
 $string['error_more_than_one_record_for_email'] = 'More than one existing Moodle user account with e-mail address <em>{$a}</em>em> found.<br /> This line will be ignored, none of the existing Moodle users will be enrolled.';
 $string['error_no_email'] = 'No e-mail address found in line {$a->line} (<em>{$a->content}</em>). This line will be ignored.';
+// #11916 Moodle plugin local_bulkenrol: Mehrere Probleme - Punkt 1
+$string['error_no_valid_email_in_list'] = 'No valid e-mail address was found in the list. Please click <a href=\'{$a->url}\'>here</a> to check your input.';
 $string['error_no_record_found_for_email'] = 'No existing Moodle user account with e-mail address <em>{$a}</em>.<br />This line will be ignored, there won\'t be a Moodle user account created on-the-fly.';
 $string['error_usermails_empty'] = 'List of e-mail addresses is empty. Please add at least one e-mail address.';
 $string['error_check_is_already_member'] = 'Error checking if the user (<em>{$a->email}</em>) is already a member of group (<em>{$a->groupname}</em>). {$a->error}';
@@ -56,3 +58,9 @@ $string['user_groups'] = 'Group membership';
 $string['user_groups_yes'] = 'User added to group';
 $string['user_groups_already'] = 'User already member';
 $string['parameter_empty'] = 'Parameter empty';
+// #11916 Moodle plugin local_bulkenrol: Mehrere Probleme - Punkt 4
+$string['groupinfos_headline'] = 'Groups included in the list';
+$string['group_name_headline'] = 'Group name';
+$string['status_headline'] = 'Status';
+$string['group_status_create'] = 'Group is created';
+$string['group_status_exists'] = 'Group already exists';
