@@ -361,7 +361,8 @@ function local_bulkenrol_users($localbulkenrolkey) {
 
                         if (!empty($enrolinstance)) {
                             // Enrol users in course.
-                            $roleid = $enrolinstance->roleid;
+                            // #13833 Moodle plugin local_bulkenrol: Konfiguration und Ausgabe der Rolle
+                            $roleid = get_config('local_bulkenrol','role');
                             
                             // #11916 Moodle plugin local_bulkenrol: Mehrere Probleme - Punkt 3
                             $coursecontext = context_course::instance($courseid);
