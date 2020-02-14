@@ -4,7 +4,7 @@ moodle-local_bulkenrol
 Changes
 -------
 
-### Unreleased
+### v3.8-r1
 
 * 2020-02-14 - Prepare compatibility for Moodle 3.8.
 
