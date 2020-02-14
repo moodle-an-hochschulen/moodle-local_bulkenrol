@@ -707,3 +707,43 @@ function local_bulkenrol_is_already_member($courseid, $groupname, $userid) {
     }
     return $result;
 }
+// #13833 Moodle plugin local_bulkenrol: Konfiguration und Ausgabe der Rolle
+function local_bulkenrol_display_enroldetails(){
+    global $CFG, $DB, $OUTPUT;
+
+    // Get enrolment
+    $enrolpluginshortname = get_config('local_bulkenrol','enrolplugin');
+    $enrolpluginname = get_string('pluginname', 'enrol_'.$enrolpluginshortname);
+    
+    // Get role
+    $roleid = get_config('local_bulkenrol','role');
+    $role = $DB->get_record('role', array('id'=>$roleid));
+    $systemcontext = context_system::instance();
+    $roles = role_fix_names(array($roleid => $role), $systemcontext, ROLENAME_ORIGINAL);
+    
+    $rolename = $roles[$roleid]->localname;
+    
+    $data = array();
+    $row = array();
+    $cell = new html_table_cell();
+    $cell->text = $enrolpluginname;
+    $row[] = $cell;
+    
+    $cell = new html_table_cell();
+    $cell->text = $rolename;
+    $row[] = $cell;
+    
+    $data[] = $row;
+    
+    $table = new html_table();
+    $table->id = "localbulkenrol_enrolinfo";
+    $table->attributes['class'] = 'generaltable';
+    $table->size = array('50%', '50%');
+    $table->head = array();
+    $table->head[] = get_string('type_enrol', 'local_bulkenrol');
+    $table->head[] = get_string('role_assigned', 'local_bulkenrol');
+    $table->data = $data;
+    
+    echo $OUTPUT->heading(get_string('enrolinfo_headline', 'local_bulkenrol'), 3);
+    echo html_writer::tag('div', html_writer::table($table), array('class' => 'flexible-wrap'));
+}
