@@ -64,3 +64,9 @@ $string['group_name_headline'] = 'Group name';
 $string['status_headline'] = 'Status';
 $string['group_status_create'] = 'Group is created';
 $string['group_status_exists'] = 'Group already exists';
+// #13833 Moodle plugin local_bulkenrol: Konfiguration und Ausgabe der Rolle
+$string['role'] = 'Role';
+$string['role_description'] = 'The role to be used to bulk enrol the users.';
+$string['enrolinfo_headline'] = 'Enrolment details';
+$string['type_enrol'] = 'Enrolment methode';
+$string['role_assigned'] = 'Assigned role';

@@ -130,6 +130,8 @@ if ($localbulkenrolkey) {
                 // #11916 Moodle plugin local_bulkenrol: Mehrere Probleme - Punkt 4
                 local_bulkenrol_display_table($localbulkenroldata, LOCALBULKENROL_GROUPINFOS);
                 local_bulkenrol_display_table($localbulkenroldata, LOCALBULKENROL_ENROLUSERS);
+                // #13833 Moodle plugin local_bulkenrol: Konfiguration und Ausgabe der Rolle
+                local_bulkenrol_display_enroldetails();
             }
         }
 
