@@ -4,6 +4,10 @@ moodle-local_bulkenrol
 Changes
 -------
 
+### Unreleased
+
+* 2020-02-14 - Prepare compatibility for Moodle 3.8.
+
 ### V3.7-r1
 
 * 2019-08-01 - Added behat tests.
