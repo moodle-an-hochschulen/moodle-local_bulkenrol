@@ -98,9 +98,9 @@ if ($localbulkenrolkey) {
             $msg = local_bulkenrol_users($localbulkenrolkey);
 
             if ($msg->status == 'error') {
-                redirect('/user/index.php?id='.$id, "$msg->text", null, \core\output\notification::NOTIFY_ERROR);
+                redirect($CFG->wwwroot .'/user/index.php?id='.$id, "$msg->text", null, \core\output\notification::NOTIFY_ERROR);
             } else {
-                redirect('/user/index.php?id='.$id, "$msg->text", null, \core\output\notification::NOTIFY_SUCCESS);
+                redirect($CFG->wwwroot .'/user/index.php?id='.$id, "$msg->text", null, \core\output\notification::NOTIFY_SUCCESS);
             }
 
         } else {
