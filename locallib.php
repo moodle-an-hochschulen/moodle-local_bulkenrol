@@ -56,7 +56,11 @@ function local_bulkenrol_check_user_data($userdatatext, $courseid, $datafield = 
         return $checkeddata;
     }
 
-    // TODO Check $datafield correct.
+    // TODO Uncomment and get correct config.
+    /*$datafields = get_config('local_bulkenrol', 'datafields');
+    if (!is_array($datafields) || in_array($datafield, $datafields)) {
+        return $checkeddata;
+    }*/
 
     $datalines = local_bulkenrol_parse_data($userdatatext);
 
@@ -218,7 +222,7 @@ function local_bulkenrol_get_user($data, $datafield) {
     $userrecord = null;
 
     if (empty($data)) {
-        $error = get_string('error_getting_user_for_data', 'local_bulkenrol', $data);
+        $error = get_string('error_no_data', 'local_bulkenrol', $data);
         return array($error, $userrecord);
     }
 
@@ -511,7 +515,7 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
                 break;
 
             case LOCALBULKENROL_ENROLUSERS:
-                $data = array();
+                $rowdata = array();
 
                 if (!empty($localbulkenroldata->moodleusers_for_data)) {
                     foreach ($localbulkenroldata->moodleusers_for_data as $data => $user) {
@@ -549,7 +553,7 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
                         }
                         $row[] = $cell;
 
-                        $data[] = $row;
+                        $rowdata[] = $row;
                     }
                 }
 
@@ -564,9 +568,9 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
                 $table->head[] = get_string('lastname');
                 $table->head[] = get_string('user_enroled', 'local_bulkenrol');
                 $table->head[] = get_string('user_groups', 'local_bulkenrol');
-                $table->data = $data;
+                $table->data = $rowdata;
 
-                if (!empty($data)) {
+                if (!empty($rowdata)) {
                     echo $OUTPUT->heading(get_string('users_to_enrol_in_course', 'local_bulkenrol'), 3);
                     echo html_writer::tag('div', html_writer::table($table), array('class' => 'flexible-wrap'));
                 }
@@ -685,7 +689,7 @@ function local_bulkenrol_is_already_member($courseid, $groupname, $userid) {
         }
     } catch (Exception $e) {
         $msg = get_string('error_group_add_members', 'local_bulkenrol').local_bulkenrol_get_exception_info($e);
-        $exceptionsmsg[] = $msg;
+        $result->error = $msg;
     }
     return $result;
 }
