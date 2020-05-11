@@ -24,6 +24,32 @@
 
 defined('MOODLE_INTERNAL') || die;
 
+$unqualifiedfields = [
+    "auth",
+    "confirmed",
+    "policyagreed",
+    "suspended",
+    "country",
+    "lang",
+    "calendartype",
+    "timezone",
+    "firstaccess",
+    "lastaccess",
+    "lastlogin",
+    "secret",
+    "url",
+    "descriptionformat",
+    "mailformat",
+    "maildigest",
+    "maildisplay",
+    "autosubscribe",
+    "trackforums",
+];
+
+$standardoptions = [
+    "email"
+];
+
 if ($hassiteconfig) {
     $settings = new admin_settingpage('local_bulkenrol', get_string('pluginname', 'local_bulkenrol', null, true));
 
@@ -43,6 +69,7 @@ if ($hassiteconfig) {
                         $enroloptions)
         );
         unset($enroloptions);
+
 
         // Create role chooser widget.
         $roleoptions = array();
@@ -74,6 +101,30 @@ if ($hassiteconfig) {
                         $roleoptions)
         );
         unset($roleoptions);
+
+        global $DB;
+        $columninfo = $DB->get_columns("user");
+        $preset = [];
+        $fields = [];
+        foreach ($columninfo as $column) {
+            $fieldname = $column->name;
+            if (in_array($fieldname, $unqualifiedfields)) {
+                continue;
+            }
+            $standard = in_array($fieldname, $standardoptions);
+            $fields[$fieldname] = $fieldname;
+            $preset[] = $standard;
+        }
+        var_dump(get_config('local_bulkenrol', 'fieldoptions'));
+        $settings->add(
+            new admin_setting_configmultiselect(
+                'local_bulkenrol/fieldoptions',
+                get_string('fieldoptions', 'local_bulkenrol'),
+                get_string('fieldoptions_desc', 'local_bulkenrol'),
+                $preset,
+                $fields
+            )
+        );
     }
 
     $ADMIN->add('enrolments', $settings);
