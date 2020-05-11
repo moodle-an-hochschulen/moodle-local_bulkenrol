@@ -54,9 +54,18 @@ class bulkenrol_form extends moodleform {
         $msg = get_string('bulkenrol_form_intro', 'local_bulkenrol');
         $mform->addElement('html', '<div id="intro">'.$msg.'</div>');
 
+        // Selector for database field to match list to.
+        $availablefieldsstring = get_config('local_bulkenrol', 'fieldoptions');
+        $availablefieldsarray = explode(',', $availablefieldsstring);
+        $selectoptions = [];
+        foreach ($availablefieldsarray as $fieldoption) {
+            $selectoptions[$fieldoption] = $this->get_fieldname($fieldoption);
+        }
+        $mform->addElement('select', 'dbfield', get_string('choose_field', 'local_bulkenrol'), $selectoptions);
+
         // Textarea for Emails.
         $mform->addElement('textarea', 'usermails',
-                get_string('usermails', 'local_bulkenrol'), 'wrap="virtual" rows="10" cols="80"');
+                get_string('match_to_list', 'local_bulkenrol'), 'wrap="virtual" rows="10" cols="80"');
         $mform->addRule('usermails', null, 'required');
         $mform->addHelpButton('usermails', 'usermails', 'local_bulkenrol');
 
@@ -90,9 +99,22 @@ class bulkenrol_form extends moodleform {
         $retval = array();
 
         if (empty($data['usermails'])) {
-            $retval['usermails'] = get_string('error_usermails_empty', 'local_bulkenrol');
+            $retval['usermails'] = get_string('error_list_empty', 'local_bulkenrol');
         }
 
         return $retval;
+    }
+
+    private function get_fieldname($fieldoption) {
+        global $DB;
+        $fieldinfo = explode("_", $fieldoption, 2);
+        switch ($fieldinfo[0]) {
+            case "u":
+                return $fieldinfo[1];
+            case "c":
+                return $DB->get_field('user_info_field', 'name', array("id" => intval($fieldinfo[1])));
+            default:
+                throw new \UnexpectedValueException("field is not from usertable (u_) or customfield (c_)");
+        }
     }
 }

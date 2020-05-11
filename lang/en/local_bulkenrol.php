@@ -26,6 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['bulkenrol:enrolusers'] = 'Use user bulk enrolment';
 $string['bulkenrol_form_intro'] = 'Here, you can bulk enrol users to your course. A user to be enrolled is identified by his e-mail address stored in his Moodle account.';
+$string['choose_field'] = 'Choose field to match list to';
 $string['enrol_users_successful'] = 'User bulk enrolment successful';
 $string['enrol_users'] = 'Enrol users';
 $string['enrolinfo_headline'] = 'Enrolment details';
@@ -60,15 +61,18 @@ $string['error_no_record_found_for_data'] = 'No existing Moodle user account <em
 
 $string['error_usermails_empty'] = 'List of e-mail addresses is empty. Please add at least one e-mail address.';
 $string['error_check_is_already_member'] = 'Error checking if the user (<em>{$a->data}</em>) is already a member of group (<em>{$a->groupname}</em>). {$a->error}';
-
+$string['error_list_empty'] = 'List is empty. Please add at least one fieldvalue';
+$string['error_check_is_already_member'] = 'Error checking if the user (<em>{$a->data}</em>) is already a member of group (<em>{$a->groupname}</em>). {$a->error}';
+$string['fieldoptions'] = 'Fieldoptions';
+$string['fieldoptions_desc'] = 'Fields, that teachers can use as identifier to enrol students by.';
+$string['match_to_list'] = 'List of chosen field values';
 $string['pluginname'] = 'User bulk enrolment';
 $string['privacy:metadata'] = 'The user bulk enrolment plugin acts as a tool to enrol users into courses, but does not store any personal data.';
 $string['role'] = 'Role';
 $string['role_assigned'] = 'Assigned role';
 $string['role_description'] = 'The role to be used to bulk enrol the users.';
 $string['row'] = 'Row';
-$string['usermails'] = 'List of e-mail addresses';
-$string['usermails_help'] = 'To enrol an existing Moodle user into this course, add his e-mail address to this form, one user / e-mail address per line.<br /><br />Example:<br />alice@example.com<br />bob@example.com<br /><br />Optionally, you are able to create groups and add the enrolled users to the groups. All you have to do is to add a heading line with a hash sign and the group\'s name, separating the list of users.<br /><br />Example:<br /># Group 1<br />alice@example.com<br />bob@example.com<br /># Group 2<br />carol@example.com<br />dave@example.com';
+$string['usermails_help'] = 'To enrol an existing Moodle user into this course, choose a field to identify the user by and add the identifyer to the list. <br /><br />Example for field "email" :<br />alice@example.com<br />bob@example.com<br /><br />Optionally, you are able to create groups and add the enrolled users to the groups. All you have to do is to add a heading line with a hash sign and the group\'s name, separating the list of users.<br /><br />Example:<br /># Group 1<br />alice@example.com<br />bob@example.com<br /># Group 2<br />carol@example.com<br />dave@example.com';
 $string['users_to_enrol_in_course'] = 'Users to be enrolled into the course';
 $string['user_enroled'] = 'User enrolment';
 $string['user_enroled_yes'] = 'User will be enrolled';
