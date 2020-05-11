@@ -24,30 +24,16 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$unqualifiedfields = [
-    "auth",
-    "confirmed",
-    "policyagreed",
-    "suspended",
-    "country",
-    "lang",
-    "calendartype",
-    "timezone",
-    "firstaccess",
-    "lastaccess",
-    "lastlogin",
-    "secret",
-    "url",
-    "descriptionformat",
-    "mailformat",
-    "maildigest",
-    "maildisplay",
-    "autosubscribe",
-    "trackforums",
+$filtercustombyunique = true;
+
+$usertableoptions = [
+    "email",
+    "idnumber",
+    "username"
 ];
 
 $standardoptions = [
-    "email"
+    "u_email"
 ];
 
 if ($hassiteconfig) {
@@ -103,25 +89,27 @@ if ($hassiteconfig) {
         unset($roleoptions);
 
         global $DB;
-        $columninfo = $DB->get_columns("user");
-        $preset = [];
         $fields = [];
-        foreach ($columninfo as $column) {
-            $fieldname = $column->name;
-            if (in_array($fieldname, $unqualifiedfields)) {
+        foreach ($usertableoptions as $fieldname) {
+            if (!in_array($fieldname, $usertableoptions)) {
                 continue;
             }
-            $standard = in_array($fieldname, $standardoptions);
-            $fields[$fieldname] = $fieldname;
-            $preset[] = $standard;
+            $fields["u_" . $fieldname] = $fieldname;
         }
-        var_dump(get_config('local_bulkenrol', 'fieldoptions'));
+
+        $sql = "SELECT id, name, forceunique FROM {user_info_field} WHERE forceunique = 1";
+        $customfields = $DB->get_records_sql_menu($sql);
+
+        foreach($customfields as $id => $name) {
+            $fields["c_" . $id] = $name;
+        }
+
         $settings->add(
             new admin_setting_configmultiselect(
                 'local_bulkenrol/fieldoptions',
                 get_string('fieldoptions', 'local_bulkenrol'),
                 get_string('fieldoptions_desc', 'local_bulkenrol'),
-                $preset,
+                $standardoptions,
                 $fields
             )
         );

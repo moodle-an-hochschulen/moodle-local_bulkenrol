@@ -59,10 +59,11 @@ $PAGE->set_pagelayout('incourse');
 if (empty($localbulkenrolkey)) {
     $form = new bulkenrol_form(null, array('courseid' => $id));
     if ($formdata = $form->get_data()) {
+        $datafield = $formdata->dbfield;
         $emails = $formdata->usermails;
         $courseid = $formdata->id;
 
-        $checkedmails = local_bulkenrol_check_user_data($emails, $courseid, 'c_1');
+        $checkedmails = local_bulkenrol_check_user_data($emails, $courseid, $datafield);
 
         // Create local_bulkenrol array in Session.
         if (!isset($SESSION->local_bulkenrol)) {
