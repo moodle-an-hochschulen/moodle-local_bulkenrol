@@ -17,6 +17,9 @@ Feature: Using the local_bulkenrol plugin
     And the following "course enrolments" exist:
       | user     | course | role           |
       | teacher1 | C1     | editingteacher |
+    And the following config values are set as admin:
+      | config      | value        | plugin          |
+      | enrolplugin | enrol_manual | local_bulkenrol |
     Given I log in as "admin"
     And I set the following system permissions of "Teacher" role:
       | capability                 | permission |
@@ -52,9 +55,6 @@ Feature: Using the local_bulkenrol plugin
     Then I should see "Self enrolment (Student)"
 
   Scenario: Bulk enrol students into the course who are not enrolled yet with authentication method manual
-    Given the following config values are set as admin:
-      | config      | value        | plugin          |
-      | enrolplugin | enrol_manual | local_bulkenrol |
     When I log in as "teacher1"
     And I am on "Course 1" course homepage
     And I navigate to "Users > User bulk enrolment" in current page administration
@@ -80,10 +80,7 @@ Feature: Using the local_bulkenrol plugin
     Then I should see "Manual enrolments"
 
   Scenario: Bulk enrol students into the course and into groups
-    Given the following config values are set as admin:
-      | config      | value        | plugin         |
-      | enrolplugin | enrol_manual | local_bulkenrol |
-    And the following "groups" exist:
+    Given the following "groups" exist:
       | name    | course | idnumber |
       | Group 1 | C1     | CG1      |
       | Group 2 | C1     | CG2      |
@@ -114,10 +111,7 @@ Feature: Using the local_bulkenrol plugin
       | student3@example.com | Student    | 3       | Student | Group 3 |
 
   Scenario: Bulk enrol students into the course with students already enrolled
-    Given the following config values are set as admin:
-      | config      | value        | plugin          |
-      | enrolplugin | enrol_manual | local_bulkenrol |
-    And the following "course enrolments" exist:
+    Given the following "course enrolments" exist:
       | user     | course | role    |
       | student1 | C1     | student |
     When I log in as "teacher1"
@@ -143,9 +137,6 @@ Feature: Using the local_bulkenrol plugin
       | student3@example.com | Student    | 3       | Student |
 
   Scenario: Bulk enrol students into the course that are not existent in the system.
-    Given the following config values are set as admin:
-      | config      | value        | plugin          |
-      | enrolplugin | enrol_manual | local_bulkenrol |
     When I log in as "teacher1"
     And I am on "Course 1" course homepage
     And I navigate to "Users > User bulk enrolment" in current page administration
@@ -159,10 +150,7 @@ Feature: Using the local_bulkenrol plugin
     Then I should see "User bulk enrolment successful"
 
   Scenario: Bulk enrol students into the course with students already enrolled and who only have to be added to groups
-    Given the following config values are set as admin:
-      | config      | value        | plugin          |
-      | enrolplugin | enrol_manual | local_bulkenrol |
-    And the following "course enrolments" exist:
+    Given the following "course enrolments" exist:
       | user     | course | role    |
       | student1 | C1     | student |
       | student2 | C1     | student |
@@ -192,9 +180,6 @@ Feature: Using the local_bulkenrol plugin
       | student2@example.com | Student    | 2       | Student | Group 2 |
 
   Scenario: Bulk enrol students into the course with students already enrolled and who are also a member of the given groups
-    Given the following config values are set as admin:
-      | config      | value        | plugin          |
-      | enrolplugin | enrol_manual | local_bulkenrol |
     And the following "course enrolments" exist:
       | user     | course | role    |
       | student1 | C1     | student |
