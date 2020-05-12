@@ -1,5 +1,5 @@
-@local @local_bulkenrol
-Feature: Using the local_bulkenrol plugin
+@local @local_bulkenrol @local_bulkenrol_users
+Feature: Using the local_bulkenrol plugin for user enrolments
   In order to bulk enrol users into the course
   As user with the appropriate rights
   I need to be able to use the plugin local_bulkenrol
@@ -21,6 +21,10 @@ Feature: Using the local_bulkenrol plugin
       | config      | value  | plugin          |
       | enrolplugin | manual | local_bulkenrol |
     Given I log in as "admin"
+    And I navigate to "Plugins > Enrolments > User bulk enrolment" in site administration
+    And I set the following fields to these values:
+      | Role | Student |
+    And I press "Save changes"
     And I set the following system permissions of "Teacher" role:
       | capability                 | permission |
       | local/bulkenrol:enrolusers | Allow      |
@@ -45,6 +49,9 @@ Feature: Using the local_bulkenrol plugin
       | student1@example.com | Student    | 1       | User will be enrolled |
       | student2@example.com | Student    | 2       | User will be enrolled |
       | student3@example.com | Student    | 3       | User will be enrolled |
+    And the following should exist in the "localbulkenrol_enrolinfo" table:
+      | Enrolment method  | Assigned role |
+      | Self enrolment    | Student       |
     And I click on "Enrol users" "button"
     Then the following should exist in the "participants" table:
       | Email address        | First name | Surname | Roles   |
@@ -70,6 +77,9 @@ Feature: Using the local_bulkenrol plugin
       | student1@example.com | Student    | 1       | User will be enrolled |
       | student2@example.com | Student    | 2       | User will be enrolled |
       | student3@example.com | Student    | 3       | User will be enrolled |
+    And the following should exist in the "localbulkenrol_enrolinfo" table:
+      | Enrolment method  | Assigned role |
+      | Manual enrolments | Student       |
     And I click on "Enrol users" "button"
     Then the following should exist in the "participants" table:
       | Email address        | First name | Surname | Roles   |
@@ -79,36 +89,39 @@ Feature: Using the local_bulkenrol plugin
     When I click on "[data-enrolinstancename='Manual enrolments'] a[data-action=showdetails]" "css_element" in the "Student 1" "table_row"
     Then I should see "Manual enrolments"
 
-  Scenario: Bulk enrol students into the course and into groups
-    Given the following "groups" exist:
-      | name    | course | idnumber |
-      | Group 1 | C1     | CG1      |
-      | Group 2 | C1     | CG2      |
-      | Group 3 | C1     | CG3      |
+  Scenario: Bulk enrol users into the course who are not enrolled yet with role teacher
+    Given I log in as "admin"
+    And I navigate to "Plugins > Enrolments > User bulk enrolment" in site administration
+    And I set the following fields to these values:
+      | Role | Teacher |
+    And I press "Save changes"
+    And I log out
     When I log in as "teacher1"
     And I am on "Course 1" course homepage
     And I navigate to "Users > User bulk enrolment" in current page administration
     And I set the field "List of e-mail addresses" to multiline:
       """
-      # Group 1
       student1@example.com
-      # Group 2
       student2@example.com
-      # Group 3
       student3@example.com
       """
     And I click on "Enrol users" "button"
     Then the following should exist in the "localbulkenrol_enrolusers" table:
-      | Email address        | First name | Surname | User enrolment        | Group membership              |
-      | student1@example.com | Student    | 1       | User will be enrolled | Group 1 (User added to group) |
-      | student2@example.com | Student    | 2       | User will be enrolled | Group 2 (User added to group) |
-      | student3@example.com | Student    | 3       | User will be enrolled | Group 3 (User added to group) |
+      | Email address        | First name | Surname | User enrolment        |
+      | student1@example.com | Student    | 1       | User will be enrolled |
+      | student2@example.com | Student    | 2       | User will be enrolled |
+      | student3@example.com | Student    | 3       | User will be enrolled |
+    And the following should exist in the "localbulkenrol_enrolinfo" table:
+      | Enrolment method  | Assigned role |
+      | Manual enrolments | Teacher       |
     And I click on "Enrol users" "button"
     Then the following should exist in the "participants" table:
-      | Email address        | First name | Surname | Roles   | Groups  |
-      | student1@example.com | Student    | 1       | Student | Group 1 |
-      | student2@example.com | Student    | 2       | Student | Group 2 |
-      | student3@example.com | Student    | 3       | Student | Group 3 |
+      | Email address        | First name | Surname | Roles   |
+      | student1@example.com | Student    | 1       | Teacher |
+      | student2@example.com | Student    | 2       | Teacher |
+      | student3@example.com | Student    | 3       | Teacher |
+    When I click on "[data-enrolinstancename='Manual enrolments'] a[data-action=showdetails]" "css_element" in the "Student 1" "table_row"
+    Then I should see "Manual enrolments"
 
   Scenario: Bulk enrol students into the course with students already enrolled
     Given the following "course enrolments" exist:
@@ -136,7 +149,37 @@ Feature: Using the local_bulkenrol plugin
       | student2@example.com | Student    | 2       | Student |
       | student3@example.com | Student    | 3       | Student |
 
-  Scenario: Bulk enrol students into the course that are not existent in the system.
+  Scenario: Respect existing self enrolments during bulk enrol
+    Given I log in as "admin"
+    And I am on "Course 1" course homepage
+    And I add "Self enrolment" enrolment method with:
+      | Custom instance name | Self enrolment |
+    And I log out
+    And I log in as "student1"
+    And I am on "Course 1" course homepage
+    And I press "Enrol me"
+    And I should see "Topic 1"
+    And I should not see "Enrol me in this course"
+    And I log out
+    When I log in as "teacher1"
+    And I am on "Course 1" course homepage
+    And I navigate to "Users > User bulk enrolment" in current page administration
+    And I set the field "List of e-mail addresses" to multiline:
+      """
+      student1@example.com
+      """
+    And I click on "Enrol users" "button"
+    And the following should exist in the "localbulkenrol_enrolusers" table:
+      | Email address        | First name | Surname | User enrolment           |
+      | student1@example.com | Student    | 1       | User is already enrolled |
+    And I click on "Enrol users" "button"
+    And the following should exist in the "participants" table:
+      | Email address        | First name | Surname | Roles   |
+      | student1@example.com | Student    | 1       | Student |
+    Then "[data-enrolinstancename='Manual enrolments'] a[data-action=showdetails]" "css_element" should not exist in the "Student 1" "table_row"
+    And "[data-enrolinstancename='Self enrolment'] a[data-action=showdetails]" "css_element" should exist in the "Student 1" "table_row"
+
+  Scenario: Try to bulk enrol a student into the course that is not existent in the system.
     When I log in as "teacher1"
     And I am on "Course 1" course homepage
     And I navigate to "Users > User bulk enrolment" in current page administration
@@ -146,69 +189,17 @@ Feature: Using the local_bulkenrol plugin
       """
     And I click on "Enrol users" "button"
     Then I should see "No existing Moodle user account with e-mail address student4@example.com."
-    When I click on "Enrol users" "button"
-    Then I should see "User bulk enrolment successful"
 
-  Scenario: Bulk enrol students into the course with students already enrolled and who only have to be added to groups
-    Given the following "course enrolments" exist:
-      | user     | course | role    |
-      | student1 | C1     | student |
-      | student2 | C1     | student |
-    And the following "groups" exist:
-      | name    | course | idnumber |
-      | Group 1 | C1     | CG1      |
-      | Group 2 | C1     | CG2      |
+  Scenario: Try to bulk enrol a list of invalid users.
     When I log in as "teacher1"
     And I am on "Course 1" course homepage
     And I navigate to "Users > User bulk enrolment" in current page administration
     And I set the field "List of e-mail addresses" to multiline:
       """
-      # Group 1
-      student1@example.com
-      # Group 2
-      student2@example.com
+      foo
+      bar
       """
     And I click on "Enrol users" "button"
-    Then the following should exist in the "localbulkenrol_enrolusers" table:
-      | Email address        | First name | Surname | User enrolment           | Group membership              |
-      | student1@example.com | Student    | 1       | User is already enrolled | Group 1 (User added to group) |
-      | student2@example.com | Student    | 2       | User is already enrolled | Group 2 (User added to group) |
-    And I click on "Enrol users" "button"
-    Then the following should exist in the "participants" table:
-      | Email address        | First name | Surname | Roles   | Groups  |
-      | student1@example.com | Student    | 1       | Student | Group 1 |
-      | student2@example.com | Student    | 2       | Student | Group 2 |
-
-  Scenario: Bulk enrol students into the course with students already enrolled and who are also a member of the given groups
-    And the following "course enrolments" exist:
-      | user     | course | role    |
-      | student1 | C1     | student |
-      | student2 | C1     | student |
-    And the following "groups" exist:
-      | name    | course | idnumber |
-      | Group 1 | C1     | CG1      |
-      | Group 2 | C1     | CG2      |
-    And the following "group members" exist:
-      | group | user     |
-      | CG1   | student1 |
-      | CG2   | student2 |
-    When I log in as "teacher1"
-    And I am on "Course 1" course homepage
-    And I navigate to "Users > User bulk enrolment" in current page administration
-    And I set the field "List of e-mail addresses" to multiline:
-      """
-      # Group 1
-      student1@example.com
-      # Group 2
-      student2@example.com
-      """
-    And I click on "Enrol users" "button"
-    Then the following should exist in the "localbulkenrol_enrolusers" table:
-      | Email address        | First name | Surname | User enrolment           | Group membership              |
-      | student1@example.com | Student    | 1       | User is already enrolled | Group 1 (User already member) |
-      | student2@example.com | Student    | 2       | User is already enrolled | Group 2 (User already member) |
-    And I click on "Enrol users" "button"
-    Then the following should exist in the "participants" table:
-      | Email address        | First name | Surname | Roles   | Groups  |
-      | student1@example.com | Student    | 1       | Student | Group 1 |
-      | student2@example.com | Student    | 2       | Student | Group 2 |
+    Then I should see "No valid e-mail address was found in the given list."
+    And I should see "Please go back and check your input"
+    And "Enrol users" "button" should not exist
