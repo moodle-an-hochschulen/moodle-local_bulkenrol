@@ -4,7 +4,7 @@ moodle-local_bulkenrol
 Changes
 -------
 
-### Unreleased
+### v3.8-r2
 * 2020-05-11 - Bugfix: Teachers were not redirected to the participants page on Moodle instances which are installed in subdirectories - Credits to rtschu and MaimaKhan.
 * 2020-05-11 - Feature: Add information table about the groups included in the list and to highlight which groups will be created - Credits to Scott Hardwick for proposing the improvement and to Soon Systems for implementing the solution.
 * 2020-05-11 - Improvement: Display user enrolment status and group membership status with Bootstrap badges - Credits to Soon Systems.
