@@ -18,8 +18,8 @@ Feature: Using the local_bulkenrol plugin
       | user     | course | role           |
       | teacher1 | C1     | editingteacher |
     And the following config values are set as admin:
-      | config      | value        | plugin          |
-      | enrolplugin | enrol_manual | local_bulkenrol |
+      | config      | value  | plugin          |
+      | enrolplugin | manual | local_bulkenrol |
     Given I log in as "admin"
     And I set the following system permissions of "Teacher" role:
       | capability                 | permission |
@@ -28,8 +28,8 @@ Feature: Using the local_bulkenrol plugin
 
   Scenario: Bulk enrol students into the course who are not enrolled yet with authentication method self
     Given the following config values are set as admin:
-      | config      | value      | plugin          |
-      | enrolplugin | enrol_self | local_bulkenrol |
+      | config      | value | plugin          |
+      | enrolplugin | self  | local_bulkenrol |
     When I log in as "teacher1"
     And I am on "Course 1" course homepage
     And I navigate to "Users > User bulk enrolment" in current page administration
