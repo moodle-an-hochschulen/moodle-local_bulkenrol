@@ -26,6 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 define('LOCALBULKENROL_HINT', 'hint');
 define('LOCALBULKENROL_ENROLUSERS', 'enrolusers');
+define('LOCALBULKENROL_GROUPINFOS', 'groupinfos');
 
 /**
  * Check list of submitted user mails and creates a data structure for displaying information on the confirm page and
@@ -45,6 +46,7 @@ function local_bulkenrol_check_user_mails($emailstextfield, $courseid) {
     $checkedemails->course_groups = array();
     $checkedemails->user_groups = array();
     $checkedemails->user_enroled = array();
+    $checkedemails->validemailfound = 0;
 
     $emaildelimiters = array(', ', ' ', ',');
 
@@ -169,6 +171,8 @@ function local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $cur
                 $checkedemails->error_messages[$linecnt] = $error;
             }
         } else if (!empty($userrecord) && !empty($userrecord->id)) {
+            $checkedemails->validemailfound += 1;
+
             $useralreadyenroled = false;
             if (!empty($context) && !empty($userrecord)) {
                 $useralreadyenroled = is_enrolled($context, $userrecord->id);
@@ -196,13 +200,17 @@ function local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $cur
                     $checkedemails->error_messages[$linecnt] = $error;
                 }
                 $alreadymember = $result->already_member;
-                $groupinfo = '';
+                // Compose group information.
                 if (empty($alreadymember)) {
-                    $groupinfo = " (" . get_string('user_groups_yes', 'local_bulkenrol') . ")";
+                    $groupinfo = html_writer::tag('span',
+                            get_string('user_groups_yes', 'local_bulkenrol'),
+                            array('class' => 'badge badge-secondary'));
                 } else {
-                    $groupinfo = " (" . get_string('user_groups_already', 'local_bulkenrol') . ")";
+                    $groupinfo = html_writer::tag('span',
+                            get_string('user_groups_already', 'local_bulkenrol'),
+                            array('class' => 'badge badge-success'));
                 }
-                $checkedemails->user_groups[$email][] = $currentgroup . $groupinfo;
+                $checkedemails->user_groups[$email][] = $currentgroup .': '. $groupinfo;
             }
         }
     }
@@ -351,10 +359,24 @@ function local_bulkenrol_users($localbulkenrolkey) {
 
                         if (!empty($enrolinstance)) {
                             // Enrol users in course.
-                            $roleid = $enrolinstance->roleid;
+                            $roleid = get_config('local_bulkenrol', 'role');
+
+                            // Get the course context.
+                            $coursecontext = context_course::instance($courseid);
+
                             foreach ($userstoenrol as $user) {
                                 try {
-                                    $plugin->enrol_user($enrolinstance, $user->id, $roleid);
+                                    // Check if user is already enrolled with another enrolment method.
+                                    $userisenrolled = is_enrolled($coursecontext, $user->id, '', false);
+
+                                    // If the user is already enrolled, continue to avoid a second enrolment for the user.
+                                    if ($userisenrolled) {
+                                        continue;
+
+                                        // Otherwise.
+                                    } else {
+                                        $plugin->enrol_user($enrolinstance, $user->id, $roleid);
+                                    }
                                 } catch (Exception $e) {
                                     $a = new stdClass();
                                     $a->email = $user->email;
@@ -529,9 +551,13 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
                         $cell = new html_table_cell();
                         $cell->text = '';
                         if (!empty($localbulkenroldata->user_enroled[$email])) {
-                            $cell->text = get_string('user_enroled_yes', 'local_bulkenrol');
+                            $cell->text = html_writer::tag('span',
+                                get_string('user_enroled_yes', 'local_bulkenrol'),
+                                array('class' => 'badge badge-secondary'));
                         } else {
-                            $cell->text = get_string('user_enroled_already', 'local_bulkenrol');
+                            $cell->text = html_writer::tag('span',
+                                get_string('user_enroled_already', 'local_bulkenrol'),
+                                array('class' => 'badge badge-secondary'));
                         }
                         $row[] = $cell;
 
@@ -550,7 +576,7 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
                 $table->id = "localbulkenrol_enrolusers";
                 $table->attributes['class'] = 'generaltable';
                 $table->summary = get_string('users_to_enrol_in_course', 'local_bulkenrol');
-                $table->size = array('20%', '20%', '20%', '20%', '20%');
+                $table->size = array('20%', '17%', '17%', '20%', '26%');
                 $table->head = array();
                 $table->head[] = get_string('email');
                 $table->head[] = get_string('firstname');
@@ -561,6 +587,63 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
 
                 if (!empty($data)) {
                     echo $OUTPUT->heading(get_string('users_to_enrol_in_course', 'local_bulkenrol'), 3);
+                    echo html_writer::tag('div', html_writer::table($table), array('class' => 'flexible-wrap'));
+                }
+                break;
+
+            case LOCALBULKENROL_GROUPINFOS:
+                $data = array();
+
+                if (!empty($localbulkenroldata->course_groups)) {
+                    $courseid = required_param('id', PARAM_INT);
+                    $existingcoursegroups = groups_get_all_groups($courseid, 0, 0, 'id, name');
+
+                    foreach ($localbulkenroldata->course_groups as $name => $members) {
+                        $groupname = trim($name);
+
+                        // Check if group already exists.
+                        $groupexists = false;
+                        foreach ($existingcoursegroups as $key => $existingcoursegroup) {
+                            if ($groupname == $existingcoursegroup->name) {
+                                $groupexists = true;
+                                break;
+                            }
+                        }
+
+                        $row = array();
+
+                        $cell = new html_table_cell();
+                        $cell->text = $groupname;
+                        $row[] = $cell;
+
+                        $cell = new html_table_cell();
+                        if (empty($groupexists)) {
+                            $cell->text = html_writer::tag('span',
+                                get_string('group_status_create', 'local_bulkenrol'),
+                                array('class' => 'badge badge-secondary'));
+                        } else {
+                            $cell->text = html_writer::tag('span',
+                                get_string('group_status_exists', 'local_bulkenrol'),
+                                array('class' => 'badge badge-success'));
+                        }
+
+                        $row[] = $cell;
+
+                        $data[] = $row;
+                    }
+                }
+
+                $table = new html_table();
+                $table->id = "localbulkenrol_groupinfos";
+                $table->attributes['class'] = 'generaltable';
+                $table->size = array('50%', '50%');
+                $table->head = array();
+                $table->head[] = get_string('group_name_headline', 'local_bulkenrol');
+                $table->head[] = get_string('group_status_headline', 'local_bulkenrol');
+                $table->data = $data;
+
+                if (!empty($data)) {
+                    echo $OUTPUT->heading(get_string('groupinfos_headline', 'local_bulkenrol'), 3);
                     echo html_writer::tag('div', html_writer::table($table), array('class' => 'flexible-wrap'));
                 }
                 break;
@@ -624,4 +707,47 @@ function local_bulkenrol_is_already_member($courseid, $groupname, $userid) {
         $exceptionsmsg[] = $msg;
     }
     return $result;
+}
+
+/**
+ * Helper function to show the enrolment details about the upcoming enrolments.
+ */
+function local_bulkenrol_display_enroldetails() {
+    global $DB, $OUTPUT;
+
+    // Get enrolment configuration.
+    $enrolpluginshortname = get_config('local_bulkenrol', 'enrolplugin');
+    $enrolpluginname = get_string('pluginname', 'enrol_' . $enrolpluginshortname);
+
+    // Get role configuration.
+    $roleid = get_config('local_bulkenrol', 'role');
+    $role = $DB->get_record('role', array('id' => $roleid));
+    $systemcontext = context_system::instance();
+    $roles = role_fix_names(array($roleid => $role), $systemcontext, ROLENAME_ORIGINAL);
+    $rolename = $roles[$roleid]->localname;
+
+    // Build enrolment details table.
+    $data = array();
+    $row = array();
+    $cell = new html_table_cell();
+    $cell->text = $enrolpluginname;
+    $row[] = $cell;
+
+    $cell = new html_table_cell();
+    $cell->text = $rolename;
+    $row[] = $cell;
+
+    $data[] = $row;
+
+    $table = new html_table();
+    $table->id = "localbulkenrol_enrolinfo";
+    $table->attributes['class'] = 'generaltable';
+    $table->size = array('50%', '50%');
+    $table->head = array();
+    $table->head[] = get_string('type_enrol', 'local_bulkenrol');
+    $table->head[] = get_string('role_assigned', 'local_bulkenrol');
+    $table->data = $data;
+
+    echo $OUTPUT->heading(get_string('enrolinfo_headline', 'local_bulkenrol'), 3);
+    echo html_writer::tag('div', html_writer::table($table), array('class' => 'flexible-wrap'));
 }

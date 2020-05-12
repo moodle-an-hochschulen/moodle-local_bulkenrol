@@ -44,7 +44,7 @@ class bulkenrol_form extends moodleform {
      * Form definition. Abstract method - always override!
      */
     protected function definition() {
-        global $CFG;
+        global $CFG, $SESSION;
 
         require_once($CFG->dirroot.'/local/bulkenrol/lib.php');
 
@@ -59,6 +59,17 @@ class bulkenrol_form extends moodleform {
                 get_string('usermails', 'local_bulkenrol'), 'wrap="virtual" rows="10" cols="80"');
         $mform->addRule('usermails', null, 'required');
         $mform->addHelpButton('usermails', 'usermails', 'local_bulkenrol');
+
+        // Add form content if the user came back to check his input.
+        $localbulkenroleditlist = optional_param('editlist', 0, PARAM_ALPHANUMEXT);
+        if (!empty($localbulkenroleditlist)) {
+            $localbulkenroldata = $localbulkenroleditlist.'_data';
+            if (!empty($localbulkenroldata) && !empty($SESSION->local_bulkenrol_inputs) &&
+                    array_key_exists($localbulkenroldata, $SESSION->local_bulkenrol_inputs)) {
+                $formdatatmp = $SESSION->local_bulkenrol_inputs[$localbulkenroldata];
+                $mform->setDefault('usermails', $formdatatmp);
+            }
+        }
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_RAW);

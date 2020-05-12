@@ -4,6 +4,13 @@ moodle-local_bulkenrol
 Changes
 -------
 
+### Unreleased
+* 2020-05-11 - Feature: Add information table about the groups included in the list and to highlight which groups will be created - Credits to Scott Hardwick for proposing the improvement and to Soon Systems for implementing the solution.
+* 2020-05-11 - Improvement: Display user enrolment status and group membership status with Bootstrap badges - Credits to Soon Systems.
+* 2020-05-11 - Improvement: Don't enrol a user with the given enrolment method additionally if he is already enrolled with something else like meta enrolment. Do only add him to the groups in this case - Credits to Scott Hardwick for reporting the issue and to Soon Systems for implementing the solution.
+* 2020-05-11 - Improvement: Don't show the "Enrol users" button if there aren't any valid email addresses given - Credits to Scott Hardwick for reporting the issue and to Soon Systems for implementing the solution.
+* 2020-05-11 - Feature: Add admin setting to control the role to be used for bulk enrolment. Up to now, the default role of the configured enrolment method was used - Credits to Soon Systems.
+
 ### v3.8-r1
 
 * 2020-02-14 - Prepare compatibility for Moodle 3.8.

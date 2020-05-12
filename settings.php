@@ -43,6 +43,37 @@ if ($hassiteconfig) {
                         $enroloptions)
         );
         unset($enroloptions);
+
+        // Create role chooser widget.
+        $roleoptions = array();
+        // Get some basic data we are going to need.
+        $roles = get_all_roles();
+        $systemcontext = context_system::instance();
+        $rolenames = role_fix_names($roles, $systemcontext, ROLENAME_ORIGINAL);
+        if (!empty($rolenames)) {
+            foreach ($rolenames as $key => $role) {
+                if (!array_key_exists($role->id, $roleoptions)) {
+                    $roleoptions[$role->id] = $role->localname;
+                }
+            }
+        }
+        // Get first default role for 'student' archetype.
+        $studentarchetype = get_archetype_roles('student');
+        if ($studentarchetype != false && count($studentarchetype) > 0) {
+            $firststudentrole = array_shift($studentarchetype);
+            $firststudentroleid = $firststudentrole->id;
+        } else {
+            $firststudentroleid = '';
+        }
+        $settings->add(
+                new admin_setting_configselect(
+                        'local_bulkenrol/role',
+                        get_string('role', 'local_bulkenrol'),
+                        get_string('role_description', 'local_bulkenrol'),
+                        $firststudentroleid,
+                        $roleoptions)
+        );
+        unset($roleoptions);
     }
 
     $ADMIN->add('enrolments', $settings);
