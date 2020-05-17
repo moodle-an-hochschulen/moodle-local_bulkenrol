@@ -63,11 +63,11 @@ class bulkenrol_form extends moodleform {
         }
         $mform->addElement('select', 'dbfield', get_string('choose_field', 'local_bulkenrol'), $selectoptions);
 
-        // Textarea for Emails.
-        $mform->addElement('textarea', 'usermails',
-                get_string('match_to_list', 'local_bulkenrol'), 'wrap="virtual" rows="10" cols="80"');
-        $mform->addRule('usermails', null, 'required');
-        $mform->addHelpButton('usermails', 'usermails', 'local_bulkenrol');
+        // Textarea for uservalues.
+        $mform->addElement('textarea', 'uservalues',
+                get_string('userlist', 'local_bulkenrol'), 'wrap="virtual" rows="10" cols="80"');
+        $mform->addRule('uservalues', null, 'required');
+        $mform->addHelpButton('uservalues', 'userlist', 'local_bulkenrol');
 
         // Add form content if the user came back to check his input.
         $localbulkenroleditlist = optional_param('editlist', 0, PARAM_ALPHANUMEXT);
@@ -76,7 +76,7 @@ class bulkenrol_form extends moodleform {
             if (!empty($localbulkenroldata) && !empty($SESSION->local_bulkenrol_inputs) &&
                     array_key_exists($localbulkenroldata, $SESSION->local_bulkenrol_inputs)) {
                 $formdatatmp = $SESSION->local_bulkenrol_inputs[$localbulkenroldata];
-                $mform->setDefault('usermails', $formdatatmp);
+                $mform->setDefault('uservalues', $formdatatmp);
             }
         }
 
@@ -98,8 +98,8 @@ class bulkenrol_form extends moodleform {
     public function validation($data, $files) {
         $retval = array();
 
-        if (empty($data['usermails'])) {
-            $retval['usermails'] = get_string('error_list_empty', 'local_bulkenrol');
+        if (empty($data['uservalues'])) {
+            $retval['uservalues'] = get_string('error_list_empty', 'local_bulkenrol');
         }
 
         return $retval;

@@ -181,7 +181,6 @@ function local_bulkenrol_check_data($data, $datafield, $linecnt, $courseid, $con
                         get_string('user_groups_already', 'local_bulkenrol'),
                         array('class' => 'badge badge-success'));
             }
-            }
             $checkeddata->user_groups[$data][] = $currentgroup . $groupinfo;
         }
     }

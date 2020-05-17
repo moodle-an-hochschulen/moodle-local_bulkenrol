@@ -40,10 +40,8 @@ $string['error_group_add_members'] = 'There was a problem when adding the users 
 $string['error_group_add_member'] = 'There was a problem when adding the user <em>{$a->data}</em> to the course group <em>{$a->group}</em>.';
 $string['error_invalid_email'] = 'Invalid e-mail address found in line {$a->row} (<em>{$a->email}</em>). This line will be ignored.';
 $string['error_more_than_one_record_for_data'] = 'More than one existing Moodle user account <em>{$a}</em>em> found.<br /> This line will be ignored, none of the existing Moodle users will be enrolled.';
-
 $string['error_no_email'] = 'No e-mail address found in line {$a->line} (<em>{$a->content}</em>). This line will be ignored.';
-
-$string['error_no_valid_email_in_list'] = 'No valid e-mail address was found in the given list.<br />Please <a href=\'{$a->url}\'>go back and check your input</a>.';
+$string['error_no_valid_data_in_list'] = 'No valid entrys were found in the given list.<br />Please <a href=\'{$a->url}\'>go back and check your input</a>.';
 $string['error_no_record_found_for_email'] = 'No existing Moodle user account with e-mail address <em>{$a}</em>.<br />This line will be ignored, there won\'t be a Moodle user account created on-the-fly.';
 $string['error_usermails_empty'] = 'List of e-mail addresses is empty. Please add at least one e-mail address.';
 $string['error_check_is_already_member'] = 'Error checking if the user (<em>{$a->email}</em>) is already a member of group (<em>{$a->groupname}</em>). {$a->error}';
@@ -53,26 +51,23 @@ $string['group_status_create'] = 'Group will be created';
 $string['group_status_exists'] = 'Group already exists';
 $string['group_status_headline'] = 'Group status';
 $string['hints'] = 'Hints';
-
 $string['error_no_record_found_for_email'] = 'No existing Moodle user account <em>{$a}</em> was found.<br />This line will be ignored, there won\'t be a Moodle user account created on-the-fly.';
-
 $string['error_no_data'] = 'No data found (<em>{$a}</em>). This line will be ignored.';
 $string['error_no_record_found_for_data'] = 'No existing Moodle user account <em>{$a}</em> was found.<br />This line will be ignored, there won\'t be a Moodle user account created on-the-fly.';
-
 $string['error_usermails_empty'] = 'List of e-mail addresses is empty. Please add at least one e-mail address.';
 $string['error_check_is_already_member'] = 'Error checking if the user (<em>{$a->data}</em>) is already a member of group (<em>{$a->groupname}</em>). {$a->error}';
 $string['error_list_empty'] = 'List is empty. Please add at least one fieldvalue';
 $string['error_check_is_already_member'] = 'Error checking if the user (<em>{$a->data}</em>) is already a member of group (<em>{$a->groupname}</em>). {$a->error}';
 $string['fieldoptions'] = 'Fieldoptions';
 $string['fieldoptions_desc'] = 'Fields, that teachers can use as identifier to enrol students by.';
-$string['match_to_list'] = 'List of chosen field values';
 $string['pluginname'] = 'User bulk enrolment';
 $string['privacy:metadata'] = 'The user bulk enrolment plugin acts as a tool to enrol users into courses, but does not store any personal data.';
 $string['role'] = 'Role';
 $string['role_assigned'] = 'Assigned role';
 $string['role_description'] = 'The role to be used to bulk enrol the users.';
 $string['row'] = 'Row';
-$string['usermails_help'] = 'To enrol an existing Moodle user into this course, choose a field to identify the user by and add the identifyer to the list. <br /><br />Example for field "email" :<br />alice@example.com<br />bob@example.com<br /><br />Optionally, you are able to create groups and add the enrolled users to the groups. All you have to do is to add a heading line with a hash sign and the group\'s name, separating the list of users.<br /><br />Example:<br /># Group 1<br />alice@example.com<br />bob@example.com<br /># Group 2<br />carol@example.com<br />dave@example.com';
+$string['userlist'] = 'List of users identified by your chosen field';
+$string['userlist_help'] = 'To enrol an existing Moodle user into this course, choose a field to identify the user by and add the identifyer to the list. <br /><br />Example for field "email" :<br />alice@example.com<br />bob@example.com<br /><br />Optionally, you are able to create groups and add the enrolled users to the groups. All you have to do is to add a heading line with a hash sign and the group\'s name, separating the list of users.<br /><br />Example:<br /># Group 1<br />alice@example.com<br />bob@example.com<br /># Group 2<br />carol@example.com<br />dave@example.com';
 $string['users_to_enrol_in_course'] = 'Users to be enrolled into the course';
 $string['user_enroled'] = 'User enrolment';
 $string['user_enroled_yes'] = 'User will be enrolled';
@@ -81,8 +76,6 @@ $string['user_groups'] = 'Group membership';
 $string['user_groups_yes'] = 'User will be added to group';
 $string['user_groups_already'] = 'User is already group member';
 $string['parameter_empty'] = 'Parameter empty';
-
 $string['type_enrol'] = 'Enrolment method';
-
 $string['identifying_data'] = 'Data';
 

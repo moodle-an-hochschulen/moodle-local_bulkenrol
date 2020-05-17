@@ -60,10 +60,10 @@ if (empty($localbulkenrolkey)) {
     $form = new bulkenrol_form(null, array('courseid' => $id));
     if ($formdata = $form->get_data()) {
         $datafield = $formdata->dbfield;
-        $emails = $formdata->usermails;
+        $uservalues = $formdata->uservalues;
         $courseid = $formdata->id;
 
-        $checkedmails = local_bulkenrol_check_user_data($emails, $courseid, $datafield);
+        $checkedusers = local_bulkenrol_check_user_data($uservalues, $courseid, $datafield);
 
         // Create local_bulkenrol array in Session.
         if (!isset($SESSION->local_bulkenrol)) {
@@ -71,14 +71,14 @@ if (empty($localbulkenrolkey)) {
         }
         // Save data in Session.
         $localbulkenrolkey = $courseid.'_'.time();
-        $SESSION->local_bulkenrol[$localbulkenrolkey] = $checkedmails;
+        $SESSION->local_bulkenrol[$localbulkenrolkey] = $checkedusers;
 
         // Create local_bulkenrol_inputs array in session.
         if (!isset($SESSION->local_bulkenrol_inputs)) {
             $SESSION->local_bulkenrol_inputs = array();
         }
         $localbulkenroldata = $localbulkenrolkey.'_data';
-        $SESSION->local_bulkenrol_inputs[$localbulkenroldata] = $emails;
+        $SESSION->local_bulkenrol_inputs[$localbulkenroldata] = $uservalues;
     } else if ($form->is_cancelled()) {
         if (!empty($id)) {
             redirect($CFG->wwwroot .'/course/view.php?id='.$id, '', 0);
@@ -131,13 +131,13 @@ if ($localbulkenrolkey) {
         }
 
         // Show notification if there aren't any valid email addresses to enrol.
-        if (!empty($localbulkenroldata) && isset($localbulkenroldata->validemailfound) &&
-                empty($localbulkenroldata->validemailfound)) {
+        if (!empty($localbulkenroldata) && isset($localbulkenroldata->validusersfound) &&
+                empty($localbulkenroldata->validusersfound)) {
             $a = new stdClass();
             $url = new moodle_url('/local/bulkenrol/index.php', array('id' => $id, 'editlist' => $localbulkenrolkey));
             $a->url = $url->out();
             $notification = new \core\output\notification(
-                    get_string('error_no_valid_email_in_list', 'local_bulkenrol', $a),
+                    get_string('error_no_valid_data_in_list', 'local_bulkenrol', $a),
                     \core\output\notification::NOTIFY_WARNING);
             $notification->set_show_closebutton(false);
             echo $OUTPUT->render($notification);
