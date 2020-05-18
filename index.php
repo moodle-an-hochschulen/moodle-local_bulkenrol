@@ -78,7 +78,7 @@ if (empty($localbulkenrolkey)) {
             $SESSION->local_bulkenrol_inputs = array();
         }
         $localbulkenroldata = $localbulkenrolkey.'_data';
-        $SESSION->local_bulkenrol_inputs[$localbulkenroldata] = $uservalues;
+        $SESSION->local_bulkenrol_inputs[$localbulkenroldata] = array('users' => $uservalues, 'dbfield' => $datafield);
     } else if ($form->is_cancelled()) {
         if (!empty($id)) {
             redirect($CFG->wwwroot .'/course/view.php?id='.$id, '', 0);
