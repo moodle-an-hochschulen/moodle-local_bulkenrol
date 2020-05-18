@@ -75,8 +75,10 @@ class bulkenrol_form extends moodleform {
             $localbulkenroldata = $localbulkenroleditlist.'_data';
             if (!empty($localbulkenroldata) && !empty($SESSION->local_bulkenrol_inputs) &&
                     array_key_exists($localbulkenroldata, $SESSION->local_bulkenrol_inputs)) {
-                $formdatatmp = $SESSION->local_bulkenrol_inputs[$localbulkenroldata];
+                $formdatatmp = $SESSION->local_bulkenrol_inputs[$localbulkenroldata]['users'];
+                $dbfield = $SESSION->local_bulkenrol_inputs[$localbulkenroldata]['dbfield'];
                 $mform->setDefault('uservalues', $formdatatmp);
+                $mform->setDefault('dbfield', $dbfield);
             }
         }
 
