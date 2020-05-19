@@ -291,12 +291,16 @@ function local_bulkenrol_get_exception_info($e) {
 
 function create_users(&$localbulkenroldata) {
     $userstocreate = $localbulkenroldata->users_to_be_created;
+    $emailsuffix = get_config('local_bulkenrol', 'email_suffix');
+    if (count($localbulkenroldata) > 0 && empty($emailsuffix)) {
+        throw new \Exception("Emailsuffix may not be empty");
+    }
     foreach($userstocreate as $username) {
         $user = new \stdClass();
         $user->username = $username;
         $user->firstname = "NOCH NICHT";
         $user->lastname = "EINGELOGGT";
-        $user->email = $username . '@' . get_config('local_bulkenrol', 'email_suffix');
+        $user->email = $username . '@' . $emailsuffix;
         $new_user_id = user_create_user($user);
         $new_user = \core_user::get_user($new_user_id);
         $localbulkenroldata->moodleusers_for_data[] = $new_user;
