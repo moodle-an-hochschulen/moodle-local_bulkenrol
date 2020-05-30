@@ -57,15 +57,27 @@ class bulkenrol_form extends moodleform {
         // Selector for database field to match list to.
         $availablefieldsstring = get_config('local_bulkenrol', 'fieldoptions');
         $availablefieldsarray = explode(',', $availablefieldsstring);
-        $selectoptions = [];
-        foreach ($availablefieldsarray as $fieldoption) {
-            $selectoptions[$fieldoption] = $this->get_fieldname($fieldoption);
+        if (count($availablefieldsarray) < 1) {
+            print_error(get_string('error_no_options_available', 'local_bulkenrol'));
         }
-        $mform->addElement('select', 'dbfield', get_string('choose_field', 'local_bulkenrol'), $selectoptions);
-
+        $singleoption = count($availablefieldsarray) == 1;
+        if (!$singleoption) {
+            $selectoptions = [];
+            foreach ($availablefieldsarray as $fieldoption) {
+                $selectoptions[$fieldoption] = $this->get_fieldname($fieldoption);
+            }
+            $mform->addElement('select', 'dbfield', get_string('choose_field', 'local_bulkenrol'), $selectoptions);
+            $listfieldtitle = get_string('userlist', 'local_bulkenrol');
+        } else {
+            $field = $availablefieldsarray[0];
+            $mform->addElement('hidden', 'dbfield');
+            $mform->setType('dbfield', PARAM_TEXT);
+            $mform->setDefault('dbfield', $field);
+            $listfieldtitle = get_string('userlist_singleoption', 'local_bulkenrol', $this->get_fieldname($field));
+        }
         // Textarea for uservalues.
         $mform->addElement('textarea', 'uservalues',
-                get_string('userlist', 'local_bulkenrol'), 'wrap="virtual" rows="10" cols="80"');
+                $listfieldtitle, 'wrap="virtual" rows="10" cols="80"');
         $mform->addRule('uservalues', null, 'required');
         $mform->addHelpButton('uservalues', 'userlist', 'local_bulkenrol');
 
