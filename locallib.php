@@ -243,7 +243,7 @@ function local_bulkenrol_get_user($data, $datafield) {
         if (!empty($count)) {
             // More than one user with data -> ignore data and don't enrol users later!
             if ($count > 1) {
-                $error = get_string('error_more_than_one_record_for_data', 'local_bulkenrol', $data);
+                $error = get_string('error_more_than_one_record_for_data', 'local_bulkenrol', array('identifier' => $data, "field" => $datafield));
             } else {
                 $userrecord = current($userrecords);
             }
