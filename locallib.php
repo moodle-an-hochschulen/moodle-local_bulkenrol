@@ -292,7 +292,7 @@ function local_bulkenrol_get_exception_info($e) {
 function create_users(&$localbulkenroldata) {
     $userstocreate = $localbulkenroldata->users_to_be_created;
     $emailsuffix = get_config('local_bulkenrol', 'email_suffix');
-    if (count($localbulkenroldata) > 0 && empty($emailsuffix)) {
+    if (count($userstocreate) > 0 && empty($emailsuffix)) {
         throw new \Exception("Emailsuffix may not be empty");
     }
     foreach($userstocreate as $username) {
