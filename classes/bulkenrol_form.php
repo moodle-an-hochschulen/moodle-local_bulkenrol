@@ -50,22 +50,37 @@ class bulkenrol_form extends moodleform {
 
         $mform = $this->_form;
 
-        // Infotext.
-        $msg = get_string('bulkenrol_form_intro', 'local_bulkenrol');
-        $mform->addElement('html', '<div id="intro">'.$msg.'</div>');
-
         // Selector for database field to match list to.
         $availablefieldsstring = get_config('local_bulkenrol', 'fieldoptions');
         $availablefieldsarray = explode(',', $availablefieldsstring);
-        if (count($availablefieldsarray) < 1) {
+        if (count($availablefieldsarray) < 1 or $availablefieldsarray[0] == '') {
             print_error(get_string('error_no_options_available', 'local_bulkenrol'));
         }
+
+        $selectoptions = [];
+        foreach ($availablefieldsarray as $fieldoption) {
+            $selectoptions[$fieldoption] = $this->get_fieldname($fieldoption);
+        }
+
+        // Format CSV, replace last , with 'or' and add spaces after remaining.
+        $fieldnamestring = implode(', ', $selectoptions);
+        $formattedfieldnamestring = $this->str_last_replace(', ', ' ' . get_string('or', 'local_bulkenrol') . ' ', $fieldnamestring);
+
+        // Infotext.
+        $msg = get_string('bulkenrol_form_intro', 'local_bulkenrol', $formattedfieldnamestring);
+        $mform->addElement('html', '<div id="intro">'.$msg.'</div>');
+
+        // Helptext.
+        if ($availablefieldsarray[0] == 'u_username') {
+            $helpstringidentifier = 'userlist_username';
+        } else if ($availablefieldsarray[0] == 'u_idnumber') {
+            $helpstringidentifier = 'userlist_idnumber';
+        } else {
+            $helpstringidentifier = 'userlist_email';
+        }
+
         $singleoption = count($availablefieldsarray) == 1;
         if (!$singleoption) {
-            $selectoptions = [];
-            foreach ($availablefieldsarray as $fieldoption) {
-                $selectoptions[$fieldoption] = $this->get_fieldname($fieldoption);
-            }
             $mform->addElement('select', 'dbfield', get_string('choose_field', 'local_bulkenrol'), $selectoptions);
             $listfieldtitle = get_string('userlist', 'local_bulkenrol');
         } else {
@@ -79,7 +94,7 @@ class bulkenrol_form extends moodleform {
         $mform->addElement('textarea', 'uservalues',
                 $listfieldtitle, 'wrap="virtual" rows="10" cols="80"');
         $mform->addRule('uservalues', null, 'required');
-        $mform->addHelpButton('uservalues', 'userlist', 'local_bulkenrol');
+        $mform->addHelpButton('uservalues', $helpstringidentifier, 'local_bulkenrol');
 
         // Add form content if the user came back to check his input.
         $localbulkenroleditlist = optional_param('editlist', 0, PARAM_ALPHANUMEXT);
@@ -130,5 +145,15 @@ class bulkenrol_form extends moodleform {
             default:
                 throw new \UnexpectedValueException("field is not from usertable (u_) or customfield (c_)");
         }
+    }
+
+    private function str_last_replace($search, $replace, $subject) {
+        $pos = strrpos($subject, $search);
+
+        if ($pos !== false) {
+            $subject = substr_replace($subject, $replace, $pos, strlen($search));
+        }
+
+        return $subject;
     }
 }
