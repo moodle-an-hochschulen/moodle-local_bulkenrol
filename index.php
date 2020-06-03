@@ -128,7 +128,6 @@ if ($localbulkenrolkey) {
         if (!empty($localbulkenrolkey) && !empty($SESSION->local_bulkenrol) &&
                 array_key_exists($localbulkenrolkey, $SESSION->local_bulkenrol)) {
             $localbulkenroldata = $SESSION->local_bulkenrol[$localbulkenrolkey];
-
             if (!empty($localbulkenroldata)) {
                 local_bulkenrol_display_table($localbulkenroldata, LOCALBULKENROL_HINT);
                 local_bulkenrol_display_table($localbulkenroldata, LOCALBULKENROL_GROUPINFOS);

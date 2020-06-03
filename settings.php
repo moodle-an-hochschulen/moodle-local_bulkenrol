@@ -88,6 +88,24 @@ if ($hassiteconfig) {
         );
         unset($roleoptions);
 
+        $settings->add(
+            new admin_setting_configcheckbox(
+                'local_bulkenrol/create_on_the_fly',
+                get_string('on_the_fly', 'local_bulkenrol'),
+                get_string('on_the_fly_desc', 'local_bulkenrol'),
+                false
+            )
+        );
+
+        $settings->add(
+            new admin_setting_configtext(
+                'local_bulkenrol/email_suffix',
+                get_string('email_suffix', 'local_bulkenrol'),
+                get_string('email_suffix_desc', 'local_bulkenrol'),
+                'uni-muenster.de'
+            )
+        );
+
         global $DB;
         $fields = [];
         foreach ($usertableoptions as $fieldname) {

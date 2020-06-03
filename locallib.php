@@ -24,6 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+require_once('../../user/lib.php');
+
 define('LOCALBULKENROL_HINT', 'hint');
 define('LOCALBULKENROL_ENROLUSERS', 'enrolusers');
 define('LOCALBULKENROL_GROUPINFOS', 'groupinfos');
@@ -49,6 +51,7 @@ function local_bulkenrol_check_user_data($userdatatext, $courseid, $datafield = 
     $checkeddata->user_groups = array();
     $checkeddata->user_enroled = array();
     $checkeddata->validusersfound = 0;
+    $checkeddata->users_to_be_created = array();
 
     $possibledelimiters = array(', ', ' ', ',');
 
@@ -131,9 +134,24 @@ function local_bulkenrol_check_user_data($userdatatext, $courseid, $datafield = 
  * @param object $checkeddata Object containing information to be displayed on confirm page and being used for bulkenrol.
  */
 function local_bulkenrol_check_data($data, $datafield, $linecnt, $courseid, $context, $currentgroup, &$checkeddata) {
+    $createuseronthefly = get_config('local_bulkenrol', 'create_on_the_fly');
     // Check for moodle user with specified data.
     list($error, $userrecord) = local_bulkenrol_get_user($data, $datafield);
-    if (!empty($error)) {
+    if ($createuseronthefly && !empty($error) &&
+        $error == get_string('error_no_record_found_for_data', 'local_bulkenrol', $data)) {
+        $checkeddata->validusersfound += 1;
+        $checkeddata->users_to_be_created [] = $data;
+        if (!array_key_exists($data, $checkeddata->user_groups)) {
+            $checkeddata->user_groups[$data] = array();
+        }
+        if(!empty($currentgroup)) {
+            $groupinfo = html_writer::tag('span',
+                get_string('user_groups_yes', 'local_bulkenrol'),
+                array('class' => 'badge badge-secondary'));
+            $checkeddata->user_groups[$data][] = $currentgroup . $groupinfo;
+        }
+
+    }else if (!empty($error)) {
         $checkeddata->data_to_ignore[] = $data;
         if (array_key_exists($linecnt, $checkeddata->error_messages)) {
             $errors = $checkeddata->error_messages[$linecnt];
@@ -271,6 +289,24 @@ function local_bulkenrol_get_exception_info($e) {
     return " ".get_string('error_exception_info', 'local_bulkenrol').": ".$e->getMessage()." -> ".$e->getTraceAsString();
 }
 
+function create_users(&$localbulkenroldata) {
+    $userstocreate = $localbulkenroldata->users_to_be_created;
+    $emailsuffix = get_config('local_bulkenrol', 'email_suffix');
+    if (count($userstocreate) > 0 && empty($emailsuffix)) {
+        throw new \Exception("Emailsuffix may not be empty");
+    }
+    foreach($userstocreate as $username) {
+        $user = new \stdClass();
+        $user->username = $username;
+        $user->firstname = "NOCH NICHT";
+        $user->lastname = "EINGELOGGT";
+        $user->email = $username . '@' . $emailsuffix;
+        $new_user_id = user_create_user($user);
+        $new_user = \core_user::get_user($new_user_id);
+        $localbulkenroldata->moodleusers_for_data[] = $new_user;
+    }
+}
+
 /**
  * Perform user enrolment into the course and optionally add users as member into course groups. Groups are created if necessary.
  *
@@ -297,6 +333,7 @@ function local_bulkenrol_users($localbulkenrolkey) {
                     $courseid = $tmpdata[0];
                 }
 
+                create_users($localbulkenroldata);
                 $userstoenrol = $localbulkenroldata->moodleusers_for_data;
 
                 if (!empty($courseid) && !empty($userstoenrol)) {
@@ -554,6 +591,37 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
 
                         $rowdata[] = $row;
                     }
+                }
+
+                foreach ($localbulkenroldata->users_to_be_created as $username) {
+                    $row = array();
+
+                    $cell = new html_table_cell();
+                    $cell->text = $username;
+                    $row[] = $cell;
+
+                    $cell = new html_table_cell();
+                    $cell->text = "NOCH NICHT";
+                    $row[] = $cell;
+
+                    $cell = new html_table_cell();
+                    $cell->text = "ANGEMELDET";
+                    $row[] = $cell;
+
+                    $cell = new html_table_cell();
+                    $cell->text = html_writer::tag('span',
+                        get_string('user_to_be_created', 'local_bulkenrol'),
+                        array('class' => 'badge badge-secondary'));
+                    $row[] = $cell;
+
+                    $cell = new html_table_cell();
+                    $cell->text = '';
+                    if (!empty($localbulkenroldata->user_groups[$username])) {
+                        $cell->text = implode(',<br />', $localbulkenroldata->user_groups[$username]);
+                    }
+                    $row[] = $cell;
+
+                    $rowdata[] = $row;
                 }
 
                 $table = new html_table();
