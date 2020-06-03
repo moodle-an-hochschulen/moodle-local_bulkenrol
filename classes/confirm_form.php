@@ -44,6 +44,8 @@ class confirm_form extends moodleform {
      * Form definition. Abstract method - always override!
      */
     protected function definition() {
+        global $SESSION;
+
         $localbulkenrolkey = $this->_customdata['local_bulkenrol_key'];
         $courseid = $this->_customdata['courseid'];
 
@@ -57,6 +59,19 @@ class confirm_form extends moodleform {
         $mform->setType('id', PARAM_INT);
         $mform->setDefault('id', $courseid);
 
-        $this->add_action_buttons(true, get_string('enrol_users', 'local_bulkenrol'));
+        // Check if we want to show the enrol user button.
+        $showenrolebutton = true;
+        $checkedmails = null;
+        if (isset($SESSION->local_bulkenrol) && array_key_exists($localbulkenrolkey, $SESSION->local_bulkenrol)) {
+            $checkedmails = $SESSION->local_bulkenrol[$localbulkenrolkey];
+            if (isset($checkedmails->validemailfound) && empty($checkedmails->validemailfound)) {
+                $showenrolebutton = false;
+            }
+        }
+
+        // Only show the enrol user button if necessary.
+        if ($showenrolebutton) {
+            $this->add_action_buttons(true, get_string('enrol_users', 'local_bulkenrol'));
+        }
     }
 }

@@ -30,6 +30,7 @@ require_once('../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->dirroot.'/local/bulkenrol/locallib.php');
 
+global $PAGE, $OUTPUT, $SESSION;
 
 $id = required_param('id', PARAM_INT);
 $localbulkenrolkey = optional_param('key', 0, PARAM_ALPHANUMEXT);
@@ -58,10 +59,17 @@ $PAGE->set_pagelayout('incourse');
 if (empty($localbulkenrolkey)) {
     $form = new bulkenrol_form(null, array('courseid' => $id));
     if ($formdata = $form->get_data()) {
-        $emails = $formdata->usermails;
+        $datafield = $formdata->dbfield;
+        $uservalues = $formdata->uservalues;
         $courseid = $formdata->id;
 
-        $checkedmails = local_bulkenrol_check_user_mails($emails, $courseid);
+        $availablefieldsstring = get_config('local_bulkenrol', 'fieldoptions');
+        $availablefieldsarray = explode(',', $availablefieldsstring);
+        if (!in_array($datafield, $availablefieldsarray)) {
+            print_error('The provided datafield has not been approved by the administrator.', 'local_bulkenrol');
+        }
+
+        $checkedusers = local_bulkenrol_check_user_data($uservalues, $courseid, $datafield);
 
         // Create local_bulkenrol array in Session.
         if (!isset($SESSION->local_bulkenrol)) {
@@ -69,8 +77,14 @@ if (empty($localbulkenrolkey)) {
         }
         // Save data in Session.
         $localbulkenrolkey = $courseid.'_'.time();
-        $SESSION->local_bulkenrol[$localbulkenrolkey] = $checkedmails;
+        $SESSION->local_bulkenrol[$localbulkenrolkey] = $checkedusers;
 
+        // Create local_bulkenrol_inputs array in session.
+        if (!isset($SESSION->local_bulkenrol_inputs)) {
+            $SESSION->local_bulkenrol_inputs = array();
+        }
+        $localbulkenroldata = $localbulkenrolkey.'_data';
+        $SESSION->local_bulkenrol_inputs[$localbulkenroldata] = array('users' => $uservalues, 'dbfield' => $datafield);
     } else if ($form->is_cancelled()) {
         if (!empty($id)) {
             redirect($CFG->wwwroot .'/course/view.php?id='.$id, '', 0);
@@ -89,8 +103,6 @@ if ($localbulkenrolkey) {
     $form2 = new confirm_form(null, array('local_bulkenrol_key' => $localbulkenrolkey, 'courseid' => $id));
 
     if ($formdata = $form2->get_data()) {
-        global $SESSION;
-
         if (!empty($localbulkenrolkey) && !empty($SESSION->local_bulkenrol) &&
                 array_key_exists($localbulkenrolkey, $SESSION->local_bulkenrol)) {
             set_time_limit(600);
@@ -98,9 +110,9 @@ if ($localbulkenrolkey) {
             $msg = local_bulkenrol_users($localbulkenrolkey);
 
             if ($msg->status == 'error') {
-                redirect('/user/index.php?id='.$id, "$msg->text", null, \core\output\notification::NOTIFY_ERROR);
+                redirect($CFG->wwwroot .'/user/index.php?id='.$id, "$msg->text", null, \core\output\notification::NOTIFY_ERROR);
             } else {
-                redirect('/user/index.php?id='.$id, "$msg->text", null, \core\output\notification::NOTIFY_SUCCESS);
+                redirect($CFG->wwwroot .'/user/index.php?id='.$id, "$msg->text", null, \core\output\notification::NOTIFY_SUCCESS);
             }
 
         } else {
@@ -119,11 +131,30 @@ if ($localbulkenrolkey) {
 
             if (!empty($localbulkenroldata)) {
                 local_bulkenrol_display_table($localbulkenroldata, LOCALBULKENROL_HINT);
+                local_bulkenrol_display_table($localbulkenroldata, LOCALBULKENROL_GROUPINFOS);
                 local_bulkenrol_display_table($localbulkenroldata, LOCALBULKENROL_ENROLUSERS);
             }
         }
 
-        echo $form2->display();
+        // Show notification if there aren't any valid email addresses to enrol.
+        if (!empty($localbulkenroldata) && isset($localbulkenroldata->validusersfound) &&
+                empty($localbulkenroldata->validusersfound)) {
+            $a = new stdClass();
+            $url = new moodle_url('/local/bulkenrol/index.php', array('id' => $id, 'editlist' => $localbulkenrolkey));
+            $a->url = $url->out();
+            $notification = new \core\output\notification(
+                    get_string('error_no_valid_data_in_list', 'local_bulkenrol', $a),
+                    \core\output\notification::NOTIFY_WARNING);
+            $notification->set_show_closebutton(false);
+            echo $OUTPUT->render($notification);
+
+
+            // Otherwise show the enrolment details and the form with the enrol users button.
+        } else {
+            local_bulkenrol_display_enroldetails();
+            echo $form2->display();
+        }
+
         echo $OUTPUT->footer();
     }
 }
