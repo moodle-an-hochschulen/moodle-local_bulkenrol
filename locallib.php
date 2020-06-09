@@ -218,7 +218,8 @@ function local_bulkenrol_parse_data($data) {
         $rawlines = explode(PHP_EOL, $data);
         $result = array();
         foreach ($rawlines as $rawline) {
-            $result[] = trim($rawline);
+            $temp = str_replace("@uni-muenster.de", "", $rawline);
+            $result[] = trim($temp);
         }
         return $result;
     }
