@@ -20,6 +20,7 @@ Feature: Using the local_bulkenrol plugin for group management
     And the following config values are set as admin:
       | config      | value  | plugin          |
       | enrolplugin | manual | local_bulkenrol |
+      | fieldoptions | u_email,u_idnumber,u_username | local_bulkenrol |
     Given I log in as "admin"
     And I navigate to "Plugins > Enrolments > User bulk enrolment" in site administration
     And I set the following fields to these values:

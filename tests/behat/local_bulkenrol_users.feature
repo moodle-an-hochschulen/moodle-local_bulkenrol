@@ -20,6 +20,7 @@ Feature: Using the local_bulkenrol plugin for user enrolments
     And the following config values are set as admin:
       | config      | value  | plugin          |
       | enrolplugin | manual | local_bulkenrol |
+      | fieldoptions | u_email,u_idnumber,u_username | local_bulkenrol |
     Given I log in as "admin"
     And I navigate to "Plugins > Enrolments > User bulk enrolment" in site administration
     And I set the following fields to these values:
@@ -141,6 +142,40 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       2
       3
       4
+      """
+    And I click on "Enrol users" "button"
+    Then the following should exist in the "localbulkenrol_enrolusers" table:
+      | idnumber        | First name | Surname | User enrolment        |
+      | 1 | Student    | 1       | User will be enrolled |
+      | 2 | Student    | 2       | User will be enrolled |
+      | 3 | Student    | 3       | User will be enrolled |
+    And the following should exist in the "localbulkenrol_enrolinfo" table:
+      | Enrolment method  | Assigned role |
+      | Manual enrolments | Student       |
+    And I click on "Enrol users" "button"
+    Then the following should exist in the "participants" table:
+      | Email address        | First name | Surname | Roles   |
+      | student1@example.com | Student    | 1       | Student |
+      | student2@example.com | Student    | 2       | Student |
+      | student3@example.com | Student    | 3       | Student |
+    When I click on "[data-enrolinstancename='Manual enrolments'] a[data-action=showdetails]" "css_element" in the "Student 1" "table_row"
+    Then I should see "Manual enrolments"
+
+  Scenario: Bulk enrol students when there is only a single datafield option. It should automatically change the helptext.
+    Given I log in as "admin"
+    And I navigate to "Plugins > Enrolments > User bulk enrolment" in site administration
+    And I set the following fields to these values:
+      | Fieldoptions | email |
+    And I press "Save changes"
+    And I log out
+    When I log in as "teacher1"
+    And I am on "Course 1" course homepage
+    And I navigate to "Users > User bulk enrolment" in current page administration
+    And I set the field "List of users identified by their email" to multiline:
+      """
+      student1@example.com
+      student2@example.com
+      student3@example.com
       """
     And I click on "Enrol users" "button"
     Then the following should exist in the "localbulkenrol_enrolusers" table:

@@ -135,9 +135,11 @@ class bulkenrol_form extends moodleform {
     }
 
     /**
+     * Returns the name of a fieldoption without its table prefix
      * @param $fieldoption string fieldname with type prefix
      * @return string name of field without type prefix
-     * @throws \dml_exception
+     * @throws \UnexpectedValueException Field is not prefixed by c_ or u_
+     * @throws \dml_exception Database connection error
      */
     private function get_fieldname($fieldoption) {
         global $DB;
