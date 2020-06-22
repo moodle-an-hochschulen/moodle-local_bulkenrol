@@ -136,7 +136,7 @@ class bulkenrol_form extends moodleform {
 
     /**
      * Returns the name of a fieldoption without its table prefix
-     * @param $fieldoption string fieldname with type prefix
+     * @param string $fieldoption fieldname with type prefix
      * @return string name of field without type prefix
      * @throws \UnexpectedValueException Field is not prefixed by c_ or u_
      * @throws \dml_exception Database connection error
@@ -156,9 +156,9 @@ class bulkenrol_form extends moodleform {
 
     /**
      * Replaces the last occurence of the needle in a string.
-     * @param $search string needle to search for
-     * @param $replace string replacement for needle
-     * @param $subject string subject string to search
+     * @param string $search needle to search for
+     * @param string $replace string replacement for needle
+     * @param string $subject string subject string to search
      * @return string subject string with the last occurence of the needle replaced
      */
     private function str_last_replace($search, $replace, $subject) {
