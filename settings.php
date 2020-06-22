@@ -100,7 +100,7 @@ if ($hassiteconfig) {
         $sql = "SELECT id, name, forceunique FROM {user_info_field} WHERE forceunique = 1";
         $customfields = $DB->get_records_sql_menu($sql);
 
-        foreach($customfields as $id => $name) {
+        foreach ($customfields as $id => $name) {
             $fields["c_" . $id] = $name;
         }
 

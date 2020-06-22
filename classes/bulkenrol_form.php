@@ -134,6 +134,11 @@ class bulkenrol_form extends moodleform {
         return $retval;
     }
 
+    /**
+     * @param $fieldoption string fieldname with type prefix
+     * @return string name of field without type prefix
+     * @throws \dml_exception
+     */
     private function get_fieldname($fieldoption) {
         global $DB;
         $fieldinfo = explode("_", $fieldoption, 2);
@@ -147,6 +152,13 @@ class bulkenrol_form extends moodleform {
         }
     }
 
+    /**
+     * Replaces the last occurence of the needle in a string.
+     * @param $search string needle to search for
+     * @param $replace string replacement for needle
+     * @param $subject string subject string to search
+     * @return string subject string with the last occurence of the needle replaced
+     */
     private function str_last_replace($search, $replace, $subject) {
         $pos = strrpos($subject, $search);
 

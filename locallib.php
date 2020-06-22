@@ -56,7 +56,7 @@ function local_bulkenrol_check_user_data($userdatatext, $courseid, $datafield = 
         return $checkeddata;
     }
 
-    $datafieldsstring = get_config('local_bulkenrol', 'fieldoptions');#
+    $datafieldsstring = get_config('local_bulkenrol', 'fieldoptions');
     $datafields = explode(",", $datafieldsstring);
     if (!is_array($datafields) || !in_array($datafield, $datafields)) {
         return $checkeddata;
