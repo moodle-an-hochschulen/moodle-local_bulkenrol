@@ -4,6 +4,10 @@ moodle-local_bulkenrol
 Changes
 -------
 
+### Unreleased
+
+* 2020-08-17 - Prepare compatibility for Moodle 3.9.
+
 ### v3.8-r2
 * 2020-05-11 - Bugfix: Teachers were not redirected to the participants page on Moodle instances which are installed in subdirectories - Credits to rtschu and MaimaKhan.
 * 2020-05-11 - Feature: Add information table about the groups included in the list and to highlight which groups will be created - Credits to Scott Hardwick for proposing the improvement and to Soon Systems for implementing the solution.
