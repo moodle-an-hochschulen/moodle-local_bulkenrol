@@ -1,7 +1,7 @@
 moodle-local_bulkenrol
 ======================
 
-[![Build Status](https://travis-ci.org/moodleuulm/moodle-local_bulkenrol.svg?branch=master)](https://travis-ci.org/moodleuulm/moodle-local_bulkenrol)
+[![Build Status](https://travis-ci.com/moodleuulm/moodle-local_bulkenrol.svg?branch=master)](https://travis-ci.com/moodleuulm/moodle-local_bulkenrol)
 
 Moodle plugin which provides the possibility to bulk enrol a list of users who are identified by their e-mail adresses into a course.
 
