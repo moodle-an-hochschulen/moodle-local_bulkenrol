@@ -39,7 +39,7 @@ if ($hassiteconfig) {
                         'local_bulkenrol/enrolplugin',
                         get_string('enrolplugin', 'local_bulkenrol'),
                         get_string('enrolplugin_desc', 'local_bulkenrol'),
-                        '',
+                        key($enroloptions),
                         $enroloptions)
         );
         unset($enroloptions);
