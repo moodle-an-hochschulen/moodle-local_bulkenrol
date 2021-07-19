@@ -50,7 +50,7 @@ if (!empty($id)) {
 }
 
 if (!has_capability('local/bulkenrol:enrolusers', $context)) {
-    print_error('nopermissions', 'error', '', 'local/bulkenrol:enrolusers');
+    throw new required_capability_exception($context, 'local/bulkenrol:enrolusers', 'nopermissions', '');
 }
 
 $PAGE->set_pagelayout('incourse');
