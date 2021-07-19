@@ -9,7 +9,7 @@ Moodle plugin which provides the possibility to bulk enrol a list of users who a
 Requirements
 ------------
 
-This plugin requires Moodle 3.10+
+This plugin requires Moodle 3.11+
 
 
 Motivation for this plugin
