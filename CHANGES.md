@@ -4,8 +4,10 @@ moodle-local_bulkenrol
 Changes
 -------
 
-### Unreleased
+### v3.11-r1
 
+* 2021-07-20 - Integrate pullrequest #17: Show default enrol option.
+               Integrate pullrequest #19: Small typo in a language string.
 * 2021-07-19 - Prepare compatibility for Moodle 3.11.
 * 2021-02-05 - Move Moodle Plugin CI from Travis CI to Github actions
 
