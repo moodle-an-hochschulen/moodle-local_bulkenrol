@@ -24,6 +24,18 @@
 
 defined('MOODLE_INTERNAL') || die;
 
+$filtercustombyunique = true;
+
+$usertableoptions = [
+    "email",
+    "idnumber",
+    "username"
+];
+
+$standardoptions = [
+    "u_email"
+];
+
 if ($hassiteconfig) {
     $settings = new admin_settingpage('local_bulkenrol', get_string('pluginname', 'local_bulkenrol', null, true));
 
@@ -43,6 +55,7 @@ if ($hassiteconfig) {
                         $enroloptions)
         );
         unset($enroloptions);
+
 
         // Create role chooser widget.
         $roleoptions = array();
@@ -74,6 +87,32 @@ if ($hassiteconfig) {
                         $roleoptions)
         );
         unset($roleoptions);
+
+        global $DB;
+        $fields = [];
+        foreach ($usertableoptions as $fieldname) {
+            if (!in_array($fieldname, $usertableoptions)) {
+                continue;
+            }
+            $fields["u_" . $fieldname] = $fieldname;
+        }
+
+        $sql = "SELECT id, name, forceunique FROM {user_info_field} WHERE forceunique = 1";
+        $customfields = $DB->get_records_sql_menu($sql);
+
+        foreach ($customfields as $id => $name) {
+            $fields["c_" . $id] = $name;
+        }
+
+        $settings->add(
+            new admin_setting_configmultiselect(
+                'local_bulkenrol/fieldoptions',
+                get_string('fieldoptions', 'local_bulkenrol'),
+                get_string('fieldoptions_desc', 'local_bulkenrol'),
+                $standardoptions,
+                $fields
+            )
+        );
     }
 
     $ADMIN->add('enrolments', $settings);
