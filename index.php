@@ -66,7 +66,7 @@ if (empty($localbulkenrolkey)) {
         $availablefieldsstring = get_config('local_bulkenrol', 'fieldoptions');
         $availablefieldsarray = explode(',', $availablefieldsstring);
         if (!in_array($datafield, $availablefieldsarray)) {
-            print_error('The provided datafield has not been approved by the administrator.', 'local_bulkenrol');
+            throw new invalid_parameter_exception('The provided datafield has not been approved by the administrator.');
         }
 
         $checkedusers = local_bulkenrol_check_user_data($uservalues, $courseid, $datafield);
