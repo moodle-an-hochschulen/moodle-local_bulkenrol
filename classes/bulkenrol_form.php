@@ -54,7 +54,7 @@ class bulkenrol_form extends moodleform {
         $availablefieldsstring = get_config('local_bulkenrol', 'fieldoptions');
         $availablefieldsarray = explode(',', $availablefieldsstring);
         if (count($availablefieldsarray) < 1 or $availablefieldsarray[0] == '') {
-            print_error(get_string('error_no_options_available', 'local_bulkenrol'));
+            throw new invalid_parameter_exception(get_string('error_no_options_available', 'local_bulkenrol'));
         }
 
         $selectoptions = [];

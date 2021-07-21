@@ -38,7 +38,7 @@ $string['error_exception_info'] = 'Exception information';
 $string['error_getting_user_for_data'] = 'There was a problem when getting the user record for <em>{$a}</em> from the database.';
 $string['error_group_add_members'] = 'There was a problem when adding the users to the course group(s).';
 $string['error_group_add_member'] = 'There was a problem when adding the user <em>{$a->data}</em> to the course group <em>{$a->group}</em>.';
-$string['error_more_than_one_record_for_data'] = 'More than one existing Moodle user account with {$a->field} <em>{$a->identifier}</em>em> found.<br /> This line will be ignored, none of the existing Moodle users will be enrolled.';
+$string['error_more_than_one_record_for_data'] = 'More than one existing Moodle user account with {$a->field} <em>{$a->identifier}</em> found.<br />This line will be ignored, none of the existing Moodle users will be enrolled.';
 $string['error_no_valid_data_in_list'] = 'No valid entrys were found in the given list.<br />Please <a href=\'{$a->url}\'>go back and check your input</a>.';
 $string['groupinfos_headline'] = 'Groups included in the list';
 $string['group_name_headline'] = 'Group name';
