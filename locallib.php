@@ -171,7 +171,7 @@ function local_bulkenrol_check_data($data, $datafield, $linecnt, $courseid, $con
                 $checkeddata->error_messages[$linecnt] = $error;
             }
             $alreadymember = $result->already_member;
-            // Compose group information
+            // Compose group information.
             if (empty($alreadymember)) {
                 $groupinfo = html_writer::tag('span',
                         get_string('user_groups_yes', 'local_bulkenrol'),
@@ -243,7 +243,8 @@ function local_bulkenrol_get_user($data, $datafield) {
         if (!empty($count)) {
             // More than one user with data -> ignore data and don't enrol users later!
             if ($count > 1) {
-                $error = get_string('error_more_than_one_record_for_data', 'local_bulkenrol', array('identifier' => $data, "field" => $datafield));
+                $error = get_string('error_more_than_one_record_for_data', 'local_bulkenrol',
+                         array('identifier' => $data, "field" => $datafield));
             } else {
                 $userrecord = current($userrecords);
             }

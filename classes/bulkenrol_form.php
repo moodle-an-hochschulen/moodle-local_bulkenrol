@@ -64,7 +64,8 @@ class bulkenrol_form extends moodleform {
 
         // Format CSV, replace last , with 'or' and add spaces after remaining.
         $fieldnamestring = implode(', ', $selectoptions);
-        $formattedfieldnamestring = $this->str_last_replace(', ', ' ' . get_string('or', 'local_bulkenrol') . ' ', $fieldnamestring);
+        $formattedfieldnamestring =
+                $this->str_last_replace(', ', ' ' . get_string('or', 'local_bulkenrol') . ' ', $fieldnamestring);
 
         // Infotext.
         $msg = get_string('bulkenrol_form_intro', 'local_bulkenrol', $formattedfieldnamestring);
