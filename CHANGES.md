@@ -4,6 +4,10 @@ moodle-local_bulkenrol
 Changes
 -------
 
+### v3.11-r2
+
+* 2021-07-21 - Integrate pullrequest #14: Let teachers choose different fields than email to enrol users by.
+
 ### v3.11-r1
 
 * 2021-07-20 - Integrate pullrequest #17: Show default enrol option.
