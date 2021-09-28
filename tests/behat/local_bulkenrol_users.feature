@@ -203,3 +203,18 @@ Feature: Using the local_bulkenrol plugin for user enrolments
     Then I should see "No valid e-mail address was found in the given list."
     And I should see "Please go back and check your input"
     And "Enrol users" "button" should not exist
+
+  Scenario: Try to bulk enrol a list of mixed invalid users and empty line.
+    When I log in as "teacher1"
+    And I am on "Course 1" course homepage
+    And I navigate to "Users > User bulk enrolment" in current page administration
+    And I set the field "List of e-mail addresses" to multiline:
+      """
+      student1@example.com
+
+      foo
+      """
+    And I click on "Enrol users" "button"
+    Then I should see "Line 2 is empty and will be ignored."
+    And I should see "No e-mail address found in line 3 (foo). This line will be ignored."
+    And I should see "Manual enrolments"
