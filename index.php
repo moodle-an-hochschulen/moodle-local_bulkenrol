@@ -50,7 +50,7 @@ if (!empty($id)) {
 }
 
 if (!has_capability('local/bulkenrol:enrolusers', $context)) {
-    print_error('nopermissions', 'error', '', 'local/bulkenrol:enrolusers');
+    throw new \moodle_exception('nopermissions', 'error', '', 'local/bulkenrol:enrolusers');
 }
 
 $PAGE->set_pagelayout('incourse');
