@@ -91,7 +91,11 @@ function local_bulkenrol_check_user_mails($emailstextfield, $courseid) {
                 $a = new stdClass();
                 $a->line = $linecnt;
                 $a->content = $emailline;
-                $error = get_string('error_no_email', 'local_bulkenrol', $a);
+        if (trim($a->content != "")) {
+            $error = get_string('error_no_email', 'local_bulkenrol', $a);
+        } else {
+            $error = get_string('error_empty_line', 'local_bulkenrol', $a);
+        }
                 $checkedemails->error_messages[$linecnt] = $error;
 
                 // One email in row/line.
