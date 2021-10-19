@@ -6,6 +6,7 @@ Changes
 
 ### Unreleased
 
+* 2021-10-19 - Improvement: Distinguish warnings caused by empty line or by invalid content - Thanks to Luca Bösch.
 * 2021-10-19 - Improvement: Use a enrol option as default - Thanks to gustavorivas96.
 * 2021-10-19 - Bugfix: Small typo in a language string - Thanks to Luca Bösch.
 * 2021-10-15 - Replace the deprecated print_error() function with a Moodle exception
