@@ -4,7 +4,7 @@ moodle-local_bulkenrol
 Changes
 -------
 
-### Unreleased
+### v3.9-r3
 
 * 2021-10-20 - Improvement: Grant local/bulkenrol:enrolusers to manager archetype by default - Thanks to Luca Bösch.
 * 2021-10-19 - Improvement: Distinguish warnings caused by empty line or by invalid content - Thanks to Luca Bösch.
