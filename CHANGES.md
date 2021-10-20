@@ -6,6 +6,7 @@ Changes
 
 ### Unreleased
 
+* 2021-10-20 - Improvement: Grant local/bulkenrol:enrolusers to manager archetype by default - Thanks to Luca Bösch.
 * 2021-10-19 - Improvement: Distinguish warnings caused by empty line or by invalid content - Thanks to Luca Bösch.
 * 2021-10-19 - Improvement: Use a enrol option as default - Thanks to gustavorivas96.
 * 2021-10-19 - Bugfix: Small typo in a language string - Thanks to Luca Bösch.
