@@ -4,6 +4,10 @@ moodle-local_bulkenrol
 Changes
 -------
 
+### Unreleased
+
+* 2021-11-02 - Prepare compatibility for Moodle 3.11.
+
 ### v3.10-r2
 
 * 2021-10-20 - Improvement: Grant local/bulkenrol:enrolusers to manager archetype by default - Thanks to Luca Bösch.
