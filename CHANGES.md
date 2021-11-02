@@ -4,7 +4,7 @@ moodle-local_bulkenrol
 Changes
 -------
 
-### Unreleased
+### v3.11-r1
 
 * 2021-11-02 - Prepare compatibility for Moodle 3.11.
 
