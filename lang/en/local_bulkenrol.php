@@ -34,6 +34,7 @@ $string['enrol_users'] = 'Enrol users';
 $string['enrolinfo_headline'] = 'Enrolment details';
 $string['enrolplugin'] = 'Enrolment plugin';
 $string['enrolplugin_desc'] = 'The enrolment method to be used to bulk enrol the users. If the configured enrolment method is not active / added in the course when the users are bulk-enrolled, it is automatically added / activated.';
+$string['error_empty_line'] = 'Line {$a->line} is empty and will be ignored.';
 $string['error_enrol_users'] = 'There was a problem when enrolling the users to the course.';
 $string['error_enrol_user'] = 'There was a problem when enrolling the user <em>{$a->data}</em> to the course.';
 $string['error_exception_info'] = 'Exception information';
