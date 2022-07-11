@@ -27,3 +27,9 @@ Manual tests
 ------------
 
 * There aren't any manual tests needed to upgrade this plugin.
+
+
+Visual checks
+-------------
+
+* There aren't any additional visual checks in the Moodle GUI needed to upgrade this theme.
