@@ -4,7 +4,7 @@ moodle-local_bulkenrol
 Changes
 -------
 
-### Unreleased
+### v3.10-r4
 
 * 2022-07-10 - Add Visual checks section to UPGRADE.md
 
