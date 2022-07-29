@@ -1,4 +1,4 @@
-@local @local_bulkenrol @local_bulkenrol_users
+@local @local_bulkenrol @local_bulkenrol_users @javascript
 Feature: Using the local_bulkenrol plugin for user enrolments
   In order to bulk enrol users into the course
   As user with the appropriate rights
@@ -36,7 +36,8 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       | enrolplugin | self  | local_bulkenrol |
     When I log in as "teacher1"
     And I am on "Course 1" course homepage
-    And I navigate to "Users > User bulk enrolment" in current page administration
+    And I select "Participants" from secondary navigation
+    And I select "User bulk enrolment" from the "jump" singleselect
     And I set the field "List of e-mail addresses" to multiline:
       """
       student1@example.com
@@ -58,13 +59,13 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       | student1@example.com | Student    | 1       | Student |
       | student2@example.com | Student    | 2       | Student |
       | student3@example.com | Student    | 3       | Student |
-    When I click on "[data-enrolinstancename='Self enrolment (Student)'] a[data-action=showdetails]" "css_element" in the "Student 1" "table_row"
-    Then I should see "Self enrolment (Student)"
+    And "div[data-fullname='Student 1'][data-enrolinstancename='Self enrolment (Student)'][data-status='Active']" "css_element" should exist
 
   Scenario: Bulk enrol students into the course who are not enrolled yet with authentication method manual
     When I log in as "teacher1"
     And I am on "Course 1" course homepage
-    And I navigate to "Users > User bulk enrolment" in current page administration
+    And I select "Participants" from secondary navigation
+    And I select "User bulk enrolment" from the "jump" singleselect
     And I set the field "List of e-mail addresses" to multiline:
       """
       student1@example.com
@@ -86,8 +87,7 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       | student1@example.com | Student    | 1       | Student |
       | student2@example.com | Student    | 2       | Student |
       | student3@example.com | Student    | 3       | Student |
-    When I click on "[data-enrolinstancename='Manual enrolments'] a[data-action=showdetails]" "css_element" in the "Student 1" "table_row"
-    Then I should see "Manual enrolments"
+    And "div[data-fullname='Student 1'][data-enrolinstancename='Manual enrolments'][data-status='Active']" "css_element" should exist
 
   Scenario: Bulk enrol users into the course who are not enrolled yet with role teacher
     Given I log in as "admin"
@@ -98,7 +98,8 @@ Feature: Using the local_bulkenrol plugin for user enrolments
     And I log out
     When I log in as "teacher1"
     And I am on "Course 1" course homepage
-    And I navigate to "Users > User bulk enrolment" in current page administration
+    And I select "Participants" from secondary navigation
+    And I select "User bulk enrolment" from the "jump" singleselect
     And I set the field "List of e-mail addresses" to multiline:
       """
       student1@example.com
@@ -120,8 +121,7 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       | student1@example.com | Student    | 1       | Teacher |
       | student2@example.com | Student    | 2       | Teacher |
       | student3@example.com | Student    | 3       | Teacher |
-    When I click on "[data-enrolinstancename='Manual enrolments'] a[data-action=showdetails]" "css_element" in the "Student 1" "table_row"
-    Then I should see "Manual enrolments"
+    And "div[data-fullname='Student 1'][data-enrolinstancename='Manual enrolments'][data-status='Active']" "css_element" should exist
 
   Scenario: Bulk enrol students into the course with students already enrolled
     Given the following "course enrolments" exist:
@@ -129,7 +129,8 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       | student1 | C1     | student |
     When I log in as "teacher1"
     And I am on "Course 1" course homepage
-    And I navigate to "Users > User bulk enrolment" in current page administration
+    And I select "Participants" from secondary navigation
+    And I select "User bulk enrolment" from the "jump" singleselect
     And I set the field "List of e-mail addresses" to multiline:
       """
       student1@example.com
@@ -152,7 +153,7 @@ Feature: Using the local_bulkenrol plugin for user enrolments
   Scenario: Respect existing self enrolments during bulk enrol
     Given I log in as "admin"
     And I am on "Course 1" course homepage
-    And I add "Self enrolment" enrolment method with:
+    And I add "Self enrolment" enrolment method in "Course 1" with:
       | Custom instance name | Self enrolment |
     And I log out
     And I log in as "student1"
@@ -163,7 +164,8 @@ Feature: Using the local_bulkenrol plugin for user enrolments
     And I log out
     When I log in as "teacher1"
     And I am on "Course 1" course homepage
-    And I navigate to "Users > User bulk enrolment" in current page administration
+    And I select "Participants" from secondary navigation
+    And I select "User bulk enrolment" from the "jump" singleselect
     And I set the field "List of e-mail addresses" to multiline:
       """
       student1@example.com
@@ -176,13 +178,14 @@ Feature: Using the local_bulkenrol plugin for user enrolments
     And the following should exist in the "participants" table:
       | Email address        | First name | Surname | Roles   |
       | student1@example.com | Student    | 1       | Student |
-    Then "[data-enrolinstancename='Manual enrolments'] a[data-action=showdetails]" "css_element" should not exist in the "Student 1" "table_row"
-    And "[data-enrolinstancename='Self enrolment'] a[data-action=showdetails]" "css_element" should exist in the "Student 1" "table_row"
+    Then "div[data-fullname='Student 1'][data-enrolinstancename='Manual enrolments'] a[data-action=showdetails]" "css_element" should not exist
+    And "div[data-fullname='Student 1'][data-enrolinstancename='Self enrolment'] a[data-action=showdetails]" "css_element" should exist
 
   Scenario: Try to bulk enrol a student into the course that is not existent in the system.
     When I log in as "teacher1"
     And I am on "Course 1" course homepage
-    And I navigate to "Users > User bulk enrolment" in current page administration
+    And I select "Participants" from secondary navigation
+    And I select "User bulk enrolment" from the "jump" singleselect
     And I set the field "List of e-mail addresses" to multiline:
       """
       student4@example.com
@@ -193,7 +196,8 @@ Feature: Using the local_bulkenrol plugin for user enrolments
   Scenario: Try to bulk enrol a list of invalid users.
     When I log in as "teacher1"
     And I am on "Course 1" course homepage
-    And I navigate to "Users > User bulk enrolment" in current page administration
+    And I select "Participants" from secondary navigation
+    And I select "User bulk enrolment" from the "jump" singleselect
     And I set the field "List of e-mail addresses" to multiline:
       """
       foo
@@ -207,7 +211,8 @@ Feature: Using the local_bulkenrol plugin for user enrolments
   Scenario: Try to bulk enrol a list of mixed invalid users and empty line.
     When I log in as "teacher1"
     And I am on "Course 1" course homepage
-    And I navigate to "Users > User bulk enrolment" in current page administration
+    And I select "Participants" from secondary navigation
+    And I select "User bulk enrolment" from the "jump" singleselect
     And I set the field "List of e-mail addresses" to multiline:
       """
       student1@example.com

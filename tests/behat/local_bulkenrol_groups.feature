@@ -1,4 +1,4 @@
-@local @local_bulkenrol @local_bulkenrol_groups
+@local @local_bulkenrol @local_bulkenrol_groups @javascript
 Feature: Using the local_bulkenrol plugin for group management
   In order to manage groups in the course
   As user with the appropriate rights
@@ -38,7 +38,8 @@ Feature: Using the local_bulkenrol plugin for group management
       | Group 3 | C1     | CG3      |
     When I log in as "teacher1"
     And I am on "Course 1" course homepage
-    And I navigate to "Users > User bulk enrolment" in current page administration
+    And I select "Participants" from secondary navigation
+    And I select "User bulk enrolment" from the "jump" singleselect
     And I set the field "List of e-mail addresses" to multiline:
       """
       # Group 1
@@ -77,7 +78,8 @@ Feature: Using the local_bulkenrol plugin for group management
       | Group 2 | C1     | CG2      |
     When I log in as "teacher1"
     And I am on "Course 1" course homepage
-    And I navigate to "Users > User bulk enrolment" in current page administration
+    And I select "Participants" from secondary navigation
+    And I select "User bulk enrolment" from the "jump" singleselect
     And I set the field "List of e-mail addresses" to multiline:
       """
       # Group 1
@@ -115,7 +117,8 @@ Feature: Using the local_bulkenrol plugin for group management
       | CG2   | student2 |
     When I log in as "teacher1"
     And I am on "Course 1" course homepage
-    And I navigate to "Users > User bulk enrolment" in current page administration
+    And I select "Participants" from secondary navigation
+    And I select "User bulk enrolment" from the "jump" singleselect
     And I set the field "List of e-mail addresses" to multiline:
       """
       # Group 1
@@ -144,7 +147,8 @@ Feature: Using the local_bulkenrol plugin for group management
       | Group 1 | C1     | CG1      |
     When I log in as "teacher1"
     And I am on "Course 1" course homepage
-    And I navigate to "Users > User bulk enrolment" in current page administration
+    And I select "Participants" from secondary navigation
+    And I select "User bulk enrolment" from the "jump" singleselect
     And I set the field "List of e-mail addresses" to multiline:
       """
       # Group 1
