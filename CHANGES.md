@@ -4,6 +4,10 @@ moodle-local_bulkenrol
 Changes
 -------
 
+### Unreleased
+
+* 2022-07-12 - Fix README description how this plugin works in Moodle 4.0
+
 ### v4.0-r1
 
 * 2022-07-12 - Fix Behat tests which broke with Moodle 4.0
