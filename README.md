@@ -59,7 +59,7 @@ By default, Moodle users are _not_ allowed to use the functionality provided by 
 How this plugin works
 ---------------------
 
-Teachers (rather users who have been granted the capability which is described in the "Capabilities" section above) will find an additional "User bulk enrolment" menu item within their course's course administration menu.
+Teachers (rather users who have been granted the capability which is described in the "Capabilities" section above) will find an additional "User bulk enrolment" menu item within the jump menu on the course's participants page.
 
 To enrol existing Moodle users into the course, the teacher will then have to add a list of e-mail adresses to the form on this page, one user / e-mail adress per line.
 
