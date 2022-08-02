@@ -4,6 +4,26 @@ moodle-local_bulkenrol
 Changes
 -------
 
+### v4.0-r2
+
+* 2022-07-12 - Fix README description how this plugin works in Moodle 4.0
+
+### v4.0-r1
+
+* 2022-07-12 - Fix Behat tests which broke with Moodle 4.0
+* 2022-07-12 - Prepare compatibility for Moodle 4.0.
+
+### v3.11-r3
+
+* 2022-07-10 - Add Visual checks section to UPGRADE.md
+
+### v3.11-r2
+
+* 2022-06-26 - Make codechecker happy again
+* 2022-06-26 - Updated Moodle Plugin CI to latest upstream recommendations
+* 2022-06-26 - Add UPGRADE.md as internal upgrade documentation
+* 2022-06-26 - Update maintainers and copyrights in README.md.
+
 ### v3.11-r1
 
 * 2021-11-02 - Prepare compatibility for Moodle 3.11.

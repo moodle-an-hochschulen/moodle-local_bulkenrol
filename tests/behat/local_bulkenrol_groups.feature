@@ -1,4 +1,4 @@
-@local @local_bulkenrol @local_bulkenrol_groups
+@local @local_bulkenrol @local_bulkenrol_groups @javascript
 Feature: Using the local_bulkenrol plugin for group management
   In order to manage groups in the course
   As user with the appropriate rights
