@@ -4,6 +4,10 @@ moodle-local_bulkenrol
 Changes
 -------
 
+### v4.0-r3
+
+* 2022-10-06 - Lets Teachers choose different fields other than email to enrol users by.
+ 
 ### v4.0-r2
 
 * 2022-07-12 - Fix README description how this plugin works in Moodle 4.0

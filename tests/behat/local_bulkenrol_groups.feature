@@ -20,6 +20,7 @@ Feature: Using the local_bulkenrol plugin for group management
     And the following config values are set as admin:
       | config      | value  | plugin          |
       | enrolplugin | manual | local_bulkenrol |
+      | fieldoptions | u_email,u_idnumber,u_username | local_bulkenrol |
     Given I log in as "admin"
     And I navigate to "Plugins > Enrolments > User bulk enrolment" in site administration
     And I set the following fields to these values:
@@ -40,7 +41,7 @@ Feature: Using the local_bulkenrol plugin for group management
     And I am on "Course 1" course homepage
     And I select "Participants" from secondary navigation
     And I select "User bulk enrolment" from the "jump" singleselect
-    And I set the field "List of e-mail addresses" to multiline:
+    And I set the field "List of users identified by your chosen field" to multiline:
       """
       # Group 1
       student1@example.com
@@ -80,7 +81,7 @@ Feature: Using the local_bulkenrol plugin for group management
     And I am on "Course 1" course homepage
     And I select "Participants" from secondary navigation
     And I select "User bulk enrolment" from the "jump" singleselect
-    And I set the field "List of e-mail addresses" to multiline:
+    And I set the field "List of users identified by your chosen field" to multiline:
       """
       # Group 1
       student1@example.com
@@ -119,7 +120,7 @@ Feature: Using the local_bulkenrol plugin for group management
     And I am on "Course 1" course homepage
     And I select "Participants" from secondary navigation
     And I select "User bulk enrolment" from the "jump" singleselect
-    And I set the field "List of e-mail addresses" to multiline:
+    And I set the field "List of users identified by your chosen field" to multiline:
       """
       # Group 1
       student1@example.com
@@ -149,7 +150,7 @@ Feature: Using the local_bulkenrol plugin for group management
     And I am on "Course 1" course homepage
     And I select "Participants" from secondary navigation
     And I select "User bulk enrolment" from the "jump" singleselect
-    And I set the field "List of e-mail addresses" to multiline:
+    And I set the field "List of users identified by your chosen field" to multiline:
       """
       # Group 1
       student1@example.com

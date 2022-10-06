@@ -3,7 +3,7 @@ moodle-local_bulkenrol
 
 [![Moodle Plugin CI](https://github.com/moodle-an-hochschulen/moodle-local_bulkenrol/workflows/Moodle%20Plugin%20CI/badge.svg?branch=master)](https://github.com/moodle-an-hochschulen/moodle-local_bulkenrol/actions?query=workflow%3A%22Moodle+Plugin+CI%22+branch%3Amaster)
 
-Moodle plugin which provides the possibility to bulk enrol a list of users who are identified by their e-mail adresses into a course.
+Moodle plugin which provides the possibility to bulk enrol a list of users who are identified by their e-mail adresses, username or idnumber into a course.
 
 
 Requirements
@@ -20,7 +20,7 @@ In some organizations or some teaching scenarios, manually enrolling students in
 To ease the life of teachers, there is the need for a bulk enrolment tool. There are already plugins out there which provide this functionality, so this is just another one. The goal of this bulk enrolment implementation is not to fulfil everybody's needs, but to do one thing and to do this well.
 
 So, the key features of this plugin are:
-1. to let teachers submit a line-separated list of email addresses to enrol them into a course,
+1. to let teachers submit a line-separated list of email addresses, username or idnumber to enrol them into a course,
 2. to let teachers submit this list to a textarea within their course instead of requiring them to create and upload a CSV file first.
 
 
@@ -41,11 +41,19 @@ After installing the plugin, it does not do anything to Moodle yet.
 To configure the plugin and its behaviour, please visit:
 Site administration -> Plugins -> Enrolments -> User bulk enrolment
 
-There, you find only one setting:
+There, you find three settings:
 
 ### 1. Enrolment plugin
 The enrolment method to be used to bulk enrol the users. If the configured enrolment method is not active / added in the course when the users are bulk-enrolled, it is automatically added / activated.
 
+### 2. Role
+The role assigned to the bulk enrolled users.
+
+### 3. Field options
+The key fields available to the teachers to identify the users to enroll. If no field is enabled, the plugin will be disabled.
+The plugin supports custom field defined with "forceunique" set to on.
+Please note that e-mail address uniqueness can be disabled by the adminstrator.
+Morover, Moodle doesn't enforce idnumber uniqueness. 
 
 Capabilities
 ------------
@@ -61,7 +69,7 @@ How this plugin works
 
 Teachers (rather users who have been granted the capability which is described in the "Capabilities" section above) will find an additional "User bulk enrolment" menu item within the jump menu on the course's participants page.
 
-To enrol existing Moodle users into the course, the teacher will then have to add a list of e-mail adresses to the form on this page, one user / e-mail adress per line.
+To enrol existing Moodle users into the course, the teacher will then have to add a list of e-mail adresses, username or idnumber to the form on this page, one user / key identifier per line.
 
 Example:
 ```
@@ -85,7 +93,7 @@ dave@example.com
 Limitations
 -----------
 
-This plugin currently only accepts a list of e-mail adresses to be enrolled into a course. It does especially not accept lists of user names, matriculation IDs or something else.
+This plugin currently only accepts a list of e-mail addresses, username or idnumber to be enrolled into a course. It does not accept any other field because only these are managed as key in Moodle.
 
 Additionally, this plugin only enrols users who already exist in Moodle. It won't create Moodle user accounts on-the-fly.
 
@@ -192,3 +200,7 @@ Communication and Information Centre (kiz)\
 Alexander Bias
 
 It was contributed to the Moodle an Hochschulen e.V. plugin catalogue in 2022.
+
+This plugin contains contributes from:
+- University of Münster, Learnweb by ZHLdigital
+- University of Genoa, AulaWeb staff
