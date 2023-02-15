@@ -4,6 +4,10 @@ moodle-local_bulkenrol
 Changes
 -------
 
+### Unreleased
+
+* 2022-11-28 - Updated Moodle Plugin CI to latest upstream recommendations
+
 ### v4.0-r2
 
 * 2022-07-12 - Fix README description how this plugin works in Moodle 4.0
