@@ -352,7 +352,7 @@ function local_bulkenrol_users($localbulkenrolkey) {
                             $id = $plugin->add_instance($course, $fields);
 
                             $enrolinstance = $DB->get_record('enrol', array('id' => $id));
-                            $enrolinstance->expirynotify    = $plugin->get_config('expirynotify');
+                            $enrolinstance->expirynotify = $plugin->get_config('expirynotify');
                             $enrolinstance->expirythreshold = $plugin->get_config('expirythreshold');
                             $enrolinstance->roleid = $plugin->get_config('roleid');
                             $enrolinstance->timemodified = time();
