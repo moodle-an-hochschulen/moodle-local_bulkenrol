@@ -4,6 +4,10 @@ moodle-local_bulkenrol
 Changes
 -------
 
+### Unreleased
+
+* 2023-01-21 - Prepare compatibility for Moodle 4.1.
+
 ### v4.0-r3
 
 * 2023-04-26 - Allow teachers to configure the navigation node placement.
