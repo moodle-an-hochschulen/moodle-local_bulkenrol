@@ -9,11 +9,11 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       | fullname | shortname | format |
       | Course 1 | C1        | topics |
     And the following "users" exist:
-      | username  | firstname | lastname | email                |
-      | teacher1  | Teacher   | 1        | teacher1@example.com |
-      | student1  | Student   | 1        | student1@example.com |
-      | student2  | Student   | 2        | student2@example.com |
-      | student3  | Student   | 3        | student3@example.com |
+      | username | firstname | lastname | email                |
+      | teacher1 | Teacher   | 1        | teacher1@example.com |
+      | student1 | Student   | 1        | student1@example.com |
+      | student2 | Student   | 2        | student2@example.com |
+      | student3 | Student   | 3        | student3@example.com |
     And the following "course enrolments" exist:
       | user     | course | role           |
       | teacher1 | C1     | editingteacher |
@@ -46,19 +46,19 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       """
     And I click on "Enrol users" "button"
     Then the following should exist in the "localbulkenrol_enrolusers" table:
-      | Email address        | First name | Surname | User enrolment        |
-      | student1@example.com | Student    | 1       | User will be enrolled |
-      | student2@example.com | Student    | 2       | User will be enrolled |
-      | student3@example.com | Student    | 3       | User will be enrolled |
+      | Email address        | First name | Last name | User enrolment        |
+      | student1@example.com | Student    | 1         | User will be enrolled |
+      | student2@example.com | Student    | 2         | User will be enrolled |
+      | student3@example.com | Student    | 3         | User will be enrolled |
     And the following should exist in the "localbulkenrol_enrolinfo" table:
-      | Enrolment method  | Assigned role |
-      | Self enrolment    | Student       |
+      | Enrolment method | Assigned role |
+      | Self enrolment   | Student       |
     And I click on "Enrol users" "button"
     Then the following should exist in the "participants" table:
-      | Email address        | First name | Surname | Roles   |
-      | student1@example.com | Student    | 1       | Student |
-      | student2@example.com | Student    | 2       | Student |
-      | student3@example.com | Student    | 3       | Student |
+      | Email address        | First name | Last name | Roles   |
+      | student1@example.com | Student    | 1         | Student |
+      | student2@example.com | Student    | 2         | Student |
+      | student3@example.com | Student    | 3         | Student |
     And "div[data-fullname='Student 1'][data-enrolinstancename='Self enrolment (Student)'][data-status='Active']" "css_element" should exist
 
   Scenario: Bulk enrol students into the course who are not enrolled yet with authentication method manual
@@ -74,19 +74,19 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       """
     And I click on "Enrol users" "button"
     Then the following should exist in the "localbulkenrol_enrolusers" table:
-      | Email address        | First name | Surname | User enrolment        |
-      | student1@example.com | Student    | 1       | User will be enrolled |
-      | student2@example.com | Student    | 2       | User will be enrolled |
-      | student3@example.com | Student    | 3       | User will be enrolled |
+      | Email address        | First name | Last name | User enrolment        |
+      | student1@example.com | Student    | 1         | User will be enrolled |
+      | student2@example.com | Student    | 2         | User will be enrolled |
+      | student3@example.com | Student    | 3         | User will be enrolled |
     And the following should exist in the "localbulkenrol_enrolinfo" table:
       | Enrolment method  | Assigned role |
       | Manual enrolments | Student       |
     And I click on "Enrol users" "button"
     Then the following should exist in the "participants" table:
-      | Email address        | First name | Surname | Roles   |
-      | student1@example.com | Student    | 1       | Student |
-      | student2@example.com | Student    | 2       | Student |
-      | student3@example.com | Student    | 3       | Student |
+      | Email address        | First name | Last name | Roles   |
+      | student1@example.com | Student    | 1         | Student |
+      | student2@example.com | Student    | 2         | Student |
+      | student3@example.com | Student    | 3         | Student |
     And "div[data-fullname='Student 1'][data-enrolinstancename='Manual enrolments'][data-status='Active']" "css_element" should exist
 
   Scenario: Bulk enrol users into the course who are not enrolled yet with role teacher
@@ -108,19 +108,19 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       """
     And I click on "Enrol users" "button"
     Then the following should exist in the "localbulkenrol_enrolusers" table:
-      | Email address        | First name | Surname | User enrolment        |
-      | student1@example.com | Student    | 1       | User will be enrolled |
-      | student2@example.com | Student    | 2       | User will be enrolled |
-      | student3@example.com | Student    | 3       | User will be enrolled |
+      | Email address        | First name | Last name | User enrolment        |
+      | student1@example.com | Student    | 1         | User will be enrolled |
+      | student2@example.com | Student    | 2         | User will be enrolled |
+      | student3@example.com | Student    | 3         | User will be enrolled |
     And the following should exist in the "localbulkenrol_enrolinfo" table:
       | Enrolment method  | Assigned role |
       | Manual enrolments | Teacher       |
     And I click on "Enrol users" "button"
     Then the following should exist in the "participants" table:
-      | Email address        | First name | Surname | Roles   |
-      | student1@example.com | Student    | 1       | Teacher |
-      | student2@example.com | Student    | 2       | Teacher |
-      | student3@example.com | Student    | 3       | Teacher |
+      | Email address        | First name | Last name | Roles   |
+      | student1@example.com | Student    | 1         | Teacher |
+      | student2@example.com | Student    | 2         | Teacher |
+      | student3@example.com | Student    | 3         | Teacher |
     And "div[data-fullname='Student 1'][data-enrolinstancename='Manual enrolments'][data-status='Active']" "css_element" should exist
 
   Scenario: Bulk enrol students into the course with students already enrolled
@@ -139,16 +139,16 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       """
     And I click on "Enrol users" "button"
     Then the following should exist in the "localbulkenrol_enrolusers" table:
-      | Email address        | First name | Surname | User enrolment           |
-      | student1@example.com | Student    | 1       | User is already enrolled |
-      | student2@example.com | Student    | 2       | User will be enrolled    |
-      | student3@example.com | Student    | 3       | User will be enrolled    |
+      | Email address        | First name | Last name | User enrolment           |
+      | student1@example.com | Student    | 1         | User is already enrolled |
+      | student2@example.com | Student    | 2         | User will be enrolled    |
+      | student3@example.com | Student    | 3         | User will be enrolled    |
     And I click on "Enrol users" "button"
     Then the following should exist in the "participants" table:
-      | Email address        | First name | Surname | Roles   |
-      | student1@example.com | Student    | 1       | Student |
-      | student2@example.com | Student    | 2       | Student |
-      | student3@example.com | Student    | 3       | Student |
+      | Email address        | First name | Last name | Roles   |
+      | student1@example.com | Student    | 1         | Student |
+      | student2@example.com | Student    | 2         | Student |
+      | student3@example.com | Student    | 3         | Student |
 
   Scenario: Respect existing self enrolments during bulk enrol
     Given I log in as "admin"
@@ -172,12 +172,12 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       """
     And I click on "Enrol users" "button"
     And the following should exist in the "localbulkenrol_enrolusers" table:
-      | Email address        | First name | Surname | User enrolment           |
-      | student1@example.com | Student    | 1       | User is already enrolled |
+      | Email address        | First name | Last name | User enrolment           |
+      | student1@example.com | Student    | 1         | User is already enrolled |
     And I click on "Enrol users" "button"
     And the following should exist in the "participants" table:
-      | Email address        | First name | Surname | Roles   |
-      | student1@example.com | Student    | 1       | Student |
+      | Email address        | First name | Last name | Roles   |
+      | student1@example.com | Student    | 1         | Student |
     Then "div[data-fullname='Student 1'][data-enrolinstancename='Manual enrolments'] a[data-action=showdetails]" "css_element" should not exist
     And "div[data-fullname='Student 1'][data-enrolinstancename='Self enrolment'] a[data-action=showdetails]" "css_element" should exist
 

@@ -9,11 +9,11 @@ Feature: Using the local_bulkenrol plugin for group management
       | fullname | shortname | format |
       | Course 1 | C1        | topics |
     And the following "users" exist:
-      | username  | firstname | lastname | email                |
-      | teacher1  | Teacher   | 1        | teacher1@example.com |
-      | student1  | Student   | 1        | student1@example.com |
-      | student2  | Student   | 2        | student2@example.com |
-      | student3  | Student   | 3        | student3@example.com |
+      | username | firstname | lastname | email                |
+      | teacher1 | Teacher   | 1        | teacher1@example.com |
+      | student1 | Student   | 1        | student1@example.com |
+      | student2 | Student   | 2        | student2@example.com |
+      | student3 | Student   | 3        | student3@example.com |
     And the following "course enrolments" exist:
       | user     | course | role           |
       | teacher1 | C1     | editingteacher |
@@ -56,16 +56,16 @@ Feature: Using the local_bulkenrol plugin for group management
       | Group 2    | Group already exists |
       | Group 3    | Group already exists |
     And the following should exist in the "localbulkenrol_enrolusers" table:
-      | Email address        | First name | Surname | User enrolment        | Group membership | Group membership            |
-      | student1@example.com | Student    | 1       | User will be enrolled | Group 1          | User will be added to group |
-      | student2@example.com | Student    | 2       | User will be enrolled | Group 2          | User will be added to group |
-      | student3@example.com | Student    | 3       | User will be enrolled | Group 3          | User will be added to group |
+      | Email address        | First name | Last name | User enrolment        | Group membership | Group membership            |
+      | student1@example.com | Student    | 1         | User will be enrolled | Group 1          | User will be added to group |
+      | student2@example.com | Student    | 2         | User will be enrolled | Group 2          | User will be added to group |
+      | student3@example.com | Student    | 3         | User will be enrolled | Group 3          | User will be added to group |
     And I click on "Enrol users" "button"
     Then the following should exist in the "participants" table:
-      | Email address        | First name | Surname | Roles   | Groups  |
-      | student1@example.com | Student    | 1       | Student | Group 1 |
-      | student2@example.com | Student    | 2       | Student | Group 2 |
-      | student3@example.com | Student    | 3       | Student | Group 3 |
+      | Email address        | First name | Last name | Roles   | Groups  |
+      | student1@example.com | Student    | 1         | Student | Group 1 |
+      | student2@example.com | Student    | 2         | Student | Group 2 |
+      | student3@example.com | Student    | 3         | Student | Group 3 |
 
   Scenario: Bulk enrol students into the course with students already enrolled and who only have to be added to (existing) groups
     Given the following "course enrolments" exist:
@@ -93,14 +93,14 @@ Feature: Using the local_bulkenrol plugin for group management
       | Group 1    | Group already exists |
       | Group 2    | Group already exists |
     And the following should exist in the "localbulkenrol_enrolusers" table:
-      | Email address        | First name | Surname | User enrolment           | Group membership | Group membership            |
-      | student1@example.com | Student    | 1       | User is already enrolled | Group 1          | User will be added to group |
-      | student2@example.com | Student    | 2       | User is already enrolled | Group 2          | User will be added to group |
+      | Email address        | First name | Last name | User enrolment           | Group membership | Group membership            |
+      | student1@example.com | Student    | 1         | User is already enrolled | Group 1          | User will be added to group |
+      | student2@example.com | Student    | 2         | User is already enrolled | Group 2          | User will be added to group |
     And I click on "Enrol users" "button"
     Then the following should exist in the "participants" table:
-      | Email address        | First name | Surname | Roles   | Groups  |
-      | student1@example.com | Student    | 1       | Student | Group 1 |
-      | student2@example.com | Student    | 2       | Student | Group 2 |
+      | Email address        | First name | Last name | Roles   | Groups  |
+      | student1@example.com | Student    | 1         | Student | Group 1 |
+      | student2@example.com | Student    | 2         | Student | Group 2 |
 
   Scenario: Bulk enrol students into the course with students already enrolled and who are also a member of the given (existing) groups
     And the following "course enrolments" exist:
@@ -132,14 +132,14 @@ Feature: Using the local_bulkenrol plugin for group management
       | Group 1    | Group already exists |
       | Group 2    | Group already exists |
     And the following should exist in the "localbulkenrol_enrolusers" table:
-      | Email address        | First name | Surname | User enrolment           | Group membership | Group membership             |
-      | student1@example.com | Student    | 1       | User is already enrolled | Group 1          | User is already group member |
-      | student2@example.com | Student    | 2       | User is already enrolled | Group 2          | User is already group member |
+      | Email address        | First name | Last name | User enrolment           | Group membership | Group membership             |
+      | student1@example.com | Student    | 1         | User is already enrolled | Group 1          | User is already group member |
+      | student2@example.com | Student    | 2         | User is already enrolled | Group 2          | User is already group member |
     And I click on "Enrol users" "button"
     Then the following should exist in the "participants" table:
-      | Email address        | First name | Surname | Roles   | Groups  |
-      | student1@example.com | Student    | 1       | Student | Group 1 |
-      | student2@example.com | Student    | 2       | Student | Group 2 |
+      | Email address        | First name | Last name | Roles   | Groups  |
+      | student1@example.com | Student    | 1         | Student | Group 1 |
+      | student2@example.com | Student    | 2         | Student | Group 2 |
 
   Scenario: Bulk enrol students into the course and create groups if needed
     Given the following "groups" exist:
@@ -163,6 +163,6 @@ Feature: Using the local_bulkenrol plugin for group management
       | Group 2    | Group will be created |
     And I click on "Enrol users" "button"
     Then the following should exist in the "participants" table:
-      | Email address        | First name | Surname | Roles   | Groups  |
-      | student1@example.com | Student    | 1       | Student | Group 1 |
-      | student2@example.com | Student    | 2       | Student | Group 2 |
+      | Email address        | First name | Last name | Roles   | Groups  |
+      | student1@example.com | Student    | 1         | Student | Group 1 |
+      | student2@example.com | Student    | 2         | Student | Group 2 |

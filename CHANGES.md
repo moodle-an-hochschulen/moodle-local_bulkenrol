@@ -6,6 +6,7 @@ Changes
 
 ### Unreleased
 
+* 2023-03-12 - Tests: Fix a Behat test which broke after Moodle core upstream changes
 * 2023-03-11 - Make codechecker happy again
 * 2022-11-28 - Updated Moodle Plugin CI to latest upstream recommendations
 
