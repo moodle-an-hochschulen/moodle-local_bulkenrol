@@ -49,6 +49,9 @@ The enrolment method to be used to bulk enrol the users. If the configured enrol
 ### 2. Role
 The role to be used to bulk enrol the users.
 
+### 3. Navigation node placement
+The location where the navigation node for this functionality will be added within a course.
+
 
 Capabilities
 ------------

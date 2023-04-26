@@ -24,6 +24,9 @@
 
 defined('MOODLE_INTERNAL') || die;
 
+// Require library.
+require_once($CFG->dirroot.'/local/bulkenrol/lib.php');
+
 if ($hassiteconfig) {
     $settings = new admin_settingpage('local_bulkenrol', get_string('pluginname', 'local_bulkenrol', null, true));
 
@@ -74,6 +77,20 @@ if ($hassiteconfig) {
                         $roleoptions)
         );
         unset($roleoptions);
+
+        // Create navigation node placement widget.
+        $navigationoptions = array(LOCALBULKENROL_NAV_COURSE => get_string('nav_course', 'local_bulkenrol'),
+                LOCALBULKENROL_NAV_PARTICIPANTS => get_string('nav_participants', 'local_bulkenrol'),
+                LOCALBULKENROL_NAV_BOTH => get_string('nav_both', 'local_bulkenrol'));
+        $settings->add(
+                new admin_setting_configselect(
+                        'local_bulkenrol/navigation',
+                        get_string('navigation', 'local_bulkenrol'),
+                        get_string('navigation_desc', 'local_bulkenrol'),
+                        LOCALBULKENROL_NAV_PARTICIPANTS,
+                        $navigationoptions)
+        );
+        unset($navigationoptions);
     }
 
     $ADMIN->add('enrolments', $settings);
