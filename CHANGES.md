@@ -6,6 +6,7 @@ Changes
 
 ### Unreleased
 
+* 2023-04-26 - Allow teachers to configure the navigation node placement.
 * 2023-04-26 - Add a missing setting to README.md
 * 2023-03-12 - Tests: Fix a Behat test which broke after Moodle core upstream changes
 * 2023-03-11 - Make codechecker happy again
