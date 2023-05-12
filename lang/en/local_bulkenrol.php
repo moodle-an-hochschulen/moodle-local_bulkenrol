@@ -84,4 +84,8 @@ $string['user_to_be_created'] = "User will be created";
 $string['parameter_empty'] = 'Parameter empty';
 $string['type_enrol'] = 'Enrolment method';
 $string['identifying_data'] = 'Data';
-
+$string['navigation'] = 'Navigation node placement';
+$string['navigation_desc'] = 'The location where the navigation node for user bulk enrolment will be added within a course.';
+$string['nav_course'] = 'Navigation node in course navigation';
+$string['nav_participants'] = 'Navigation node in participants page jump menu';
+$string['nav_both'] = 'Navigation node both in participants page jump menu and in course navigation';

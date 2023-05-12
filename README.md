@@ -9,7 +9,7 @@ Moodle plugin which provides the possibility to bulk enrol a list of users who a
 Requirements
 ------------
 
-This plugin requires Moodle 4.0+
+This plugin requires Moodle 4.1+
 
 
 Motivation for this plugin
@@ -41,10 +41,16 @@ After installing the plugin, it does not do anything to Moodle yet.
 To configure the plugin and its behaviour, please visit:
 Site administration -> Plugins -> Enrolments -> User bulk enrolment
 
-There, you find only one setting:
+There, you find two settings:
 
 ### 1. Enrolment plugin
 The enrolment method to be used to bulk enrol the users. If the configured enrolment method is not active / added in the course when the users are bulk-enrolled, it is automatically added / activated.
+
+### 2. Role
+The role to be used to bulk enrol the users.
+
+### 3. Navigation node placement
+The location where the navigation node for this functionality will be added within a course.
 
 
 Capabilities

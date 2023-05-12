@@ -22,6 +22,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+define('LOCALBULKENROL_NAV_COURSE', 'navcourse');
+define('LOCALBULKENROL_NAV_PARTICIPANTS', 'navpart');
+define('LOCALBULKENROL_NAV_BOTH', 'navboth');
+
 /**
  * This function extends the course navigation with the bulkenrol item
  *
@@ -31,13 +35,27 @@
  */
 function local_bulkenrol_extend_navigation_course($navigation, $course, $context) {
     if (has_capability('local/bulkenrol:enrolusers', $context)) {
+        // Create the navigation node.
         $url = new moodle_url('/local/bulkenrol/index.php', array('id' => $course->id));
         $bulkenrolnode = navigation_node::create(get_string('pluginname', 'local_bulkenrol'), $url,
                 navigation_node::TYPE_SETTING, null, 'local_bulkenrol', new pix_icon('i/users', ''));
-        $usersnode = $navigation->get('users');
 
-        if (isset($bulkenrolnode) && !empty($usersnode)) {
-            $usersnode->add_node($bulkenrolnode);
+        // Get the navigation node placement setting.
+        $navigationplacement = get_config('local_bulkenrol', 'navigation');
+
+        // If the admin wanted to add the navigation node to the participants page jump menu.
+        if ($navigationplacement == LOCALBULKENROL_NAV_PARTICIPANTS || $navigationplacement == LOCALBULKENROL_NAV_BOTH) {
+            $usersnode = $navigation->get('users');
+            if (isset($bulkenrolnode) && !empty($usersnode)) {
+                $usersnode->add_node($bulkenrolnode);
+            }
+        }
+
+        // If the admin wanted to add the navigation node to the course navigation.
+        if ($navigationplacement == LOCALBULKENROL_NAV_COURSE || $navigationplacement == LOCALBULKENROL_NAV_BOTH) {
+            if (isset($bulkenrolnode)) {
+                $navigation->add_node($bulkenrolnode);
+            }
         }
     }
 }
