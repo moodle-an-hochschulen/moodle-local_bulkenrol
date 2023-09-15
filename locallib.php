@@ -147,6 +147,7 @@ function local_bulkenrol_check_user_mails($emailstextfield, $courseid) {
 function local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $currentgroup, &$checkedemails) {
     // Check for valid email.
     $emailisvalid = validate_email($email);
+
     // Email is not valid.
     if (!$emailisvalid) {
         $checkedemails->emails_to_ignore[] = $email;
@@ -165,17 +166,8 @@ function local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $cur
         // Email is valid.
     } else {
         // Check for moodle user with email.
-        list($error, $userrecord) = local_bulkenrol_get_user($email);
-        if (!empty($error)) {
-            $checkedemails->emails_to_ignore[] = $email;
-            if (array_key_exists($linecnt, $checkedemails->error_messages)) {
-                $errors = $checkedemails->error_messages[$linecnt];
-                $errors .= "<br>".$error;
-                $checkedemails->error_messages[$linecnt] = $errors;
-            } else {
-                $checkedemails->error_messages[$linecnt] = $error;
-            }
-        } else if (!empty($userrecord) && !empty($userrecord->id)) {
+        $userrecord = get_complete_user_data('email', $email);
+        if ($userrecord && !empty($userrecord->id)) {
             $checkedemails->validemailfound += 1;
 
             $useralreadyenroled = false;
@@ -217,6 +209,8 @@ function local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $cur
                 }
                 $checkedemails->user_groups[$email][] = $currentgroup .': '. $groupinfo;
             }
+        } else {
+            $checkedemails->error_messages[$linecnt] = get_string('error_no_record_found_for_email', 'local_bulkenrol', $email);
         }
     }
 }
@@ -238,43 +232,6 @@ function local_bulkenrol_parse_emails($emails) {
             $result[] = trim($rawline);
         }
         return $result;
-    }
-}
-
-/**
- * Takes an e-mail and returns a moodle user record and error string (if occured).
- *
- * @param string $email E-mail used to search for a user
- * @return string,object[]
- */
-function local_bulkenrol_get_user($email) {
-    global $DB;
-
-    $error = null;
-    $userrecord = null;
-
-    if (empty($email)) {
-        return [$error, $userrecord];
-    } else {
-        // Get user records for email.
-        try {
-            $userrecords = $DB->get_records('user', ['email' => $email]);
-            $count = count($userrecords);
-            if (!empty($count)) {
-                // More than one user with email -> ignore email and don't enrol users later!
-                if ($count > 1) {
-                    $error = get_string('error_more_than_one_record_for_email', 'local_bulkenrol', $email);
-                } else {
-                    $userrecord = current($userrecords);
-                }
-            } else {
-                $error = get_string('error_no_record_found_for_email', 'local_bulkenrol', $email);
-            }
-        } catch (Exception $e) {
-            $error = get_string('error_getting_user_for_email', 'local_bulkenrol', $email).local_bulkenrol_get_exception_info($e);
-        }
-
-        return [$error, $userrecord];
     }
 }
 
