@@ -24,12 +24,12 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$capabilities = array(
-    'local/bulkenrol:enrolusers' => array(
+$capabilities = [
+    'local/bulkenrol:enrolusers' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => array(
-            'manager' => CAP_ALLOW
-        ),
-    ),
-);
+        'archetypes' => [
+            'manager' => CAP_ALLOW,
+        ],
+    ],
+];
