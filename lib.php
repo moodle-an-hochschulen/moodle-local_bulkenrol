@@ -36,7 +36,7 @@ define('LOCALBULKENROL_NAV_BOTH', 'navboth');
 function local_bulkenrol_extend_navigation_course($navigation, $course, $context) {
     if (has_capability('local/bulkenrol:enrolusers', $context)) {
         // Create the navigation node.
-        $url = new moodle_url('/local/bulkenrol/index.php', array('id' => $course->id));
+        $url = new moodle_url('/local/bulkenrol/index.php', ['id' => $course->id]);
         $bulkenrolnode = navigation_node::create(get_string('pluginname', 'local_bulkenrol'), $url,
                 navigation_node::TYPE_SETTING, null, 'local_bulkenrol', new pix_icon('i/users', ''));
 

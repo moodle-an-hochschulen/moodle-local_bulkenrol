@@ -87,7 +87,7 @@ class bulkenrol_form extends moodleform {
      *         or an empty array if everything is OK (true allowed for backwards compatibility too).
      */
     public function validation($data, $files) {
-        $retval = array();
+        $retval = [];
 
         if (empty($data['usermails'])) {
             $retval['usermails'] = get_string('error_usermails_empty', 'local_bulkenrol');
