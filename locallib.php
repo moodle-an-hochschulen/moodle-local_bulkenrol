@@ -213,6 +213,8 @@ function local_bulkenrol_get_user($email) {
     } else {
         // Get user records for email.
         try {
+
+            $email = str_pad($email, 9, '0', STR_PAD_LEFT);
             $userrecords = $DB->get_records('user', ['idnumber' => $email]);
             $count = count($userrecords);
             if (!empty($count)) {
