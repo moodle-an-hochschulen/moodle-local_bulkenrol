@@ -71,7 +71,7 @@ function local_bulkenrol_check_user_mails($emailstextfield, $courseid) {
             $emailline = trim($emailline);
 
             // Check for course group.
-            $grouppos = strpos($emailline , '#');
+            $grouppos = strpos($emailline, '#');
             if ($grouppos !== false) {
 
                 $groupname = substr($emailline, $grouppos + 1);
@@ -80,50 +80,8 @@ function local_bulkenrol_check_user_mails($emailstextfield, $courseid) {
                 continue;
             }
 
-            // Check number of emails in current row/line.
-            $emailsinlinecnt = substr_count($emailline , '@');
-
-            // No email in row/line.
-            if ($emailsinlinecnt == 0) {
-
-                $a = new stdClass();
-                $a->line = $linecnt;
-                $a->content = $emailline;
-                if (trim($a->content != "")) {
-                    $error = get_string('error_no_email', 'local_bulkenrol', $a);
-                } else {
-                    $error = get_string('error_empty_line', 'local_bulkenrol', $a);
-                }
-                $checkedemails->error_messages[$linecnt] = $error;
-
-                // One email in row/line.
-            } else if ($emailsinlinecnt == 1) {
-                $email = $emailline;
-                local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $currentgroup, $checkedemails);
-            }
-            // More than one email in row/line.
-            if ($emailsinlinecnt > 1) {
-                $delimiter = '';
-
-                // Check delimiters.
-                foreach ($emaildelimiters as $emaildelimiter) {
-                    $pos = strpos($emailline, $emaildelimiter);
-                    if ($pos) {
-                        $delimiter = $emaildelimiter;
-                        break;
-                    }
-                }
-                if (!empty($delimiter)) {
-                    $emailsinline = explode($delimiter, $emailline);
-
-                    // Iterate emails in row/line.
-                    foreach ($emailsinline as $emailinline) {
-
-                        $email = trim($emailinline);
-                        local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $currentgroup, $checkedemails);
-                    }
-                }
-            }
+            $email = $emailline;
+            local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $currentgroup, $checkedemails);
         }
     }
 
@@ -143,7 +101,7 @@ function local_bulkenrol_check_user_mails($emailstextfield, $courseid) {
  */
 function local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $currentgroup, &$checkedemails) {
     // Check for valid email.
-    $emailisvalid = validate_email($email);
+    $emailisvalid = true;//validate_email($email);
     // Email is not valid.
     if (!$emailisvalid) {
         $checkedemails->emails_to_ignore[] = $email;
@@ -153,7 +111,7 @@ function local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $cur
         $error = get_string('error_invalid_email', 'local_bulkenrol', $a);
         if (array_key_exists($linecnt, $checkedemails->error_messages)) {
             $errors = $checkedemails->error_messages[$linecnt];
-            $errors .= "<br>".$error;
+            $errors .= "<br>" . $error;
             $checkedemails->error_messages[$linecnt] = $errors;
         } else {
             $checkedemails->error_messages[$linecnt] = $error;
@@ -167,7 +125,7 @@ function local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $cur
             $checkedemails->emails_to_ignore[] = $email;
             if (array_key_exists($linecnt, $checkedemails->error_messages)) {
                 $errors = $checkedemails->error_messages[$linecnt];
-                $errors .= "<br>".$error;
+                $errors .= "<br>" . $error;
                 $checkedemails->error_messages[$linecnt] = $errors;
             } else {
                 $checkedemails->error_messages[$linecnt] = $error;
@@ -212,7 +170,7 @@ function local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $cur
                             get_string('user_groups_already', 'local_bulkenrol'),
                             ['class' => 'badge badge-success']);
                 }
-                $checkedemails->user_groups[$email][] = $currentgroup .': '. $groupinfo;
+                $checkedemails->user_groups[$email][] = $currentgroup . ': ' . $groupinfo;
             }
         }
     }
@@ -255,7 +213,7 @@ function local_bulkenrol_get_user($email) {
     } else {
         // Get user records for email.
         try {
-            $userrecords = $DB->get_records('user', ['email' => $email]);
+            $userrecords = $DB->get_records('user', ['idnumber' => $email]);
             $count = count($userrecords);
             if (!empty($count)) {
                 // More than one user with email -> ignore email and don't enrol users later!
@@ -268,7 +226,7 @@ function local_bulkenrol_get_user($email) {
                 $error = get_string('error_no_record_found_for_email', 'local_bulkenrol', $email);
             }
         } catch (Exception $e) {
-            $error = get_string('error_getting_user_for_email', 'local_bulkenrol', $email).local_bulkenrol_get_exception_info($e);
+            $error = get_string('error_getting_user_for_email', 'local_bulkenrol', $email) . local_bulkenrol_get_exception_info($e);
         }
 
         return [$error, $userrecord];
@@ -282,11 +240,11 @@ function local_bulkenrol_get_user($email) {
  * @return string readable form of an exception
  */
 function local_bulkenrol_get_exception_info($e) {
-    if (empty($e) || !($e instanceof Exception) ) {
+    if (empty($e) || !($e instanceof Exception)) {
         return '';
     }
 
-    return " ".get_string('error_exception_info', 'local_bulkenrol').": ".$e->getMessage()." -> ".$e->getTraceAsString();
+    return " " . get_string('error_exception_info', 'local_bulkenrol') . ": " . $e->getMessage() . " -> " . $e->getTraceAsString();
 }
 
 /**
@@ -383,14 +341,14 @@ function local_bulkenrol_users($localbulkenrolkey) {
                                     $a = new stdClass();
                                     $a->email = $user->email;
 
-                                    $msg = get_string('error_enrol_user', 'local_bulkenrol', $a).
+                                    $msg = get_string('error_enrol_user', 'local_bulkenrol', $a) .
                                             local_bulkenrol_get_exception_info($e);
                                     $exceptionsmsg[] = $msg;
                                 }
                             }
                         }
                     } catch (Exception $e) {
-                        $msg = get_string('error_enrol_users', 'local_bulkenrol').local_bulkenrol_get_exception_info($e);
+                        $msg = get_string('error_enrol_users', 'local_bulkenrol') . local_bulkenrol_get_exception_info($e);
                         $exceptionsmsg[] = $msg;
                     }
 
@@ -438,7 +396,7 @@ function local_bulkenrol_users($localbulkenrolkey) {
                                             $a = new stdClass();
                                             $a->email = $member->email;
                                             $a->group = $groupname;
-                                            $msg = get_string('error_group_add_member', 'local_bulkenrol', $a).
+                                            $msg = get_string('error_group_add_member', 'local_bulkenrol', $a) .
                                                     local_bulkenrol_get_exception_info($e);
                                             $exceptionsmsg[] = $msg;
                                         }
@@ -446,7 +404,8 @@ function local_bulkenrol_users($localbulkenrolkey) {
                                 }
                             }
                         } catch (Exception $e) {
-                            $msg = get_string('error_group_add_members', 'local_bulkenrol').local_bulkenrol_get_exception_info($e);
+                            $msg = get_string('error_group_add_members', 'local_bulkenrol') .
+                                    local_bulkenrol_get_exception_info($e);
                             $exceptionsmsg[] = $msg;
                         }
                     }
@@ -554,12 +513,12 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
                         $cell->text = '';
                         if (!empty($localbulkenroldata->user_enroled[$email])) {
                             $cell->text = html_writer::tag('span',
-                                get_string('user_enroled_yes', 'local_bulkenrol'),
-                                ['class' => 'badge badge-secondary']);
+                                    get_string('user_enroled_yes', 'local_bulkenrol'),
+                                    ['class' => 'badge badge-secondary']);
                         } else {
                             $cell->text = html_writer::tag('span',
-                                get_string('user_enroled_already', 'local_bulkenrol'),
-                                ['class' => 'badge badge-secondary']);
+                                    get_string('user_enroled_already', 'local_bulkenrol'),
+                                    ['class' => 'badge badge-secondary']);
                         }
                         $row[] = $cell;
 
@@ -621,12 +580,12 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
                         $cell = new html_table_cell();
                         if (empty($groupexists)) {
                             $cell->text = html_writer::tag('span',
-                                get_string('group_status_create', 'local_bulkenrol'),
-                                ['class' => 'badge badge-secondary']);
+                                    get_string('group_status_create', 'local_bulkenrol'),
+                                    ['class' => 'badge badge-secondary']);
                         } else {
                             $cell->text = html_writer::tag('span',
-                                get_string('group_status_exists', 'local_bulkenrol'),
-                                ['class' => 'badge badge-success']);
+                                    get_string('group_status_exists', 'local_bulkenrol'),
+                                    ['class' => 'badge badge-success']);
                         }
 
                         $row[] = $cell;
@@ -651,11 +610,10 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
                 break;
 
             default:
-            break;
+                break;
         }
     }
 }
-
 
 /**
  * Checks whether a user with id $userid can be found in members list of the course group with name $groupname.
@@ -705,7 +663,7 @@ function local_bulkenrol_is_already_member($courseid, $groupname, $userid) {
             }
         }
     } catch (Exception $e) {
-        $msg = get_string('error_group_add_members', 'local_bulkenrol').local_bulkenrol_get_exception_info($e);
+        $msg = get_string('error_group_add_members', 'local_bulkenrol') . local_bulkenrol_get_exception_info($e);
         $exceptionsmsg[] = $msg;
     }
     return $result;
