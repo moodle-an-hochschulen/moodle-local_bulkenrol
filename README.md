@@ -62,6 +62,12 @@ This plugin also introduces a new capability:
 By default, Moodle users are _not_ allowed to use the functionality provided by this plugin. As administrator, you can selectively grant users the ability to use this functionality by adding the local/bulkenrol:enrolusers capability to an appropriate Moodle role.
 
 
+Scheduled Tasks
+---------------
+
+This plugin does not add any additional scheduled tasks.
+
+
 How this plugin works
 ---------------------
 
