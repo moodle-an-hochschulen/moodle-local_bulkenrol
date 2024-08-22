@@ -206,11 +206,11 @@ function local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $cur
                 if (empty($alreadymember)) {
                     $groupinfo = html_writer::tag('span',
                             get_string('user_groups_yes', 'local_bulkenrol'),
-                            ['class' => 'badge badge-secondary']);
+                            ['class' => 'badge bg-secondary text-dark']);
                 } else {
                     $groupinfo = html_writer::tag('span',
                             get_string('user_groups_already', 'local_bulkenrol'),
-                            ['class' => 'badge badge-success']);
+                            ['class' => 'badge bg-success text-light']);
                 }
                 $checkedemails->user_groups[$email][] = $currentgroup .': '. $groupinfo;
             }
@@ -555,11 +555,11 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
                         if (!empty($localbulkenroldata->user_enroled[$email])) {
                             $cell->text = html_writer::tag('span',
                                 get_string('user_enroled_yes', 'local_bulkenrol'),
-                                ['class' => 'badge badge-secondary']);
+                                ['class' => 'badge bg-secondary text-dark']);
                         } else {
                             $cell->text = html_writer::tag('span',
                                 get_string('user_enroled_already', 'local_bulkenrol'),
-                                ['class' => 'badge badge-secondary']);
+                                ['class' => 'badge bg-secondary text-dark']);
                         }
                         $row[] = $cell;
 
@@ -622,11 +622,11 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
                         if (empty($groupexists)) {
                             $cell->text = html_writer::tag('span',
                                 get_string('group_status_create', 'local_bulkenrol'),
-                                ['class' => 'badge badge-secondary']);
+                                ['class' => 'badge bg-secondary text-dark']);
                         } else {
                             $cell->text = html_writer::tag('span',
                                 get_string('group_status_exists', 'local_bulkenrol'),
-                                ['class' => 'badge badge-success']);
+                                ['class' => 'badge bg-success text-light']);
                         }
 
                         $row[] = $cell;
