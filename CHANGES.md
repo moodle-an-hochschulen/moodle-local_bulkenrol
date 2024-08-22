@@ -6,6 +6,7 @@ Changes
 
 ### Unreleased
 
+* 2024-08-20 - Upgrade: Fix a behat test which broke on Moodle 4.4.
 * 2024-08-20 - Upgrade: Update Bootstrap classes for Moodle 4.4.
 * 2024-08-20 - Prepare compatibility for Moodle 4.4.
 
