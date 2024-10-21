@@ -139,7 +139,7 @@ class bulkenrol_form extends moodleform {
         $fieldinfo = explode("_", $fieldoption, 2);
         switch ($fieldinfo[0]) {
             case "u":
-                return $fieldinfo[1];
+                return get_string($fieldinfo[1]);
             case "c":
                 return $DB->get_field('user_info_field', 'name', array("id" => intval($fieldinfo[1])));
             default:
