@@ -291,6 +291,7 @@ function local_bulkenrol_get_exception_info($e) {
 }
 
 function create_users(&$localbulkenroldata) {
+    global $CFG;
     $userstocreate = $localbulkenroldata->users_to_be_created;
     $emailsuffix = get_config('local_bulkenrol', 'email_suffix');
     if (count($userstocreate) > 0 && empty($emailsuffix)) {
@@ -298,6 +299,9 @@ function create_users(&$localbulkenroldata) {
     }
     foreach($userstocreate as $username) {
         $user = new \stdClass();
+        $user->auth = 'ldap';
+        $user->confirmed = true;
+        $user->mnethostid = $CFG->mnet_localhost_id;
         $user->username = $username;
         $user->firstname = "NOCH NICHT";
         $user->lastname = "EINGELOGGT";
