@@ -22,6 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_table\output\html_table_cell;
+
 define('LOCALBULKENROL_HINT', 'hint');
 define('LOCALBULKENROL_ENROLUSERS', 'enrolusers');
 define('LOCALBULKENROL_GROUPINFOS', 'groupinfos');
