@@ -133,7 +133,7 @@ if ($localbulkenrolkey) {
         if (!empty($localbulkenroldata) && isset($localbulkenroldata->validemailfound) &&
                 empty($localbulkenroldata->validemailfound)) {
             $a = new stdClass();
-            $url = new moodle_url('/local/bulkenrol/index.php', ['id' => $id, 'editlist' => $localbulkenrolkey]);
+            $url = new \core\url('/local/bulkenrol/index.php', ['id' => $id, 'editlist' => $localbulkenrolkey]);
             $a->url = $url->out();
             $notification = new \core\output\notification(
                     get_string('error_no_valid_email_in_list', 'local_bulkenrol', $a),
