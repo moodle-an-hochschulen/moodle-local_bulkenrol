@@ -38,7 +38,7 @@ function local_bulkenrol_extend_navigation_course($navigation, $course, $context
         // Create the navigation node.
         $url = new \core\url('/local/bulkenrol/index.php', ['id' => $course->id]);
         $bulkenrolnode = navigation_node::create(get_string('pluginname', 'local_bulkenrol'), $url,
-                navigation_node::TYPE_SETTING, null, 'local_bulkenrol', new pix_icon('i/users', ''));
+                navigation_node::TYPE_SETTING, null, 'local_bulkenrol', new \core\output\pix_icon('i/users', ''));
 
         // Get the navigation node placement setting.
         $navigationplacement = get_config('local_bulkenrol', 'navigation');
