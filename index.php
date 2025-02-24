@@ -38,11 +38,11 @@ $localbulkenrolkey = optional_param('key', 0, PARAM_ALPHANUMEXT);
 $context = context_system::instance();
 
 if (!empty($id)) {
-    $course = $DB->get_record('course', array('id' => $id), '*', MUST_EXIST);
+    $course = $DB->get_record('course', ['id' => $id], '*', MUST_EXIST);
     $context = context_course::instance($course->id, MUST_EXIST);
 
     $PAGE->set_context($context);
-    $PAGE->set_url('/local/bulkenrol/index.php', array('id' => $id));
+    $PAGE->set_url('/local/bulkenrol/index.php', ['id' => $id]);
     $PAGE->set_title("$course->shortname: ".get_string('pluginname', 'local_bulkenrol'));
     $PAGE->set_heading($course->fullname);
 
@@ -57,7 +57,7 @@ $PAGE->set_pagelayout('incourse');
 
 
 if (empty($localbulkenrolkey)) {
-    $form = new bulkenrol_form(null, array('courseid' => $id));
+    $form = new bulkenrol_form(null, ['courseid' => $id]);
     if ($formdata = $form->get_data()) {
         $datafield = $formdata->dbfield;
         $uservalues = $formdata->uservalues;
@@ -66,14 +66,14 @@ if (empty($localbulkenrolkey)) {
         $availablefieldsstring = get_config('local_bulkenrol', 'fieldoptions');
         $availablefieldsarray = explode(',', $availablefieldsstring);
         if (!in_array($datafield, $availablefieldsarray)) {
-            print_error('The provided datafield has not been approved by the administrator.', 'local_bulkenrol');
+            throw new moodle_exception('error_datafield_not_approved', 'local_bulkenrol');
         }
 
         $checkedusers = local_bulkenrol_check_user_data($uservalues, $courseid, $datafield);
 
         // Create local_bulkenrol array in Session.
         if (!isset($SESSION->local_bulkenrol)) {
-            $SESSION->local_bulkenrol = array();
+            $SESSION->local_bulkenrol = [];
         }
         // Save data in Session.
         $localbulkenrolkey = $courseid.'_'.time();
@@ -81,10 +81,10 @@ if (empty($localbulkenrolkey)) {
 
         // Create local_bulkenrol_inputs array in session.
         if (!isset($SESSION->local_bulkenrol_inputs)) {
-            $SESSION->local_bulkenrol_inputs = array();
+            $SESSION->local_bulkenrol_inputs = [];
         }
         $localbulkenroldata = $localbulkenrolkey.'_data';
-        $SESSION->local_bulkenrol_inputs[$localbulkenroldata] = array('users' => $uservalues, 'dbfield' => $datafield);
+        $SESSION->local_bulkenrol_inputs[$localbulkenroldata] = ['users' => $uservalues, 'dbfield' => $datafield];
     } else if ($form->is_cancelled()) {
         if (!empty($id)) {
             redirect($CFG->wwwroot .'/course/view.php?id='.$id, '', 0);
@@ -100,7 +100,7 @@ if (empty($localbulkenrolkey)) {
 }
 
 if ($localbulkenrolkey) {
-    $form2 = new confirm_form(null, array('local_bulkenrol_key' => $localbulkenrolkey, 'courseid' => $id));
+    $form2 = new confirm_form(null, ['local_bulkenrol_key' => $localbulkenrolkey, 'courseid' => $id]);
 
     if ($formdata = $form2->get_data()) {
         if (!empty($localbulkenrolkey) && !empty($SESSION->local_bulkenrol) &&
@@ -121,7 +121,7 @@ if ($localbulkenrolkey) {
     } else if ($form2->is_cancelled()) {
         redirect($CFG->wwwroot .'/local/bulkenrol/index.php?id='.$id, '', 0);
     } else {
-        $PAGE->set_url('/local/bulkenrol/index.php', array('id' => $id));
+        $PAGE->set_url('/local/bulkenrol/index.php', ['id' => $id]);
 
         echo $OUTPUT->header();
         echo $OUTPUT->heading(get_string('pluginname', 'local_bulkenrol'));
@@ -139,7 +139,7 @@ if ($localbulkenrolkey) {
         if (!empty($localbulkenroldata) && isset($localbulkenroldata->validusersfound) &&
                 empty($localbulkenroldata->validusersfound)) {
             $a = new stdClass();
-            $url = new moodle_url('/local/bulkenrol/index.php', array('id' => $id, 'editlist' => $localbulkenrolkey));
+            $url = new \core\url('/local/bulkenrol/index.php', ['id' => $id, 'editlist' => $localbulkenrolkey]);
             $a->url = $url->out();
             $notification = new \core\output\notification(
                     get_string('error_no_valid_data_in_list', 'local_bulkenrol', $a),

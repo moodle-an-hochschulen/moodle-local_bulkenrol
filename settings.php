@@ -32,11 +32,11 @@ $filtercustombyunique = true;
 $usertableoptions = [
     "email",
     "idnumber",
-    "username"
+    "username",
 ];
 
 $standardoptions = [
-    "u_email"
+    "u_email",
 ];
 
 if ($hassiteconfig) {
@@ -45,7 +45,7 @@ if ($hassiteconfig) {
     if ($ADMIN->fulltree) {
 
         // Create enrolment chooser widget.
-        $enroloptions = array();
+        $enroloptions = [];
         foreach (enrol_get_plugins(true) as $name => $plugin) {
             $enroloptions[$name] = get_string('pluginname', 'enrol_'.$name);
         }
@@ -61,7 +61,7 @@ if ($hassiteconfig) {
 
 
         // Create role chooser widget.
-        $roleoptions = array();
+        $roleoptions = [];
         // Get some basic data we are going to need.
         $roles = get_all_roles();
         $systemcontext = context_system::instance();
@@ -92,9 +92,9 @@ if ($hassiteconfig) {
         unset($roleoptions);
 
         // Create navigation node placement widget.
-        $navigationoptions = array(LOCALBULKENROL_NAV_COURSE => get_string('nav_course', 'local_bulkenrol'),
+        $navigationoptions = [LOCALBULKENROL_NAV_COURSE => get_string('nav_course', 'local_bulkenrol'),
                 LOCALBULKENROL_NAV_PARTICIPANTS => get_string('nav_participants', 'local_bulkenrol'),
-                LOCALBULKENROL_NAV_BOTH => get_string('nav_both', 'local_bulkenrol'));
+                LOCALBULKENROL_NAV_BOTH => get_string('nav_both', 'local_bulkenrol'), ];
         $settings->add(
                 new admin_setting_configselect(
                         'local_bulkenrol/navigation',
@@ -135,7 +135,7 @@ if ($hassiteconfig) {
         $sql = "SELECT id, name, forceunique FROM {user_info_field} WHERE forceunique = 1";
         $customfields = $DB->get_records_sql_menu($sql);
 
-        foreach($customfields as $id => $name) {
+        foreach ($customfields as $id => $name) {
             $fields["c_" . $id] = $name;
         }
 

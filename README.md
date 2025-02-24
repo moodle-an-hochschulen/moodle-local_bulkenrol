@@ -1,7 +1,7 @@
 moodle-local_bulkenrol
 ======================
 
-[![Moodle Plugin CI](https://github.com/moodle-an-hochschulen/moodle-local_bulkenrol/workflows/Moodle%20Plugin%20CI/badge.svg?branch=master)](https://github.com/moodle-an-hochschulen/moodle-local_bulkenrol/actions?query=workflow%3A%22Moodle+Plugin+CI%22+branch%3Amaster)
+[![Moodle Plugin CI](https://github.com/moodle-an-hochschulen/moodle-local_bulkenrol/workflows/Moodle%20Plugin%20CI/badge.svg?branch=main)](https://github.com/moodle-an-hochschulen/moodle-local_bulkenrol/actions?query=workflow%3A%22Moodle+Plugin+CI%22+branch%3Amain)
 
 Moodle plugin which provides the possibility to bulk enrol a list of users who are identified by their e-mail adresses into a course.
 
@@ -9,7 +9,7 @@ Moodle plugin which provides the possibility to bulk enrol a list of users who a
 Requirements
 ------------
 
-This plugin requires Moodle 4.1+
+This plugin requires Moodle 4.5+
 
 
 Motivation for this plugin
@@ -60,6 +60,12 @@ This plugin also introduces a new capability:
 ### local/bulkenrol:enrolusers
 
 By default, Moodle users are _not_ allowed to use the functionality provided by this plugin. As administrator, you can selectively grant users the ability to use this functionality by adding the local/bulkenrol:enrolusers capability to an appropriate Moodle role.
+
+
+Scheduled Tasks
+---------------
+
+This plugin does not add any additional scheduled tasks.
 
 
 How this plugin works

@@ -37,8 +37,9 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       | enrolplugin | self  | local_bulkenrol |
     When I log in as "teacher1"
     And I am on "Course 1" course homepage
-    And I navigate to "Users > User bulk enrolment" in current page administration
-    And I set the field "List of users identified by your chosen field" to multiline:
+    And I select "Participants" from secondary navigation
+    And I set the field "Participants tertiary navigation" to "User bulk enrolment"
+    And I set the field "List of e-mail addresses" to multiline:
       """
       student1@example.com
       student2@example.com
@@ -64,8 +65,9 @@ Feature: Using the local_bulkenrol plugin for user enrolments
   Scenario: Bulk enrol students into the course who are not enrolled yet with authentication method manual
     When I log in as "teacher1"
     And I am on "Course 1" course homepage
-    And I navigate to "Users > User bulk enrolment" in current page administration
-    And I set the field "List of users identified by your chosen field" to multiline:
+    And I select "Participants" from secondary navigation
+    And I set the field "Participants tertiary navigation" to "User bulk enrolment"
+    And I set the field "List of e-mail addresses" to multiline:
       """
       student1@example.com
       student2@example.com
@@ -97,8 +99,9 @@ Feature: Using the local_bulkenrol plugin for user enrolments
     And I log out
     When I log in as "teacher1"
     And I am on "Course 1" course homepage
-    And I navigate to "Users > User bulk enrolment" in current page administration
-    And I set the field "List of users identified by your chosen field" to multiline:
+    And I select "Participants" from secondary navigation
+    And I set the field "Participants tertiary navigation" to "User bulk enrolment"
+    And I set the field "List of e-mail addresses" to multiline:
       """
       student1@example.com
       student2@example.com
@@ -164,8 +167,9 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       | student1 | C1     | student |
     When I log in as "teacher1"
     And I am on "Course 1" course homepage
-    And I navigate to "Users > User bulk enrolment" in current page administration
-    And I set the field "List of users identified by your chosen field" to multiline:
+    And I select "Participants" from secondary navigation
+    And I set the field "Participants tertiary navigation" to "User bulk enrolment"
+    And I set the field "List of e-mail addresses" to multiline:
       """
       student1@example.com
       student2@example.com
@@ -193,13 +197,14 @@ Feature: Using the local_bulkenrol plugin for user enrolments
     And I log in as "student1"
     And I am on "Course 1" course homepage
     And I press "Enrol me"
-    And I should see "Topic 1"
+    And I should see "New section"
     And I should not see "Enrol me in this course"
     And I log out
     When I log in as "teacher1"
     And I am on "Course 1" course homepage
-    And I navigate to "Users > User bulk enrolment" in current page administration
-    And I set the field "List of users identified by your chosen field" to multiline:
+    And I select "Participants" from secondary navigation
+    And I set the field "Participants tertiary navigation" to "User bulk enrolment"
+    And I set the field "List of e-mail addresses" to multiline:
       """
       student1@example.com
       """
@@ -217,8 +222,9 @@ Feature: Using the local_bulkenrol plugin for user enrolments
   Scenario: Try to bulk enrol a student into the course that is not existent in the system.
     When I log in as "teacher1"
     And I am on "Course 1" course homepage
-    And I navigate to "Users > User bulk enrolment" in current page administration
-    And I set the field "List of users identified by your chosen field" to multiline:
+    And I select "Participants" from secondary navigation
+    And I set the field "Participants tertiary navigation" to "User bulk enrolment"
+    And I set the field "List of e-mail addresses" to multiline:
       """
       student4@example.com
       """
@@ -228,8 +234,9 @@ Feature: Using the local_bulkenrol plugin for user enrolments
   Scenario: Try to bulk enrol a list of invalid users.
     When I log in as "teacher1"
     And I am on "Course 1" course homepage
-    And I navigate to "Users > User bulk enrolment" in current page administration
-    And I set the field "List of users identified by your chosen field" to multiline:
+    And I select "Participants" from secondary navigation
+    And I set the field "Participants tertiary navigation" to "User bulk enrolment"
+    And I set the field "List of e-mail addresses" to multiline:
       """
       foo
       bar
@@ -243,7 +250,7 @@ Feature: Using the local_bulkenrol plugin for user enrolments
     When I log in as "teacher1"
     And I am on "Course 1" course homepage
     And I select "Participants" from secondary navigation
-    And I select "User bulk enrolment" from the "jump" singleselect
+    And I set the field "Participants tertiary navigation" to "User bulk enrolment"
     And I set the field "List of e-mail addresses" to multiline:
       """
       student1@example.com

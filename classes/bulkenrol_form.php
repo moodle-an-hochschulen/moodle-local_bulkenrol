@@ -24,6 +24,7 @@
 
 namespace local_bulkenrol;
 
+use moodle_exception;
 use moodleform;
 
 defined('MOODLE_INTERNAL') || die();
@@ -53,8 +54,8 @@ class bulkenrol_form extends moodleform {
         // Selector for database field to match list to.
         $availablefieldsstring = get_config('local_bulkenrol', 'fieldoptions');
         $availablefieldsarray = explode(',', $availablefieldsstring);
-        if (count($availablefieldsarray) < 1 or $availablefieldsarray[0] == '') {
-            print_error(get_string('error_no_options_available', 'local_bulkenrol'));
+        if (count($availablefieldsarray) < 1 || $availablefieldsarray[0] == '') {
+            throw new moodle_exception('error_no_options_available', 'local_bulkenrol');
         }
 
         $selectoptions = [];
@@ -64,7 +65,8 @@ class bulkenrol_form extends moodleform {
 
         // Format CSV, replace last , with 'or' and add spaces after remaining.
         $fieldnamestring = implode(', ', $selectoptions);
-        $formattedfieldnamestring = $this->str_last_replace(', ', ' ' . get_string('or', 'local_bulkenrol') . ' ', $fieldnamestring);
+        $formattedfieldnamestring = $this->str_last_replace(', ', ' ' .
+            get_string('or', 'local_bulkenrol') . ' ', $fieldnamestring);
 
         // Infotext.
         $msg = get_string('bulkenrol_form_intro', 'local_bulkenrol', $formattedfieldnamestring);
@@ -125,7 +127,7 @@ class bulkenrol_form extends moodleform {
      *         or an empty array if everything is OK (true allowed for backwards compatibility too).
      */
     public function validation($data, $files) {
-        $retval = array();
+        $retval = [];
 
         if (empty($data['uservalues'])) {
             $retval['uservalues'] = get_string('error_list_empty', 'local_bulkenrol');
@@ -134,6 +136,14 @@ class bulkenrol_form extends moodleform {
         return $retval;
     }
 
+    /**
+     * Getter function.
+     *
+     * @param $fieldoption
+     * @return false|\lang_string|mixed|string
+     * @throws \coding_exception
+     * @throws \dml_exception
+     */
     private function get_fieldname($fieldoption) {
         global $DB;
         $fieldinfo = explode("_", $fieldoption, 2);
@@ -141,12 +151,20 @@ class bulkenrol_form extends moodleform {
             case "u":
                 return get_string($fieldinfo[1]);
             case "c":
-                return $DB->get_field('user_info_field', 'name', array("id" => intval($fieldinfo[1])));
+                return $DB->get_field('user_info_field', 'name', ["id" => intval($fieldinfo[1])]);
             default:
                 throw new \UnexpectedValueException("field is not from usertable (u_) or customfield (c_)");
         }
     }
 
+    /**
+     * Replace function.
+     *
+     * @param $search
+     * @param $replace
+     * @param $subject
+     * @return array|mixed|string|string[]
+     */
     private function str_last_replace($search, $replace, $subject) {
         $pos = strrpos($subject, $search);
 

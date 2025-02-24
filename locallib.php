@@ -25,6 +25,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once('../../user/lib.php');
+use core_table\output\html_table_cell;
+use core\output\html_writer;
 
 define('LOCALBULKENROL_HINT', 'hint');
 define('LOCALBULKENROL_ENROLUSERS', 'enrolusers');
@@ -44,22 +46,22 @@ define('LOCALBULKENROL_GROUPINFOS', 'groupinfos');
 function local_bulkenrol_check_user_data($userdatatext, $courseid, $datafield = 'u_email') {
 
     $checkeddata = new stdClass();
-    $checkeddata->data_to_ignore = array();
-    $checkeddata->error_messages = array();
-    $checkeddata->moodleusers_for_data = array();
-    $checkeddata->course_groups = array();
-    $checkeddata->user_groups = array();
-    $checkeddata->user_enroled = array();
+    $checkeddata->data_to_ignore = [];
+    $checkeddata->error_messages = [];
+    $checkeddata->moodleusers_for_data = [];
+    $checkeddata->course_groups = [];
+    $checkeddata->user_groups = [];
+    $checkeddata->user_enroled = [];
     $checkeddata->validusersfound = 0;
-    $checkeddata->users_to_be_created = array();
+    $checkeddata->users_to_be_created = [];
 
-    $possibledelimiters = array(', ', ' ', ',');
+    $possibledelimiters = [', ', ' ', ','];
 
     if (empty($userdatatext)) {
         return $checkeddata;
     }
 
-    $datafieldsstring = get_config('local_bulkenrol', 'fieldoptions');#
+    $datafieldsstring = get_config('local_bulkenrol', 'fieldoptions');
     $datafields = explode(",", $datafieldsstring);
     if (!is_array($datafields) || !in_array($datafield, $datafields)) {
         return $checkeddata;
@@ -91,7 +93,7 @@ function local_bulkenrol_check_user_data($userdatatext, $courseid, $datafield = 
 
             $groupname = substr($dataline, $grouppos + 1);
             $currentgroup = trim($groupname);
-            $checkeddata->course_groups[$currentgroup] = array();
+            $checkeddata->course_groups[$currentgroup] = [];
             continue;
         }
 
@@ -140,18 +142,18 @@ function local_bulkenrol_check_data($data, $datafield, $linecnt, $courseid, $con
     if ($createuseronthefly && !empty($error) &&
         $error == get_string('error_no_record_found_for_data', 'local_bulkenrol', $data)) {
         $checkeddata->validusersfound += 1;
-        $checkeddata->users_to_be_created [] = $data;
+        $checkeddata->users_to_be_created[] = $data;
         if (!array_key_exists($data, $checkeddata->user_groups)) {
-            $checkeddata->user_groups[$data] = array();
+            $checkeddata->user_groups[$data] = [];
         }
-        if(!empty($currentgroup)) {
+        if (!empty($currentgroup)) {
             $groupinfo = html_writer::tag('span',
                 get_string('user_groups_yes', 'local_bulkenrol'),
-                array('class' => 'badge badge-secondary'));
+                ['class' => 'badge badge-secondary']);
             $checkeddata->user_groups[$data][] = $currentgroup . $groupinfo;
         }
 
-    }else if (!empty($error)) {
+    } else if (!empty($error)) {
         $checkeddata->data_to_ignore[] = $data;
         if (array_key_exists($linecnt, $checkeddata->error_messages)) {
             $errors = $checkeddata->error_messages[$linecnt];
@@ -174,7 +176,7 @@ function local_bulkenrol_check_data($data, $datafield, $linecnt, $courseid, $con
             $checkeddata->course_groups[$currentgroup][$data] = $userrecord;
         }
         if (!array_key_exists($data, $checkeddata->user_groups)) {
-            $checkeddata->user_groups[$data] = array();
+            $checkeddata->user_groups[$data] = [];
         }
         if (!empty($currentgroup) && !array_key_exists($currentgroup, $checkeddata->user_groups[$data])) {
             // Check if user is already member of the group.
@@ -189,15 +191,15 @@ function local_bulkenrol_check_data($data, $datafield, $linecnt, $courseid, $con
                 $checkeddata->error_messages[$linecnt] = $error;
             }
             $alreadymember = $result->already_member;
-            // Compose group information
+            // Compose group information.
             if (empty($alreadymember)) {
                 $groupinfo = html_writer::tag('span',
                         get_string('user_groups_yes', 'local_bulkenrol'),
-                        array('class' => 'badge badge-secondary'));
+                        ['class' => 'badge badge-secondary']);
             } else {
                 $groupinfo = html_writer::tag('span',
                         get_string('user_groups_already', 'local_bulkenrol'),
-                        array('class' => 'badge badge-success'));
+                        ['class' => 'badge badge-success']);
             }
             $checkeddata->user_groups[$data][] = $currentgroup . $groupinfo;
         }
@@ -213,10 +215,10 @@ function local_bulkenrol_check_data($data, $datafield, $linecnt, $courseid, $con
  */
 function local_bulkenrol_parse_data($data) {
     if (empty($data)) {
-        return array();
+        return [];
     } else {
         $rawlines = explode(PHP_EOL, $data);
-        $result = array();
+        $result = [];
         foreach ($rawlines as $rawline) {
             $temp = str_replace("@uni-muenster.de", "", $rawline);
             $result[] = trim($temp);
@@ -241,7 +243,7 @@ function local_bulkenrol_get_user($data, $datafield) {
 
     if (empty($data)) {
         $error = get_string('error_no_data', 'local_bulkenrol', $data);
-        return array($error, $userrecord);
+        return [$error, $userrecord];
     }
 
     // Get user records for data.
@@ -249,20 +251,21 @@ function local_bulkenrol_get_user($data, $datafield) {
         $prefix = substr($datafield, 0, 2);
         $usertablefield = substr($datafield, 2, strlen($datafield) - 2);
         if ($prefix === 'u_') {
-            $userrecords = $DB->get_records('user', array($usertablefield => $data));
+            $userrecords = $DB->get_records('user', [$usertablefield => $data]);
         } else if ($prefix === 'c_') {
             $userrecords = $DB->get_records_sql(
                     'SELECT u.* FROM {user} u ' .
                     'JOIN {user_info_data} data ON data.userid = u.id ' .
                     'WHERE data.fieldid = :fieldid AND data.data = :data',
-                    array('fieldid' => $usertablefield, 'data' => $data));
+                    ['fieldid' => $usertablefield, 'data' => $data]);
         }
 
         $count = count($userrecords);
         if (!empty($count)) {
             // More than one user with data -> ignore data and don't enrol users later!
             if ($count > 1) {
-                $error = get_string('error_more_than_one_record_for_data', 'local_bulkenrol', array('identifier' => $data, "field" => $datafield));
+                $error = get_string('error_more_than_one_record_for_data', 'local_bulkenrol',
+                                    ['identifier' => $data, "field" => $datafield]);
             } else {
                 $userrecord = current($userrecords);
             }
@@ -273,7 +276,7 @@ function local_bulkenrol_get_user($data, $datafield) {
         $error = get_string('error_getting_user_for_data', 'local_bulkenrol', $data) . local_bulkenrol_get_exception_info($e);
     }
 
-    return array($error, $userrecord);
+    return [$error, $userrecord];
 }
 
 /**
@@ -290,6 +293,14 @@ function local_bulkenrol_get_exception_info($e) {
     return " ".get_string('error_exception_info', 'local_bulkenrol').": ".$e->getMessage()." -> ".$e->getTraceAsString();
 }
 
+/**
+ * Function to create users from data.
+ *
+ * @param $localbulkenroldata
+ * @return void
+ * @throws dml_exception
+ * @throws moodle_exception
+ */
 function create_users(&$localbulkenroldata) {
     global $CFG;
     $userstocreate = $localbulkenroldata->users_to_be_created;
@@ -297,7 +308,7 @@ function create_users(&$localbulkenroldata) {
     if (count($userstocreate) > 0 && empty($emailsuffix)) {
         throw new \Exception("Emailsuffix may not be empty");
     }
-    foreach($userstocreate as $username) {
+    foreach ($userstocreate as $username) {
         $user = new \stdClass();
         $user->auth = 'ldap';
         $user->confirmed = true;
@@ -306,9 +317,9 @@ function create_users(&$localbulkenroldata) {
         $user->firstname = "NOCH NICHT";
         $user->lastname = "EINGELOGGT";
         $user->email = $username . '@' . $emailsuffix;
-        $new_user_id = user_create_user($user);
-        $new_user = \core_user::get_user($new_user_id);
-        $localbulkenroldata->moodleusers_for_data[] = $new_user;
+        $newuserid = user_create_user($user);
+        $newuser = \core_user::get_user($newuserid);
+        $localbulkenroldata->moodleusers_for_data[] = $newuser;
     }
 }
 
@@ -322,7 +333,7 @@ function local_bulkenrol_users($localbulkenrolkey) {
     global $CFG, $DB, $SESSION;
 
     $error = '';
-    $exceptionsmsg = array();
+    $exceptionsmsg = [];
 
     if (!empty($localbulkenrolkey)) {
         if (!empty($localbulkenrolkey) && !empty($SESSION->local_bulkenrol) &&
@@ -343,7 +354,7 @@ function local_bulkenrol_users($localbulkenrolkey) {
 
                 if (!empty($courseid) && !empty($userstoenrol)) {
                     try {
-                        $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
+                        $course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
 
                         $enrolinstances = enrol_get_instances($course->id, false);
 
@@ -375,7 +386,7 @@ function local_bulkenrol_users($localbulkenrolkey) {
                             $fields = $plugin->get_instance_defaults();
                             $id = $plugin->add_instance($course, $fields);
 
-                            $enrolinstance = $DB->get_record('enrol', array('id' => $id));
+                            $enrolinstance = $DB->get_record('enrol', ['id' => $id]);
                             $enrolinstance->expirynotify = $plugin->get_config('expirynotify');
                             $enrolinstance->expirythreshold = $plugin->get_config('expirythreshold');
                             $enrolinstance->roleid = $plugin->get_config('roleid');
@@ -520,11 +531,11 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
         switch ($key) {
             case LOCALBULKENROL_HINT:
 
-                $data = array();
+                $data = [];
 
                 if (!empty($localbulkenroldata->error_messages)) {
                     foreach ($localbulkenroldata->error_messages as $line => $errormessages) {
-                        $row = array();
+                        $row = [];
 
                         $cell = new html_table_cell();
                         $cell->text = $line;
@@ -542,25 +553,25 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
                 $table->id = "localbulkenrol_hints";
                 $table->attributes['class'] = 'generaltable';
                 $table->summary = get_string('hints', 'local_bulkenrol');
-                $table->size = array('10%', '90%');
-                $table->head = array();
+                $table->size = ['10%', '90%'];
+                $table->head = [];
                 $table->head[] = get_string('row', 'local_bulkenrol');
                 $table->head[] = get_string('hints', 'local_bulkenrol');
                 $table->data = $data;
 
                 if (!empty($data)) {
                     echo $OUTPUT->heading(get_string('hints', 'local_bulkenrol'), 3);
-                    echo html_writer::tag('div', html_writer::table($table), array('class' => 'flexible-wrap'));
+                    echo html_writer::tag('div', html_writer::table($table), ['class' => 'flexible-wrap']);
                 }
 
                 break;
 
             case LOCALBULKENROL_ENROLUSERS:
-                $rowdata = array();
+                $rowdata = [];
 
                 if (!empty($localbulkenroldata->moodleusers_for_data)) {
                     foreach ($localbulkenroldata->moodleusers_for_data as $data => $user) {
-                        $row = array();
+                        $row = [];
 
                         $cell = new html_table_cell();
                         $cell->text = $data;
@@ -579,11 +590,11 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
                         if (!empty($localbulkenroldata->user_enroled[$data])) {
                             $cell->text = html_writer::tag('span',
                                 get_string('user_enroled_yes', 'local_bulkenrol'),
-                                array('class' => 'badge badge-secondary'));
+                                ['class' => 'badge bg-secondary text-dark']);
                         } else {
                             $cell->text = html_writer::tag('span',
                                 get_string('user_enroled_already', 'local_bulkenrol'),
-                                array('class' => 'badge badge-secondary'));
+                                ['class' => 'badge bg-secondary text-dark']);
                         }
                         $row[] = $cell;
 
@@ -599,7 +610,7 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
                 }
 
                 foreach ($localbulkenroldata->users_to_be_created as $username) {
-                    $row = array();
+                    $row = [];
 
                     $cell = new html_table_cell();
                     $cell->text = $username;
@@ -616,7 +627,7 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
                     $cell = new html_table_cell();
                     $cell->text = html_writer::tag('span',
                         get_string('user_to_be_created', 'local_bulkenrol'),
-                        array('class' => 'badge badge-secondary'));
+                        ['class' => 'badge badge-secondary']);
                     $row[] = $cell;
 
                     $cell = new html_table_cell();
@@ -633,8 +644,8 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
                 $table->id = "localbulkenrol_enrolusers";
                 $table->attributes['class'] = 'generaltable';
                 $table->summary = get_string('users_to_enrol_in_course', 'local_bulkenrol');
-                $table->size = array('20%', '17%', '17%', '20%', '26%');
-                $table->head = array();
+                $table->size = ['20%', '17%', '17%', '20%', '26%'];
+                $table->head = [];
                 $table->head[] = get_string('identifying_data', 'local_bulkenrol');
                 $table->head[] = get_string('firstname');
                 $table->head[] = get_string('lastname');
@@ -644,12 +655,12 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
 
                 if (!empty($rowdata)) {
                     echo $OUTPUT->heading(get_string('users_to_enrol_in_course', 'local_bulkenrol'), 3);
-                    echo html_writer::tag('div', html_writer::table($table), array('class' => 'flexible-wrap'));
+                    echo html_writer::tag('div', html_writer::table($table), ['class' => 'flexible-wrap']);
                 }
                 break;
 
             case LOCALBULKENROL_GROUPINFOS:
-                $data = array();
+                $data = [];
 
                 if (!empty($localbulkenroldata->course_groups)) {
                     $courseid = required_param('id', PARAM_INT);
@@ -667,7 +678,7 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
                             }
                         }
 
-                        $row = array();
+                        $row = [];
 
                         $cell = new html_table_cell();
                         $cell->text = $groupname;
@@ -677,11 +688,11 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
                         if (empty($groupexists)) {
                             $cell->text = html_writer::tag('span',
                                 get_string('group_status_create', 'local_bulkenrol'),
-                                array('class' => 'badge badge-secondary'));
+                                ['class' => 'badge bg-secondary text-dark']);
                         } else {
                             $cell->text = html_writer::tag('span',
                                 get_string('group_status_exists', 'local_bulkenrol'),
-                                array('class' => 'badge badge-success'));
+                                ['class' => 'badge bg-success text-light']);
                         }
 
                         $row[] = $cell;
@@ -693,15 +704,15 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
                 $table = new html_table();
                 $table->id = "localbulkenrol_groupinfos";
                 $table->attributes['class'] = 'generaltable';
-                $table->size = array('50%', '50%');
-                $table->head = array();
+                $table->size = ['50%', '50%'];
+                $table->head = [];
                 $table->head[] = get_string('group_name_headline', 'local_bulkenrol');
                 $table->head[] = get_string('group_status_headline', 'local_bulkenrol');
                 $table->data = $data;
 
                 if (!empty($data)) {
                     echo $OUTPUT->heading(get_string('groupinfos_headline', 'local_bulkenrol'), 3);
-                    echo html_writer::tag('div', html_writer::table($table), array('class' => 'flexible-wrap'));
+                    echo html_writer::tag('div', html_writer::table($table), ['class' => 'flexible-wrap']);
                 }
                 break;
 
@@ -778,14 +789,14 @@ function local_bulkenrol_display_enroldetails() {
 
     // Get role configuration.
     $roleid = get_config('local_bulkenrol', 'role');
-    $role = $DB->get_record('role', array('id' => $roleid));
+    $role = $DB->get_record('role', ['id' => $roleid]);
     $systemcontext = context_system::instance();
-    $roles = role_fix_names(array($roleid => $role), $systemcontext, ROLENAME_ORIGINAL);
+    $roles = role_fix_names([$roleid => $role], $systemcontext, ROLENAME_ORIGINAL);
     $rolename = $roles[$roleid]->localname;
 
     // Build enrolment details table.
-    $data = array();
-    $row = array();
+    $data = [];
+    $row = [];
     $cell = new html_table_cell();
     $cell->text = $enrolpluginname;
     $row[] = $cell;
@@ -799,12 +810,12 @@ function local_bulkenrol_display_enroldetails() {
     $table = new html_table();
     $table->id = "localbulkenrol_enrolinfo";
     $table->attributes['class'] = 'generaltable';
-    $table->size = array('50%', '50%');
-    $table->head = array();
+    $table->size = ['50%', '50%'];
+    $table->head = [];
     $table->head[] = get_string('type_enrol', 'local_bulkenrol');
     $table->head[] = get_string('role_assigned', 'local_bulkenrol');
     $table->data = $data;
 
     echo $OUTPUT->heading(get_string('enrolinfo_headline', 'local_bulkenrol'), 3);
-    echo html_writer::tag('div', html_writer::table($table), array('class' => 'flexible-wrap'));
+    echo html_writer::tag('div', html_writer::table($table), ['class' => 'flexible-wrap']);
 }
