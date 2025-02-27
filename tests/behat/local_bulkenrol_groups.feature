@@ -41,7 +41,7 @@ Feature: Using the local_bulkenrol plugin for group management
     And I am on "Course 1" course homepage
     And I select "Participants" from secondary navigation
     And I set the field "Participants tertiary navigation" to "User bulk enrolment"
-    And I set the field "List of e-mail addresses" to multiline:
+    And I set the field "uservalues" to multiline:
       """
       # Group 1
       student1@example.com
@@ -57,14 +57,14 @@ Feature: Using the local_bulkenrol plugin for group management
       | Group 2    | Group already exists |
       | Group 3    | Group already exists |
     And the following should exist in the "localbulkenrol_enrolusers" table:
-      | Email address        | First name | Last name | User enrolment        | Group membership |
+      | Data                 | First name | Last name | User enrolment        | Group membership |
       | student1@example.com | Student    | 1         | User will be enrolled | Group 1          |
       | student2@example.com | Student    | 2         | User will be enrolled | Group 2          |
       | student3@example.com | Student    | 3         | User will be enrolled | Group 3          |
     # We have to check the group membership action badge in a separate step,
     # otherwise we would trigger the 'Table contains duplicate column headers' coding exception message.
     And the following should exist in the "localbulkenrol_enrolusers" table:
-      | Email address        | Group membership            |
+      | Data                 | Group membership            |
       | student1@example.com | User will be added to group |
       | student2@example.com | User will be added to group |
       | student3@example.com | User will be added to group |
@@ -88,7 +88,7 @@ Feature: Using the local_bulkenrol plugin for group management
     And I am on "Course 1" course homepage
     And I select "Participants" from secondary navigation
     And I set the field "Participants tertiary navigation" to "User bulk enrolment"
-    And I set the field "List of e-mail addresses" to multiline:
+    And I set the field "uservalues" to multiline:
       """
       # Group 1
       student1@example.com
@@ -101,13 +101,13 @@ Feature: Using the local_bulkenrol plugin for group management
       | Group 1    | Group already exists |
       | Group 2    | Group already exists |
     And the following should exist in the "localbulkenrol_enrolusers" table:
-      | Email address        | First name | Last name | User enrolment           | Group membership |
+      | Data                 | First name | Last name | User enrolment           | Group membership |
       | student1@example.com | Student    | 1         | User is already enrolled | Group 1          |
       | student2@example.com | Student    | 2         | User is already enrolled | Group 2          |
     # We have to check the group membership action badge in a separate step,
     # otherwise we would trigger the 'Table contains duplicate column headers' coding exception message.
     And the following should exist in the "localbulkenrol_enrolusers" table:
-      | Email address        | Group membership            |
+      | Data                 | Group membership            |
       | student1@example.com | User will be added to group |
       | student2@example.com | User will be added to group |
     And I click on "Enrol users" "button"
@@ -133,7 +133,7 @@ Feature: Using the local_bulkenrol plugin for group management
     And I am on "Course 1" course homepage
     And I select "Participants" from secondary navigation
     And I set the field "Participants tertiary navigation" to "User bulk enrolment"
-    And I set the field "List of e-mail addresses" to multiline:
+    And I set the field "uservalues" to multiline:
       """
       # Group 1
       student1@example.com
@@ -146,13 +146,13 @@ Feature: Using the local_bulkenrol plugin for group management
       | Group 1    | Group already exists |
       | Group 2    | Group already exists |
     And the following should exist in the "localbulkenrol_enrolusers" table:
-      | Email address        | First name | Last name | User enrolment           | Group membership |
+      | Data                 | First name | Last name | User enrolment           | Group membership |
       | student1@example.com | Student    | 1         | User is already enrolled | Group 1          |
       | student2@example.com | Student    | 2         | User is already enrolled | Group 2          |
     # We have to check the group membership action badge in a separate step,
     # otherwise we would trigger the 'Table contains duplicate column headers' coding exception message.
     And the following should exist in the "localbulkenrol_enrolusers" table:
-      | Email address        | Group membership             |
+      | Data                 | Group membership             |
       | student1@example.com | User is already group member |
       | student2@example.com | User is already group member |
     And I click on "Enrol users" "button"
@@ -169,7 +169,7 @@ Feature: Using the local_bulkenrol plugin for group management
     And I am on "Course 1" course homepage
     And I select "Participants" from secondary navigation
     And I set the field "Participants tertiary navigation" to "User bulk enrolment"
-    And I set the field "List of e-mail addresses" to multiline:
+    And I set the field "uservalues" to multiline:
       """
       # Group 1
       student1@example.com
