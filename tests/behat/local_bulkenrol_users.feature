@@ -213,7 +213,6 @@ Feature: Using the local_bulkenrol plugin for user enrolments
     When I log in as "teacher1"
     And I am on "Course 1" course homepage
     And I select "Participants" from secondary navigation
-    And I pause
     And I set the field "Participants tertiary navigation" to "User bulk enrolment"
     And I set the field "uservalues" to multiline:
       """
