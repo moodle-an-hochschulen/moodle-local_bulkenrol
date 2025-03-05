@@ -39,7 +39,7 @@ Feature: Using the local_bulkenrol plugin for user enrolments
     And I am on "Course 1" course homepage
     And I select "Participants" from secondary navigation
     And I set the field "Participants tertiary navigation" to "User bulk enrolment"
-    And I set the field "List of e-mail addresses" to multiline:
+    And I set the field "uservalues" to multiline:
       """
       student1@example.com
       student2@example.com
@@ -47,7 +47,7 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       """
     And I click on "Enrol users" "button"
     Then the following should exist in the "localbulkenrol_enrolusers" table:
-      | Email address        | First name | Last name | User enrolment        |
+      | Data                 | First name | Last name | User enrolment        |
       | student1@example.com | Student    | 1         | User will be enrolled |
       | student2@example.com | Student    | 2         | User will be enrolled |
       | student3@example.com | Student    | 3         | User will be enrolled |
@@ -67,7 +67,7 @@ Feature: Using the local_bulkenrol plugin for user enrolments
     And I am on "Course 1" course homepage
     And I select "Participants" from secondary navigation
     And I set the field "Participants tertiary navigation" to "User bulk enrolment"
-    And I set the field "List of e-mail addresses" to multiline:
+    And I set the field "uservalues" to multiline:
       """
       student1@example.com
       student2@example.com
@@ -75,7 +75,7 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       """
     And I click on "Enrol users" "button"
     Then the following should exist in the "localbulkenrol_enrolusers" table:
-      | Email address        | First name | Last name | User enrolment        |
+      | Data                 | First name | Last name | User enrolment        |
       | student1@example.com | Student    | 1         | User will be enrolled |
       | student2@example.com | Student    | 2         | User will be enrolled |
       | student3@example.com | Student    | 3         | User will be enrolled |
@@ -101,7 +101,7 @@ Feature: Using the local_bulkenrol plugin for user enrolments
     And I am on "Course 1" course homepage
     And I select "Participants" from secondary navigation
     And I set the field "Participants tertiary navigation" to "User bulk enrolment"
-    And I set the field "List of e-mail addresses" to multiline:
+    And I set the field "uservalues" to multiline:
       """
       student1@example.com
       student2@example.com
@@ -109,7 +109,7 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       """
     And I click on "Enrol users" "button"
     Then the following should exist in the "localbulkenrol_enrolusers" table:
-      | Email address        | First name | Last name | User enrolment        |
+      | Data                 | First name | Last name | User enrolment        |
       | student1@example.com | Student    | 1         | User will be enrolled |
       | student2@example.com | Student    | 2         | User will be enrolled |
       | student3@example.com | Student    | 3         | User will be enrolled |
@@ -132,7 +132,7 @@ Feature: Using the local_bulkenrol plugin for user enrolments
     And I am on "Course 1" course homepage
     And I select "Participants" from secondary navigation
     And I set the field "Participants tertiary navigation" to "User bulk enrolment"
-    And I set the field "List of e-mail addresses" to multiline:
+    And I set the field "uservalues" to multiline:
       """
       student1@example.com
       student2@example.com
@@ -140,7 +140,7 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       """
     And I click on "Enrol users" "button"
     Then the following should exist in the "localbulkenrol_enrolusers" table:
-      | Email address        | First name | Last name | User enrolment           |
+      | Data                 | First name | Last name | User enrolment           |
       | student1@example.com | Student    | 1         | User is already enrolled |
       | student2@example.com | Student    | 2         | User will be enrolled    |
       | student3@example.com | Student    | 3         | User will be enrolled    |
@@ -167,13 +167,13 @@ Feature: Using the local_bulkenrol plugin for user enrolments
     And I am on "Course 1" course homepage
     And I select "Participants" from secondary navigation
     And I set the field "Participants tertiary navigation" to "User bulk enrolment"
-    And I set the field "List of e-mail addresses" to multiline:
+    And I set the field "uservalues" to multiline:
       """
       student1@example.com
       """
     And I click on "Enrol users" "button"
     And the following should exist in the "localbulkenrol_enrolusers" table:
-      | Email address        | First name | Last name | User enrolment           |
+      | Data                 | First name | Last name | User enrolment           |
       | student1@example.com | Student    | 1         | User is already enrolled |
     And I click on "Enrol users" "button"
     And the following should exist in the "participants" table:
@@ -187,7 +187,7 @@ Feature: Using the local_bulkenrol plugin for user enrolments
     And I am on "Course 1" course homepage
     And I select "Participants" from secondary navigation
     And I set the field "Participants tertiary navigation" to "User bulk enrolment"
-    And I set the field "List of e-mail addresses" to multiline:
+    And I set the field "uservalues" to multiline:
       """
       student4@example.com
       """
@@ -199,7 +199,7 @@ Feature: Using the local_bulkenrol plugin for user enrolments
     And I am on "Course 1" course homepage
     And I select "Participants" from secondary navigation
     And I set the field "Participants tertiary navigation" to "User bulk enrolment"
-    And I set the field "List of e-mail addresses" to multiline:
+    And I set the field "uservalues" to multiline:
       """
       foo
       bar
@@ -213,14 +213,15 @@ Feature: Using the local_bulkenrol plugin for user enrolments
     When I log in as "teacher1"
     And I am on "Course 1" course homepage
     And I select "Participants" from secondary navigation
+    And I pause
     And I set the field "Participants tertiary navigation" to "User bulk enrolment"
-    And I set the field "List of e-mail addresses" to multiline:
+    And I set the field "uservalues" to multiline:
       """
       student1@example.com
 
       foo
       """
     And I click on "Enrol users" "button"
-    Then I should see "Line 2 is empty and will be ignored."
-    And I should see "No e-mail address found in line 3 (foo). This line will be ignored."
+    Then I should see "No data found (). This line will be ignored."
+    And I should see "No existing Moodle user account foo was found."
     And I should see "Manual enrolments"
