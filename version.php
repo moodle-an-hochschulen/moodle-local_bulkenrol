@@ -27,6 +27,6 @@ defined('MOODLE_INTERNAL') || die();
 $plugin->component = 'local_bulkenrol';
 $plugin->version = 2024100700;
 $plugin->release = 'v4.5-r1';
-$plugin->requires = 2024100700;
-$plugin->supported = [405, 405];
+$plugin->requires  = 2022112800;     // Requires 4.1+ Moodle version.
 $plugin->maturity = MATURITY_STABLE;
+$plugin->dependencies = [];
