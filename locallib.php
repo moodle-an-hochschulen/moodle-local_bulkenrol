@@ -296,7 +296,8 @@ function local_bulkenrol_get_exception_info($e) {
 /**
  * Function to create users from data.
  *
- * @param $localbulkenroldata
+ * @param mixed $localbulkenroldata
+ *
  * @return void
  * @throws dml_exception
  * @throws moodle_exception

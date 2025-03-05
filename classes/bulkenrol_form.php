@@ -139,7 +139,8 @@ class bulkenrol_form extends moodleform {
     /**
      * Getter function.
      *
-     * @param $fieldoption
+     * @param string $fieldoption
+     *
      * @return false|\lang_string|mixed|string
      * @throws \coding_exception
      * @throws \dml_exception
@@ -160,10 +161,10 @@ class bulkenrol_form extends moodleform {
     /**
      * Replace function.
      *
-     * @param $search
-     * @param $replace
-     * @param $subject
-     * @return array|mixed|string|string[]
+     * @param array|string $search
+     * @param string $replace
+     * @param string $subject
+     * @return array|string|string[]
      */
     private function str_last_replace($search, $replace, $subject) {
         $pos = strrpos($subject, $search);
