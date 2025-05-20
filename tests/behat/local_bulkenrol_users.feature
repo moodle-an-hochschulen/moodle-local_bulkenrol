@@ -194,6 +194,24 @@ Feature: Using the local_bulkenrol plugin for user enrolments
     And I click on "Enrol users" "button"
     Then I should see "No existing Moodle user account with e-mail address student4@example.com."
 
+  Scenario: Try to bulk enrol a student into the course for which two accounts exist in the system.
+    Given the following config values are set as admin:
+      | config                 | value |
+      | allowaccountssameemail | 1     |
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | student4 | Student   | 4        | student2@example.com |
+    When I log in as "teacher1"
+    And I am on "Course 1" course homepage
+    And I select "Participants" from secondary navigation
+    And I set the field "Participants tertiary navigation" to "User bulk enrolment"
+    And I set the field "List of e-mail addresses" to multiline:
+      """
+      student2@example.com
+      """
+    And I click on "Enrol users" "button"
+    Then I should see "More than one existing Moodle user account with e-mail address student2@example.com found."
+
   Scenario: Try to bulk enrol a list of invalid users.
     When I log in as "teacher1"
     And I am on "Course 1" course homepage
