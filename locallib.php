@@ -180,7 +180,7 @@ function local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $cur
         } catch (Exception $e) {
             $userrecord = null;
             $checkedemails->error_messages[$linecnt] =
-                    get_string('error_getting_user_for_email', 'local_bulkenrol', $email).local_bulkenrol_get_exception_info($e);
+                    get_string('error_getting_user_for_email', 'local_bulkenrol', $email);
         }
 
         // A user was found.
@@ -248,20 +248,6 @@ function local_bulkenrol_parse_emails($emails) {
         }
         return $result;
     }
-}
-
-/**
- * Get an understandable reason from an exception which happened during bulkenrol.
- *
- * @param object $e should be of instanceof Exception
- * @return string readable form of an exception
- */
-function local_bulkenrol_get_exception_info($e) {
-    if (empty($e) || !($e instanceof Exception) ) {
-        return '';
-    }
-
-    return " ".get_string('error_exception_info', 'local_bulkenrol').": ".$e->getMessage()." -> ".$e->getTraceAsString();
 }
 
 /**
@@ -358,14 +344,13 @@ function local_bulkenrol_users($localbulkenrolkey) {
                                     $a = new stdClass();
                                     $a->email = $user->email;
 
-                                    $msg = get_string('error_enrol_user', 'local_bulkenrol', $a).
-                                            local_bulkenrol_get_exception_info($e);
+                                    $msg = get_string('error_enrol_user', 'local_bulkenrol', $a);
                                     $exceptionsmsg[] = $msg;
                                 }
                             }
                         }
                     } catch (Exception $e) {
-                        $msg = get_string('error_enrol_users', 'local_bulkenrol').local_bulkenrol_get_exception_info($e);
+                        $msg = get_string('error_enrol_users', 'local_bulkenrol');
                         $exceptionsmsg[] = $msg;
                     }
 
@@ -413,15 +398,14 @@ function local_bulkenrol_users($localbulkenrolkey) {
                                             $a = new stdClass();
                                             $a->email = $member->email;
                                             $a->group = $groupname;
-                                            $msg = get_string('error_group_add_member', 'local_bulkenrol', $a).
-                                                    local_bulkenrol_get_exception_info($e);
+                                            $msg = get_string('error_group_add_member', 'local_bulkenrol', $a);
                                             $exceptionsmsg[] = $msg;
                                         }
                                     }
                                 }
                             }
                         } catch (Exception $e) {
-                            $msg = get_string('error_group_add_members', 'local_bulkenrol').local_bulkenrol_get_exception_info($e);
+                            $msg = get_string('error_group_add_members', 'local_bulkenrol');
                             $exceptionsmsg[] = $msg;
                         }
                     }
@@ -680,7 +664,7 @@ function local_bulkenrol_is_already_member($courseid, $groupname, $userid) {
             }
         }
     } catch (Exception $e) {
-        $msg = get_string('error_group_add_members', 'local_bulkenrol').local_bulkenrol_get_exception_info($e);
+        $msg = get_string('error_group_add_members', 'local_bulkenrol');
         $exceptionsmsg[] = $msg;
     }
     return $result;
