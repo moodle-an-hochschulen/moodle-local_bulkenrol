@@ -163,7 +163,24 @@ function local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $cur
         // Email is valid.
     } else {
         // Check for moodle user with email.
-        $userrecord = get_complete_user_data('email', $email);
+        try {
+            $userrecord = get_complete_user_data('email', $email, null, true);
+
+            // No user found.
+        } catch (dml_missing_record_exception $e) {
+            $userrecord = null;
+            $checkedemails->error_messages[$linecnt] = get_string('error_no_record_found_for_email', 'local_bulkenrol', $email);
+        } catch (dml_multiple_records_exception $e) {
+            $userrecord = null;
+            $checkedemails->error_messages[$linecnt] =
+                    get_string('error_more_than_one_record_for_email', 'local_bulkenrol', $email);
+        } catch (Exception $e) {
+            $userrecord = null;
+            $checkedemails->error_messages[$linecnt] =
+                    get_string('error_getting_user_for_email', 'local_bulkenrol', $email).local_bulkenrol_get_exception_info($e);
+        }
+
+        // A user was found.
         if ($userrecord && !empty($userrecord->id)) {
             $checkedemails->validemailfound += 1;
 
@@ -206,8 +223,6 @@ function local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $cur
                 }
                 $checkedemails->user_groups[$email][] = $currentgroup .': '. $groupinfo;
             }
-        } else {
-            $checkedemails->error_messages[$linecnt] = get_string('error_no_record_found_for_email', 'local_bulkenrol', $email);
         }
     }
 }
