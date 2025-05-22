@@ -4,6 +4,10 @@ moodle-local_bulkenrol
 Changes
 -------
 
+### Unreleased
+
+* 2025-05-22 - Improvement: E-Mail adresses are now case-insensitive, resolves #30 and #35
+
 ### v4.4-r1
 
 * 2024-08-24 - Development: Rename master branch to main, please update your clones.
