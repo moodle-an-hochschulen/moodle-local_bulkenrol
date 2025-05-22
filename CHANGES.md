@@ -4,6 +4,10 @@ moodle-local_bulkenrol
 Changes
 -------
 
+### Unreleased
+
+* 2025-05-22 - Improvement: E-Mail adresses are now case-insensitive, resolves #30 and #35
+
 ### v5.0-r1
 
 * 2025-04-14 - Prepare compatibility for Moodle 5.0.
