@@ -270,3 +270,36 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       | Email address                    | First name | Last name       | Roles   |
       | studentUPPERACCOUNT1@example.com | Student    | Upper Account 1 | Student |
       | studentupperinput2@example.com   | Student    | Upper Input 2   | Student |
+
+  Scenario: Bulk unenrol students from the course who are already enrolled with authentication method manual
+    Given the following config values are set as admin:
+      | config      | value | plugin          |
+      | enrolplugin | self  | local_bulkenrol |
+    And the following "course enrolments" exist:
+      | user     | course | role           |
+      | student1 | C1     | student        |
+      | student2 | C1     | student        |
+      | student3 | C1     | student        |
+      | teacher1 | C1     | editingteacher |
+    When I log in as "teacher1"
+    And I am on "Course 1" course homepage
+    And I select "Participants" from secondary navigation
+    And I set the field "Participants tertiary navigation" to "User bulk enrolment"
+    And I set the field "List of e-mail addresses" to multiline:
+      """
+      !  student1@example.com
+      !student2@example.com
+      """
+    And I click on "Enrol users" "button"
+    Then the following should exist in the "localbulkenrol_enrolusers" table:
+      | Email address        | First name | Last name | User enrolment          |
+      | student1@example.com | Student    | 1         | User will be unenrolled |
+      | student2@example.com | Student    | 2         | User will be unenrolled |
+    And I click on "Enrol users" "button"
+    Then the following should exist in the "participants" table:
+      | Email address        | First name | Last name | Roles   |
+      | student3@example.com | Student    | 3         | Student |
+    And the following should not exist in the "participants" table:
+      | Email address        | First name | Last name | Roles   |
+      | student1@example.com | Student    | 1         | Student |
+      | student2@example.com | Student    | 2         | Student |

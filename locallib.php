@@ -27,6 +27,7 @@ use core\output\html_writer;
 
 define('LOCALBULKENROL_HINT', 'hint');
 define('LOCALBULKENROL_ENROLUSERS', 'enrolusers');
+define('LOCALBULKENROL_UNENROLUSERS', 'unenrolusers');
 define('LOCALBULKENROL_GROUPINFOS', 'groupinfos');
 
 /**
@@ -47,6 +48,7 @@ function local_bulkenrol_check_user_mails($emailstextfield, $courseid) {
     $checkedemails->course_groups = [];
     $checkedemails->user_groups = [];
     $checkedemails->user_enroled = [];
+    $checkedemails->user_unenroled = [];
     $checkedemails->validemailfound = 0;
 
     $emaildelimiters = [', ', ' ', ','];
@@ -72,6 +74,15 @@ function local_bulkenrol_check_user_mails($emailstextfield, $courseid) {
             $error = '';
 
             $emailline = trim($emailline);
+
+            // Check for delete enrolment.
+            $delenrolpos = strpos($emailline , '!');
+            if ($delenrolpos !== false) {
+                // Checks for multiple addresses on one line omitted for now.
+                $emailline = trim(substr($emailline, $delenrolpos + 1));
+                $email = $emailline;
+                local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $currentgroup, $checkedemails, true);
+            }
 
             // Check for course group.
             $grouppos = strpos($emailline , '#');
@@ -137,14 +148,15 @@ function local_bulkenrol_check_user_mails($emailstextfield, $courseid) {
  *
  * Check submitted email, working on the $checkedemails array
  *
- * @param string $email e-mail of the user that should be enroled
+ * @param string $email e-mail of the user that should be enroled or onenrolled
  * @param int $linecnt line counter used for error messages
  * @param int $courseid course id
- * @param context_course $context context instance of the course the user should be enroled into
+ * @param context_course $context context instance of the course the user should be enroled into or unenroled from
  * @param string $currentgroup name of the group a user should be added to as member
  * @param object $checkedemails Object containing information to be displayed on confirm page and being used for bulkenrol.
+ * @param bool $unenrol true if the user should be unenroled from the course
  */
-function local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $currentgroup, &$checkedemails) {
+function local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $currentgroup, &$checkedemails, $unenrol = false) {
     // Check for valid email.
     $emailisvalid = validate_email($email);
 
@@ -194,6 +206,8 @@ function local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $cur
             $checkedemails->moodleusers_for_email[$email] = $userrecord;
             if (empty($useralreadyenroled)) {
                 $checkedemails->user_enroled[$email] = $userrecord;
+            } else if ($unenrol === true) {
+                $checkedemails->user_unenroled[$email] = $userrecord;
             }
             if (!empty($currentgroup) && array_key_exists($currentgroup, $checkedemails->course_groups)) {
                 $checkedemails->course_groups[$currentgroup][] = $userrecord;
@@ -231,7 +245,8 @@ function local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $cur
 }
 
 /**
- * Takes input from text area containing a list of e-mail adresses (optionally group names starting with '#').
+ * Takes input from text area containing a list of e-mail addresses (optionally group names starting with '#',
+ * and e-mail addresses to unenroll starting with '!').
  * Returns an array representation of the input.
  *
  * @param mixed $emails input value of the text area.
@@ -276,13 +291,25 @@ function local_bulkenrol_users($localbulkenrolkey) {
                     $courseid = $tmpdata[0];
                 }
 
-                $userstoenrol = $localbulkenroldata->moodleusers_for_email;
+                $userstoenrol = $localbulkenroldata->user_enroled;
+                $userstounenrol = $localbulkenroldata->user_unenroled;
 
-                if (!empty($courseid) && !empty($userstoenrol)) {
+                if (empty($courseid)) {
+                    return local_bulkenrol_get_retval_obj('', [get_string('error_no_courseid', 'local_bulkenrol')]);
+                }
+
+                try {
+                    $course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
+                    $enrolinstances = enrol_get_instances($course->id, false);
+                    // Get the course context.
+                    $coursecontext = context_course::instance($course->id);
+
+                } catch (\Exception $e) {
+                    return local_bulkenrol_get_retval_obj('', [get_string('error_enrol_users', 'local_bulkenrol')]);
+                }
+
+                if (!empty($userstoenrol)) {
                     try {
-                        $course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
-
-                        $enrolinstances = enrol_get_instances($course->id, false);
 
                         // Get enrolment for bulkenrol.
                         $bulkenrolplugin = get_config('local_bulkenrol', 'enrolplugin');
@@ -324,9 +351,6 @@ function local_bulkenrol_users($localbulkenrolkey) {
                             // Enrol users in course.
                             $roleid = get_config('local_bulkenrol', 'role');
 
-                            // Get the course context.
-                            $coursecontext = context_course::instance($courseid);
-
                             foreach ($userstoenrol as $user) {
                                 try {
                                     // Check if user is already enrolled with another enrolment method.
@@ -353,59 +377,80 @@ function local_bulkenrol_users($localbulkenrolkey) {
                         $msg = get_string('error_enrol_users', 'local_bulkenrol');
                         $exceptionsmsg[] = $msg;
                     }
+                }
+                // Check for course groups to create.
+                $groups = $localbulkenroldata->course_groups;
 
-                    // Check for course groups to create.
-                    $groups = $localbulkenroldata->course_groups;
+                if (!empty($groups)) {
 
-                    if (!empty($groups)) {
+                    try {
+                        require_once($CFG->dirroot . '/group/lib.php');
 
-                        try {
-                            require_once($CFG->dirroot . '/group/lib.php');
+                        $existingcoursegroups = groups_get_all_groups($courseid);
 
-                            $existingcoursegroups = groups_get_all_groups($courseid);
+                        foreach ($groups as $name => $members) {
+                            $groupname = trim($name);
 
-                            foreach ($groups as $name => $members) {
-                                $groupname = trim($name);
-
-                                // Check if group already exists.
-                                $groupid = null;
-                                foreach ($existingcoursegroups as $key => $existingcoursegroup) {
-                                    if ($groupname == $existingcoursegroup->name) {
-                                        $groupid = $existingcoursegroup->id;
-                                        break;
-                                    }
+                            // Check if group already exists.
+                            $groupid = null;
+                            foreach ($existingcoursegroups as $key => $existingcoursegroup) {
+                                if ($groupname == $existingcoursegroup->name) {
+                                    $groupid = $existingcoursegroup->id;
+                                    break;
                                 }
-                                // Group not found in course -> create new course group.
-                                if (empty($groupid)) {
-                                    $groupdata = new stdClass();
-                                    $groupdata->courseid = $courseid;
-                                    $groupdata->name = $groupname;
-                                    $groupid = groups_create_group($groupdata, false, false);
-                                }
-                                if (!empty($groupid) && !empty($members)) {
-                                    foreach ($members as $key => $member) {
-                                        try {
-                                            $useradded = groups_add_member($groupid, $member->id);
+                            }
+                            // Group not found in course -> create new course group.
+                            if (empty($groupid)) {
+                                $groupdata = new stdClass();
+                                $groupdata->courseid = $courseid;
+                                $groupdata->name = $groupname;
+                                $groupid = groups_create_group($groupdata, false, false);
+                            }
+                            if (!empty($groupid) && !empty($members)) {
+                                foreach ($members as $member) {
+                                    try {
+                                        $useradded = groups_add_member($groupid, $member->id);
 
-                                            if (empty($useradded)) {
-                                                $a = new stdClass();
-                                                $a->email = $member->email;
-                                                $a->group = $groupname;
-                                                $msg = get_string('error_group_add_member', 'local_bulkenrol', $a);
-                                                $exceptionsmsg[] = $msg;
-                                            }
-                                        } catch (Exception $e) {
-                                            $a = new stdClass();
-                                            $a->email = $member->email;
-                                            $a->group = $groupname;
-                                            $msg = get_string('error_group_add_member', 'local_bulkenrol', $a);
-                                            $exceptionsmsg[] = $msg;
+                                        if (empty($useradded)) {
+                                            throw new Exception();
                                         }
+                                    } catch (Exception $e) {
+                                        $a = new stdClass();
+                                        $a->email = $member->email;
+                                        $a->group = $groupname;
+                                        $msg = get_string('error_group_add_member', 'local_bulkenrol', $a);
+                                        $exceptionsmsg[] = $msg;
                                     }
                                 }
                             }
+                        }
+                    } catch (Exception $e) {
+                        $msg = get_string('error_group_add_members', 'local_bulkenrol');
+                        $exceptionsmsg[] = $msg;
+                    }
+                }
+                if (!empty($userstounenrol)) {
+                    foreach ($userstounenrol as $user) {
+                        try {
+                            // Check if user is enrolled in the course.
+                            $userisenrolled = is_enrolled($coursecontext, $user->id);
+
+                            // If the user is enrolled.
+                            if ($userisenrolled) {
+                                // Loop over all enabled enrol instances, and try to unenrol the user.
+                                foreach ($enrolinstances as $instance) {
+                                    $plugin = enrol_get_plugin($instance->enrol);
+                                    $plugin->unenrol_user($instance, $user->id);
+                                }
+                                // User is already unenroled from the course.
+                            } else {
+                                continue;
+                            }
                         } catch (Exception $e) {
-                            $msg = get_string('error_group_add_members', 'local_bulkenrol');
+                            $a = new stdClass();
+                            $a->email = $user->email;
+
+                            $msg = get_string('error_unenrol_user', 'local_bulkenrol', $a);
                             $exceptionsmsg[] = $msg;
                         }
                     }
@@ -413,7 +458,17 @@ function local_bulkenrol_users($localbulkenrolkey) {
             }
         }
     }
+    return local_bulkenrol_get_retval_obj($error, $exceptionsmsg);
+}
 
+/**
+ * Build return object.
+ *
+ * @param string $error
+ * @param array $exceptionsmsg
+ * @return stdClass
+ */
+function local_bulkenrol_get_retval_obj(string $error, array $exceptionsmsg): stdClass {
     $retval = new stdClass();
     $retval->status = '';
     $retval->text = '';
@@ -439,6 +494,7 @@ function local_bulkenrol_users($localbulkenrolkey) {
     }
 
     return $retval;
+
 }
 
 /**
@@ -475,7 +531,7 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
 
                 $table = new html_table();
                 $table->id = "localbulkenrol_hints";
-                $table->attributes['class'] = 'generaltable';
+                $table->attributes['class'] = 'table generaltable';
                 $table->summary = get_string('hints', 'local_bulkenrol');
                 $table->size = ['10%', '90%'];
                 $table->head = [];
@@ -512,14 +568,15 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
                         $cell = new html_table_cell();
                         $cell->text = '';
                         if (!empty($localbulkenroldata->user_enroled[$email])) {
-                            $cell->text = html_writer::tag('span',
-                                get_string('user_enroled_yes', 'local_bulkenrol'),
-                                ['class' => 'badge bg-secondary text-dark']);
+                            $label = 'user_enroled_yes';
+                        } else if (!empty($localbulkenroldata->user_unenroled[$email])) {
+                            $label = 'user_unenroled_yes';
                         } else {
-                            $cell->text = html_writer::tag('span',
-                                get_string('user_enroled_already', 'local_bulkenrol'),
-                                ['class' => 'badge bg-secondary text-dark']);
+                            $label = 'user_enroled_already';
                         }
+                        $cell->text = html_writer::tag('span',
+                            get_string($label, 'local_bulkenrol'),
+                            ['class' => 'badge bg-secondary text-dark']);
                         $row[] = $cell;
 
                         $cell = new html_table_cell();
@@ -535,7 +592,7 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
 
                 $table = new html_table();
                 $table->id = "localbulkenrol_enrolusers";
-                $table->attributes['class'] = 'generaltable';
+                $table->attributes['class'] = 'table generaltable';
                 $table->summary = get_string('users_to_enrol_in_course', 'local_bulkenrol');
                 $table->size = ['20%', '17%', '17%', '20%', '26%'];
                 $table->head = [];
@@ -596,7 +653,7 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
 
                 $table = new html_table();
                 $table->id = "localbulkenrol_groupinfos";
-                $table->attributes['class'] = 'generaltable';
+                $table->attributes['class'] = 'table generaltable';
                 $table->size = ['50%', '50%'];
                 $table->head = [];
                 $table->head[] = get_string('group_name_headline', 'local_bulkenrol');
@@ -702,7 +759,7 @@ function local_bulkenrol_display_enroldetails() {
 
     $table = new html_table();
     $table->id = "localbulkenrol_enrolinfo";
-    $table->attributes['class'] = 'generaltable';
+    $table->attributes['class'] = 'table generaltable';
     $table->size = ['50%', '50%'];
     $table->head = [];
     $table->head[] = get_string('type_enrol', 'local_bulkenrol');
