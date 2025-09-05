@@ -31,7 +31,7 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       | local/bulkenrol:enrolusers | Allow      |
     And I log out
 
-  Scenario: Bulk enrol students into the course who are not enrolled yet with authentication method self
+  Scenario: Bulk enrol students into the course who are not enrolled yet with enrolment method self
     Given the following config values are set as admin:
       | config      | value | plugin          |
       | enrolplugin | self  | local_bulkenrol |
@@ -62,7 +62,7 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       | student3@example.com | Student    | 3         | Student |
     And "div[data-fullname='Student 1'][data-enrolinstancename='Self enrolment (Student)'][data-status='Active']" "css_element" should exist
 
-  Scenario: Bulk enrol students into the course who are not enrolled yet with authentication method manual
+  Scenario: Bulk enrol students into the course who are not enrolled yet with enrolment method manual
     When I log in as "teacher1"
     And I am on "Course 1" course homepage
     And I select "Participants" from secondary navigation
@@ -271,7 +271,7 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       | studentUPPERACCOUNT1@example.com | Student    | Upper Account 1 | Student |
       | studentupperinput2@example.com   | Student    | Upper Input 2   | Student |
 
-  Scenario: Bulk unenrol students from the course who are already enrolled with authentication method manual
+  Scenario: Bulk unenrol students from the course who are already enrolled with enrolment method self
     Given the following config values are set as admin:
       | config      | value | plugin          |
       | enrolplugin | self  | local_bulkenrol |
