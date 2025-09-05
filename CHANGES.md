@@ -4,6 +4,10 @@ moodle-local_bulkenrol
 Changes
 -------
 
+### Unreleased
+
+* 2025-09-05 - Feature: Allow the teacher to unenrol users from the course as well, thanks to the MoodleMootDACH '25 DevCamp team 35.
+
 ### v4.4-r2
 
 * 2025-05-22 - Improvement: E-Mail adresses are now case-insensitive, resolves #30 and #35

@@ -296,7 +296,9 @@ function local_bulkenrol_users($localbulkenrolkey) {
                 }
 
                 try {
+                    // Get the course.
                     $course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
+                    // Get the enrol instances.
                     $enrolinstances = enrol_get_instances($course->id, false);
                     // Get the course context.
                     $coursecontext = context_course::instance($course->id);
@@ -305,9 +307,9 @@ function local_bulkenrol_users($localbulkenrolkey) {
                     return local_bulkenrol_get_retval_obj('', [get_string('error_enrol_users', 'local_bulkenrol')]);
                 }
 
+                // Enrol users.
                 if (!empty($userstoenrol)) {
                     try {
-
                         // Get enrolment for bulkenrol.
                         $bulkenrolplugin = get_config('local_bulkenrol', 'enrolplugin');
 
@@ -375,9 +377,9 @@ function local_bulkenrol_users($localbulkenrolkey) {
                         $exceptionsmsg[] = $msg;
                     }
                 }
-                // Check for course groups to create.
-                $groups = $localbulkenroldata->course_groups;
 
+                // Create and handle groups.
+                $groups = $localbulkenroldata->course_groups;
                 if (!empty($groups)) {
 
                     try {
@@ -426,6 +428,8 @@ function local_bulkenrol_users($localbulkenrolkey) {
                         $exceptionsmsg[] = $msg;
                     }
                 }
+
+                // Unenrol users.
                 if (!empty($userstounenrol)) {
                     foreach ($userstounenrol as $user) {
                         try {
@@ -439,14 +443,14 @@ function local_bulkenrol_users($localbulkenrolkey) {
                                     $plugin = enrol_get_plugin($instance->enrol);
                                     $plugin->unenrol_user($instance, $user->id);
                                 }
-                                // User is already unenroled from the course.
+
+                                // Otherwise, if user is not enroled in the course.
                             } else {
                                 continue;
                             }
                         } catch (Exception $e) {
                             $a = new stdClass();
                             $a->email = $user->email;
-
                             $msg = get_string('error_unenrol_user', 'local_bulkenrol', $a);
                             $exceptionsmsg[] = $msg;
                         }
@@ -491,7 +495,6 @@ function local_bulkenrol_get_retval_obj(string $error, array $exceptionsmsg): st
     }
 
     return $retval;
-
 }
 
 /**
@@ -528,7 +531,7 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
 
                 $table = new html_table();
                 $table->id = "localbulkenrol_hints";
-                $table->attributes['class'] = 'table generaltable';
+                $table->attributes['class'] = 'generaltable';
                 $table->summary = get_string('hints', 'local_bulkenrol');
                 $table->size = ['10%', '90%'];
                 $table->head = [];
@@ -589,7 +592,7 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
 
                 $table = new html_table();
                 $table->id = "localbulkenrol_enrolusers";
-                $table->attributes['class'] = 'table generaltable';
+                $table->attributes['class'] = 'generaltable';
                 $table->summary = get_string('users_to_enrol_in_course', 'local_bulkenrol');
                 $table->size = ['20%', '17%', '17%', '20%', '26%'];
                 $table->head = [];
@@ -650,7 +653,7 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
 
                 $table = new html_table();
                 $table->id = "localbulkenrol_groupinfos";
-                $table->attributes['class'] = 'table generaltable';
+                $table->attributes['class'] = 'generaltable';
                 $table->size = ['50%', '50%'];
                 $table->head = [];
                 $table->head[] = get_string('group_name_headline', 'local_bulkenrol');
@@ -756,7 +759,7 @@ function local_bulkenrol_display_enroldetails() {
 
     $table = new html_table();
     $table->id = "localbulkenrol_enrolinfo";
-    $table->attributes['class'] = 'table generaltable';
+    $table->attributes['class'] = 'generaltable';
     $table->size = ['50%', '50%'];
     $table->head = [];
     $table->head[] = get_string('type_enrol', 'local_bulkenrol');
