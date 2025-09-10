@@ -20,8 +20,9 @@ In some organizations or some teaching scenarios, manually enrolling students in
 To ease the life of teachers, there is the need for a bulk enrolment tool. There are already plugins out there which provide this functionality, so this is just another one. The goal of this bulk enrolment implementation is not to fulfil everybody's needs, but to do one thing and to do this well.
 
 So, the key features of this plugin are:
-1. to let teachers submit a line-separated list of email addresses to enrol them into a course,
-2. to let teachers submit this list to a textarea within their course instead of requiring them to create and upload a CSV file first.
+1. to let teachers submit a line-separated list of email addresses to enrol them into or remove them from a course,
+2. to let teachers submit this list to a textarea within their course instead of requiring them to create and upload a CSV file first,
+3. to let teachers change the group assignments within the course.
 
 
 Installation
@@ -92,6 +93,21 @@ bob@example.com
 carol@example.com
 dave@example.com
 ```
+
+The opposite can be done as well, removing students from a group or entirely remove them from the course. In this case, the line with the email address must be prefixed with an exclamation mark. When there is a group name in a previous line, the students are removed from that group only. When there is not group in any previous line, the enrolment is reverted and the student removed from the course.
+
+There is a possibility to have several email addresses at one line.
+
+Example:
+```
+! alice@example.com bob@example.com
+# Group 2
+!carol@example.com
+# Group 3
+carol@example.com
+```
+
+This would remove Alice and Bob from the course itself. Carol will be removed from group 2 but added to group 3.
 
 
 Limitations
