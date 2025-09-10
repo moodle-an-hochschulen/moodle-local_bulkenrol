@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['bulkenrol:enrolusers'] = 'Use user bulk enrolment';
 $string['bulkenrol_form_intro'] = 'Here, you can bulk enrol users to your course. A user to be enrolled is identified by his e-mail address stored in his Moodle account.';
-$string['enrol_users'] = 'Enrol users';
+$string['enrol_users_btn'] = 'Execute user enrolment';
 $string['enrol_users_successful'] = 'User bulk enrolment successful';
 $string['enrolinfo_headline'] = 'Enrolment details';
 $string['enrolplugin'] = 'Enrolment plugin';
@@ -39,6 +39,7 @@ $string['error_exception_info'] = 'Exception information';
 $string['error_getting_user_for_email'] = 'There was a problem when getting the user record for e-mail address <em>{$a}</em> from the database.';
 $string['error_group_add_member'] = 'There was a problem when adding the user with e-mail <em>{$a->email}</em> to the course group <em>{$a->group}</em>.';
 $string['error_group_add_members'] = 'There was a problem when adding the users to the course group(s).';
+$string['error_group_remove_member'] = 'There was a problem when removing the user with e-mail <em>{$a->email}</em> from the course group <em>{$a->group}</em>.';
 $string['error_invalid_email'] = 'Invalid e-mail address found in line {$a->row} (<em>{$a->email}</em>). This line will be ignored.';
 $string['error_more_than_one_record_for_email'] = 'More than one existing Moodle user account with e-mail address <em>{$a}</em> found.<br />This line will be ignored, none of the existing Moodle users will be enrolled.';
 $string['error_no_courseid'] = 'No course ID set.';
@@ -71,7 +72,10 @@ $string['user_enroled_already'] = 'User is already enrolled';
 $string['user_enroled_yes'] = 'User will be enrolled';
 $string['user_groups'] = 'Group membership';
 $string['user_groups_already'] = 'User is already group member';
+$string['user_groups_notin'] = 'User is not member of the group';
+$string['user_groups_remove'] = 'User will be removed from group';
 $string['user_groups_yes'] = 'User will be added to group';
+$string['user_unenroled_already'] = 'User is not enroled';
 $string['user_unenroled_yes'] = 'User will be unenrolled';
 $string['usermails'] = 'List of e-mail addresses';
 $string['usermails_help'] = 'To enrol an existing Moodle user into this course, add his e-mail address to this form, one user / e-mail address per line.<br /><br />
@@ -82,3 +86,6 @@ To do this, preceed the e-mail address with an exclamation mark (!).<br /><br />
 Example:<br />! alice@example.com<br />! bob@example.com';
 $string['users_to_enrol_in_course'] = 'Users to be enrolled into the course';
 $string['users_to_unenrol_from_course'] = 'Users to be unenrolled from the course';
+
+// Deprecated since local_bulkenrol v5.0-r3
+$string['enrol_users'] = 'Enrol users';
