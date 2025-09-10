@@ -47,8 +47,6 @@ function local_bulkenrol_check_user_mails($emailstextfield, $courseid) {
     $checkedemails->moodleusers_for_email = [];
     $checkedemails->course_groups = [];
     $checkedemails->user_groups = [];
-    $checkedemails->user_enroled = [];
-    $checkedemails->user_unenroled = [];
     $checkedemails->validemailfound = 0;
 
     $emaildelimiters = [', ', ' ', ','];
