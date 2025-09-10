@@ -187,7 +187,7 @@ Feature: Using the local_bulkenrol plugin for group management
       | student1@example.com | Student    | 1         | Student | Group 1 |
       | student2@example.com | Student    | 2         | Student | Group 2 |
 
-  Scenario: Bulk enrol students and change group assignments instantly
+  Scenario: Use the plugin just to change group assignments
     Given the following "course enrolments" exist:
       | user     | course | role    |
       | student1 | C1     | student |
