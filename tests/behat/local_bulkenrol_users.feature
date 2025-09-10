@@ -45,7 +45,7 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       student2@example.com
       student3@example.com
       """
-    And I click on "Enrol users" "button"
+    And I click on "Execute user enrolment" "button"
     Then the following should exist in the "localbulkenrol_enrolusers" table:
       | Email address        | First name | Last name | User enrolment        |
       | student1@example.com | Student    | 1         | User will be enrolled |
@@ -54,7 +54,7 @@ Feature: Using the local_bulkenrol plugin for user enrolments
     And the following should exist in the "localbulkenrol_enrolinfo" table:
       | Enrolment method | Assigned role |
       | Self enrolment   | Student       |
-    And I click on "Enrol users" "button"
+    And I click on "Execute user enrolment" "button"
     Then the following should exist in the "participants" table:
       | Email address        | First name | Last name | Roles   |
       | student1@example.com | Student    | 1         | Student |
@@ -73,7 +73,7 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       student2@example.com
       student3@example.com
       """
-    And I click on "Enrol users" "button"
+    And I click on "Execute user enrolment" "button"
     Then the following should exist in the "localbulkenrol_enrolusers" table:
       | Email address        | First name | Last name | User enrolment        |
       | student1@example.com | Student    | 1         | User will be enrolled |
@@ -82,7 +82,7 @@ Feature: Using the local_bulkenrol plugin for user enrolments
     And the following should exist in the "localbulkenrol_enrolinfo" table:
       | Enrolment method  | Assigned role |
       | Manual enrolments | Student       |
-    And I click on "Enrol users" "button"
+    And I click on "Execute user enrolment" "button"
     Then the following should exist in the "participants" table:
       | Email address        | First name | Last name | Roles   |
       | student1@example.com | Student    | 1         | Student |
@@ -107,7 +107,7 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       student2@example.com
       student3@example.com
       """
-    And I click on "Enrol users" "button"
+    And I click on "Execute user enrolment" "button"
     Then the following should exist in the "localbulkenrol_enrolusers" table:
       | Email address        | First name | Last name | User enrolment        |
       | student1@example.com | Student    | 1         | User will be enrolled |
@@ -116,7 +116,7 @@ Feature: Using the local_bulkenrol plugin for user enrolments
     And the following should exist in the "localbulkenrol_enrolinfo" table:
       | Enrolment method  | Assigned role |
       | Manual enrolments | Teacher       |
-    And I click on "Enrol users" "button"
+    And I click on "Execute user enrolment" "button"
     Then the following should exist in the "participants" table:
       | Email address        | First name | Last name | Roles   |
       | student1@example.com | Student    | 1         | Teacher |
@@ -138,13 +138,13 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       student2@example.com
       student3@example.com
       """
-    And I click on "Enrol users" "button"
+    And I click on "Execute user enrolment" "button"
     Then the following should exist in the "localbulkenrol_enrolusers" table:
       | Email address        | First name | Last name | User enrolment           |
       | student1@example.com | Student    | 1         | User is already enrolled |
       | student2@example.com | Student    | 2         | User will be enrolled    |
       | student3@example.com | Student    | 3         | User will be enrolled    |
-    And I click on "Enrol users" "button"
+    And I click on "Execute user enrolment" "button"
     Then the following should exist in the "participants" table:
       | Email address        | First name | Last name | Roles   |
       | student1@example.com | Student    | 1         | Student |
@@ -171,11 +171,11 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       """
       student1@example.com
       """
-    And I click on "Enrol users" "button"
+    And I click on "Execute user enrolment" "button"
     And the following should exist in the "localbulkenrol_enrolusers" table:
       | Email address        | First name | Last name | User enrolment           |
       | student1@example.com | Student    | 1         | User is already enrolled |
-    And I click on "Enrol users" "button"
+    And I click on "Execute user enrolment" "button"
     And the following should exist in the "participants" table:
       | Email address        | First name | Last name | Roles   |
       | student1@example.com | Student    | 1         | Student |
@@ -191,7 +191,7 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       """
       student4@example.com
       """
-    And I click on "Enrol users" "button"
+    And I click on "Execute user enrolment" "button"
     Then I should see "No existing Moodle user account with e-mail address student4@example.com."
 
   Scenario: Try to bulk enrol a student into the course for which two accounts exist in the system.
@@ -209,7 +209,7 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       """
       student2@example.com
       """
-    And I click on "Enrol users" "button"
+    And I click on "Execute user enrolment" "button"
     Then I should see "More than one existing Moodle user account with e-mail address student2@example.com found."
 
   Scenario: Try to bulk enrol a list of invalid users.
@@ -222,10 +222,10 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       foo
       bar
       """
-    And I click on "Enrol users" "button"
+    And I click on "Execute user enrolment" "button"
     Then I should see "No valid e-mail address was found in the given list."
     And I should see "Please go back and check your input"
-    And "Enrol users" "button" should not exist
+    And "Execute user enrolment" "button" should not exist
 
   Scenario: Try to bulk enrol a list of mixed invalid users and empty line.
     When I log in as "teacher1"
@@ -238,7 +238,7 @@ Feature: Using the local_bulkenrol plugin for user enrolments
 
       foo
       """
-    And I click on "Enrol users" "button"
+    And I click on "Execute user enrolment" "button"
     Then I should see "Line 2 is empty and will be ignored."
     And I should see "No e-mail address found in line 3 (foo). This line will be ignored."
     And I should see "Manual enrolments"
@@ -257,7 +257,7 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       studentupperaccount1@example.com
       studentUPPERinput2@example.com
       """
-    And I click on "Enrol users" "button"
+    And I click on "Execute user enrolment" "button"
     Then the following should exist in the "localbulkenrol_enrolusers" table:
       | Email address                    | First name | Last name       | User enrolment        |
       | studentUPPERACCOUNT1@example.com | Student    | Upper Account 1 | User will be enrolled |
@@ -265,7 +265,7 @@ Feature: Using the local_bulkenrol plugin for user enrolments
     And the following should exist in the "localbulkenrol_enrolinfo" table:
       | Enrolment method  | Assigned role |
       | Manual enrolments | Student       |
-    And I click on "Enrol users" "button"
+    And I click on "Execute user enrolment" "button"
     Then the following should exist in the "participants" table:
       | Email address                    | First name | Last name       | Roles   |
       | studentUPPERACCOUNT1@example.com | Student    | Upper Account 1 | Student |
@@ -290,12 +290,12 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       !  student1@example.com
       !student2@example.com
       """
-    And I click on "Enrol users" "button"
+    And I click on "Execute user enrolment" "button"
     Then the following should exist in the "localbulkenrol_enrolusers" table:
       | Email address        | First name | Last name | User enrolment          |
       | student1@example.com | Student    | 1         | User will be unenrolled |
       | student2@example.com | Student    | 2         | User will be unenrolled |
-    And I click on "Enrol users" "button"
+    And I click on "Execute user enrolment" "button"
     Then the following should exist in the "participants" table:
       | Email address        | First name | Last name | Roles   |
       | student3@example.com | Student    | 3         | Student |
