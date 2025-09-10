@@ -87,5 +87,5 @@ Example:<br />! alice@example.com<br />! bob@example.com';
 $string['users_to_enrol_in_course'] = 'Users to be enrolled into the course';
 $string['users_to_unenrol_from_course'] = 'Users to be unenrolled from the course';
 
-// Deprecated since local_bulkenrol v5.0-r3
+// Deprecated since local_bulkenrol v5.0-r3.
 $string['enrol_users'] = 'Enrol users';
