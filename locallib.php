@@ -73,7 +73,7 @@ function local_bulkenrol_check_user_mails($emailstextfield, $courseid) {
             // Check for delete enrolment.
             $delenrolpos = strpos($emailline , '!');
             if ($delenrolpos !== false) {
-                // Checks for multiple addresses on one line omitted for now.
+                // Remeber the delete flag and clean the email line from it to have it processed further.
                 $emailline = trim(substr($emailline, $delenrolpos + 1));
             }
 
