@@ -46,7 +46,7 @@ $string['error_no_courseid'] = 'No course ID set.';
 $string['error_no_email'] = 'No e-mail address found in line {$a->line} (<em>{$a->content}</em>). This line will be ignored.';
 $string['error_no_record_found_for_email'] = 'No existing Moodle user account with e-mail address <em>{$a}</em>.<br />This line will be ignored, there won\'t be a Moodle user account created on-the-fly.';
 $string['error_no_valid_email_in_list'] = 'No valid e-mail address was found in the given list.<br />Please <a href=\'{$a->url}\'>go back and check your input</a>.';
-$string['error_unenrol_user'] = 'User with e-mail {$a->email} could not be unenroled from course.';
+$string['error_unenrol_user'] = 'User with e-mail {$a->email} could not be unenrolled from course.';
 $string['error_usermails_empty'] = 'List of e-mail addresses is empty. Please add at least one e-mail address.';
 $string['group_name_headline'] = 'Group name';
 $string['group_status_create'] = 'Group will be created';
@@ -75,15 +75,10 @@ $string['user_groups_already'] = 'User is already group member';
 $string['user_groups_notin'] = 'User is not member of the group';
 $string['user_groups_remove'] = 'User will be removed from group';
 $string['user_groups_yes'] = 'User will be added to group';
-$string['user_unenroled_already'] = 'User is not enroled';
+$string['user_unenroled_already'] = 'User is not enrolled';
 $string['user_unenroled_yes'] = 'User will be unenrolled';
 $string['usermails'] = 'List of e-mail addresses';
-$string['usermails_help'] = 'To enrol an existing Moodle user into this course, add his e-mail address to this form, one user / e-mail address per line.<br /><br />
-Example:<br />alice@example.com<br />bob@example.com<br /><br />Optionally, you are able to create groups and add the enrolled users to the groups. All you have to do
-is to add a heading line with a hash sign and the group\'s name, separating the list of users.<br /><br />Example:<br /># Group 1<br />
-alice@example.com<br />bob@example.com<br /># Group 2<br />carol@example.com<br />dave@example.com<br /><br />It is also possible to unenrol users.<br />
-To do this, preceed the e-mail address with an exclamation mark (!).<br /><br />
-Example:<br />! alice@example.com<br />! bob@example.com';
+$string['usermails_help'] = 'To enrol an existing Moodle user into this course, add his e-mail address to this form, one user / e-mail address per line.<br /><br />Example:<br />alice@example.com<br />bob@example.com<br /><br />Optionally, you are able to create groups and add the enrolled users to the groups. All you have to do is to add a heading line with a hash sign and the group\'s name, separating the list of users.<br /><br />Example:<br /># Group 1<br />alice@example.com<br />bob@example.com<br /># Group 2<br />carol@example.com<br />dave@example.com<hr />It is also possible to unenrol users.<br />To do this, preceed the e-mail address with an exclamation mark (!).<br /><br />Example:<br />! alice@example.com<br />! bob@example.com';
 $string['users_to_enrol_in_course'] = 'Users to be enrolled into the course';
 $string['users_to_unenrol_from_course'] = 'Users to be unenrolled from the course';
 

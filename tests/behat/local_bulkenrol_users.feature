@@ -275,6 +275,9 @@ Feature: Using the local_bulkenrol plugin for user enrolments
     Given the following config values are set as admin:
       | config      | value | plugin          |
       | enrolplugin | self  | local_bulkenrol |
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | student4 | Student   | 4        | student4@example.com |
     And the following "course enrolments" exist:
       | user     | course | role           |
       | student1 | C1     | student        |
@@ -289,12 +292,14 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       """
       !  student1@example.com
       !student2@example.com
+      !student4@example.com
       """
     And I click on "Execute user enrolment" "button"
     Then the following should exist in the "localbulkenrol_enrolusers" table:
       | Email address        | First name | Last name | User enrolment          |
       | student1@example.com | Student    | 1         | User will be unenrolled |
       | student2@example.com | Student    | 2         | User will be unenrolled |
+      | student4@example.com | Student    | 4         | User is not enrolled    |
     And I click on "Execute user enrolment" "button"
     Then the following should exist in the "participants" table:
       | Email address        | First name | Last name | Roles   |
@@ -303,3 +308,4 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       | Email address        | First name | Last name | Roles   |
       | student1@example.com | Student    | 1         | Student |
       | student2@example.com | Student    | 2         | Student |
+      | student4@example.com | Student    | 4         | Student |
