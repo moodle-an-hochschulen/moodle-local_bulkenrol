@@ -108,7 +108,8 @@ function local_bulkenrol_check_user_mails($emailstextfield, $courseid) {
                 // One email in row/line.
             } else if ($emailsinlinecnt == 1) {
                 $email = $emailline;
-                local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $currentgroup, $checkedemails, $delenrolpos !== false);
+                local_bulkenrol_check_email($email, $linecnt, $courseid, $context,
+                    $currentgroup, $checkedemails, $delenrolpos !== false);
             }
             // More than one email in row/line.
             if ($emailsinlinecnt > 1) {
@@ -127,9 +128,9 @@ function local_bulkenrol_check_user_mails($emailstextfield, $courseid) {
 
                     // Iterate emails in row/line.
                     foreach ($emailsinline as $emailinline) {
-
                         $email = trim($emailinline);
-                        local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $currentgroup, $checkedemails, $delenrolpos !== false);
+                        local_bulkenrol_check_email($email, $linecnt, $courseid, $context,
+                            $currentgroup, $checkedemails, $delenrolpos !== false);
                     }
                 }
             }
@@ -308,8 +309,14 @@ function local_bulkenrol_users($localbulkenrolkey) {
                     $courseid = $tmpdata[0];
                 }
 
-                $userstoenrol = array_filter($localbulkenroldata->moodleusers_for_email, fn($f) => $f->action === 'user_enroled_yes');
-                $userstounenrol = array_filter($localbulkenroldata->moodleusers_for_email, fn($f) => $f->action === 'user_unenroled_yes');
+                $userstoenrol = array_filter(
+                    $localbulkenroldata->moodleusers_for_email,
+                    fn($f) => $f->action === 'user_enroled_yes'
+                );
+                $userstounenrol = array_filter(
+                    $localbulkenroldata->moodleusers_for_email,
+                    fn($f) => $f->action === 'user_unenroled_yes'
+                );
 
                 if (empty($courseid)) {
                     return local_bulkenrol_get_retval_obj('', [get_string('error_no_courseid', 'local_bulkenrol')]);
@@ -608,7 +615,13 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
                         $cell->text = '';
                         $cell->text = html_writer::tag('span',
                             get_string($user->action, 'local_bulkenrol'),
-                            ['class' => 'badge bg-' . (strpos($user->action, '_yes') ? 'success text-light' : 'secondary text-dark')]);
+                            ['class' => 'badge bg-'
+                                . (strpos($user->action, '_yes')
+                                    ? 'success text-light'
+                                    : 'secondary text-dark'
+                                ),
+                            ]
+                        );
                         $row[] = $cell;
 
                         $cell = new html_table_cell();
