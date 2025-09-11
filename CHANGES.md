@@ -4,7 +4,7 @@ moodle-local_bulkenrol
 Changes
 -------
 
-### Unreleased
+### v4.4-r3
 
 * 2025-09-11 - Improvement: Make enrollment instructions gender-neutral, solved by #40.
 * 2025-09-10 - Improvement: Document the fact that the teacher can use multiple users per line as well.
