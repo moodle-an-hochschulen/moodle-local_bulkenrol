@@ -6,6 +6,7 @@ Changes
 
 ### Unreleased
 
+* 2025-09-11 - Improvement: Make enrollment instructions gender-neutral, solved by #40.
 * 2025-09-10 - Improvement: Document the fact that the teacher can use multiple users per line as well.
 * 2025-09-05 - Feature: Allow the teacher to unenrol users from the course as well, thanks to the MoodleMootDACH '25 DevCamp team 35.
 
