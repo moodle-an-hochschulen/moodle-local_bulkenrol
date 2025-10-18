@@ -4,6 +4,10 @@ moodle-local_bulkenrol
 Changes
 -------
 
+### Unreleased
+
+* 2025-10-15 - Tests: Switch Github actions workflows to reusable workflows by Moodle an Hochschulen e.V.
+
 ### v5.0-r3
 
 * 2025-09-11 - Improvement: Make enrollment instructions gender-neutral, solved by #40.
