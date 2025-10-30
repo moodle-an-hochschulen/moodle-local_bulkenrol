@@ -6,6 +6,7 @@ Changes
 
 ### Unreleased
 
+* 2025-10-26 - Make the enrolment tables a little bit prettier
 * 2025-10-26 - Prepare compatibility for Moodle 5.1.
 
 ### v5.0-r4

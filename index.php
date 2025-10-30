@@ -86,7 +86,7 @@ if (empty($localbulkenrolkey)) {
         }
     } else {
         echo $OUTPUT->header();
-        echo $OUTPUT->heading(get_string('pluginname', 'local_bulkenrol'));
+        echo $OUTPUT->heading(get_string('pluginname', 'local_bulkenrol'), 2, 'mb-4');
         echo $form->display();
         echo $OUTPUT->footer();
     }
@@ -128,7 +128,7 @@ if ($localbulkenrolkey) {
         $PAGE->set_url('/local/bulkenrol/index.php', ['id' => $id]);
 
         echo $OUTPUT->header();
-        echo $OUTPUT->heading(get_string('pluginname', 'local_bulkenrol'));
+        echo $OUTPUT->heading(get_string('pluginname', 'local_bulkenrol'), 2, 'mb-4');
         if (
             !empty($localbulkenrolkey) && !empty($SESSION->local_bulkenrol) &&
                 array_key_exists($localbulkenrolkey, $SESSION->local_bulkenrol)

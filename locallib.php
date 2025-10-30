@@ -274,7 +274,7 @@ function local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $cur
                     ['class' => 'badge bg-secondary text-dark']
                 );
         }
-        $checkedemails->user_groups[$email][] = $currentgroup . ': ' . $groupinfo;
+        $checkedemails->user_groups[$email][] = '<small>' . $currentgroup . ':</small><br />' . $groupinfo;
         // When there is the unenrol flag set but a user group exists, do not touch the user enrolment itself.
         if ($unenrol && $checkedemails->moodleusers_for_email[$email]->action === 'user_unenroled_yes') {
             $checkedemails->moodleusers_for_email[$email]->action = 'user_enroled_already';
@@ -595,7 +595,7 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
 
                 $table = new html_table();
                 $table->id = "localbulkenrol_hints";
-                $table->attributes['class'] = 'generaltable';
+                $table->attributes['class'] = 'table';
                 $table->summary = get_string('hints', 'local_bulkenrol');
                 $table->size = ['10%', '90%'];
                 $table->head = [];
@@ -605,7 +605,7 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
 
                 if (!empty($data)) {
                     echo $OUTPUT->heading(get_string('hints', 'local_bulkenrol'), 3);
-                    echo html_writer::tag('div', html_writer::table($table), ['class' => 'flexible-wrap']);
+                    echo html_writer::tag('div', html_writer::table($table), ['class' => 'flexible-wrap mb-4']);
                 }
 
                 break;
@@ -646,7 +646,7 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
                         $cell = new html_table_cell();
                         $cell->text = '';
                         if (!empty($localbulkenroldata->user_groups[$email])) {
-                            $cell->text = implode(',<br />', $localbulkenroldata->user_groups[$email]);
+                            $cell->text = implode('<br class="mb-2" />', $localbulkenroldata->user_groups[$email]);
                         }
                         $row[] = $cell;
 
@@ -656,7 +656,7 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
 
                 $table = new html_table();
                 $table->id = "localbulkenrol_enrolusers";
-                $table->attributes['class'] = 'generaltable';
+                $table->attributes['class'] = 'table';
                 $table->summary = get_string('users_to_enrol_in_course', 'local_bulkenrol');
                 $table->size = ['20%', '17%', '17%', '20%', '26%'];
                 $table->head = [];
@@ -669,7 +669,7 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
 
                 if (!empty($data)) {
                     echo $OUTPUT->heading(get_string('users_to_enrol_in_course', 'local_bulkenrol'), 3);
-                    echo html_writer::tag('div', html_writer::table($table), ['class' => 'flexible-wrap']);
+                    echo html_writer::tag('div', html_writer::table($table), ['class' => 'flexible-wrap mb-4']);
                 }
                 break;
 
@@ -721,7 +721,7 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
 
                 $table = new html_table();
                 $table->id = "localbulkenrol_groupinfos";
-                $table->attributes['class'] = 'generaltable';
+                $table->attributes['class'] = 'table';
                 $table->size = ['50%', '50%'];
                 $table->head = [];
                 $table->head[] = get_string('group_name_headline', 'local_bulkenrol');
@@ -730,7 +730,7 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
 
                 if (!empty($data)) {
                     echo $OUTPUT->heading(get_string('groupinfos_headline', 'local_bulkenrol'), 3);
-                    echo html_writer::tag('div', html_writer::table($table), ['class' => 'flexible-wrap']);
+                    echo html_writer::tag('div', html_writer::table($table), ['class' => 'flexible-wrap mb-4']);
                 }
                 break;
 
@@ -826,7 +826,7 @@ function local_bulkenrol_display_enroldetails() {
 
     $table = new html_table();
     $table->id = "localbulkenrol_enrolinfo";
-    $table->attributes['class'] = 'generaltable';
+    $table->attributes['class'] = 'table';
     $table->size = ['50%', '50%'];
     $table->head = [];
     $table->head[] = get_string('type_enrol', 'local_bulkenrol');
@@ -834,5 +834,5 @@ function local_bulkenrol_display_enroldetails() {
     $table->data = $data;
 
     echo $OUTPUT->heading(get_string('enrolinfo_headline', 'local_bulkenrol'), 3);
-    echo html_writer::tag('div', html_writer::table($table), ['class' => 'flexible-wrap']);
+    echo html_writer::tag('div', html_writer::table($table), ['class' => 'flexible-wrap mb-4']);
 }
