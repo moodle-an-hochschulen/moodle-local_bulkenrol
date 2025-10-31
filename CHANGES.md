@@ -4,7 +4,7 @@ moodle-local_bulkenrol
 Changes
 -------
 
-### Unreleased
+### v5.1-r1
 
 * 2025-10-26 - Make the enrolment tables a little bit prettier
 * 2025-10-26 - Prepare compatibility for Moodle 5.1.
