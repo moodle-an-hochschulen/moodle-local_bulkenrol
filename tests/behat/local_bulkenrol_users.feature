@@ -60,7 +60,7 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       | student1@example.com | Student    | 1         | Student |
       | student2@example.com | Student    | 2         | Student |
       | student3@example.com | Student    | 3         | Student |
-    And "div[data-fullname='Student 1'][data-enrolinstancename='Self enrolment (Student)'][data-status='Active']" "css_element" should exist
+    And "div[data-fullname='Student 1'][data-enrolinstancename^='Self enrolment as'][data-status='Active']" "css_element" should exist
 
   Scenario: Bulk enrol students into the course who are not enrolled yet with enrolment method manual
     When I log in as "teacher1"
