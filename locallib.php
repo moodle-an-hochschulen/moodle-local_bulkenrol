@@ -83,7 +83,8 @@ function local_bulkenrol_check_user_mails($emailstextfield, $courseid) {
             $grouppos = strpos($emailline, '#');
             if ($grouppos !== false) {
                 $groupname = substr($emailline, $grouppos + 1);
-                $currentgroup = trim($groupname);
+                // Clean the group name the same way as core does in the group edit form.
+                $currentgroup = trim(clean_param($groupname, PARAM_TEXT));
                 $checkedemails->course_groups[$currentgroup] = [];
                 continue;
             }
@@ -95,7 +96,7 @@ function local_bulkenrol_check_user_mails($emailstextfield, $courseid) {
             if ($emailsinlinecnt == 0) {
                 $a = new stdClass();
                 $a->line = $linecnt;
-                $a->content = $emailline;
+                $a->content = s($emailline);
                 if (trim($a->content != "")) {
                     $error = get_string('error_no_email', 'local_bulkenrol', $a);
                 } else {
@@ -173,7 +174,7 @@ function local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $cur
         $checkedemails->emails_to_ignore[] = $email;
         $a = new stdClass();
         $a->row = $linecnt;
-        $a->email = $email;
+        $a->email = s($email);
         $error = get_string('error_invalid_email', 'local_bulkenrol', $a);
         if (array_key_exists($linecnt, $checkedemails->error_messages)) {
             $errors = $checkedemails->error_messages[$linecnt];
@@ -193,15 +194,15 @@ function local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $cur
     } catch (dml_missing_record_exception $e) {
         $userrecord = null;
         $checkedemails->error_messages[$linecnt] =
-            get_string('error_no_record_found_for_email', 'local_bulkenrol', $email);
+            get_string('error_no_record_found_for_email', 'local_bulkenrol', s($email));
     } catch (dml_multiple_records_exception $e) {
         $userrecord = null;
         $checkedemails->error_messages[$linecnt] =
-            get_string('error_more_than_one_record_for_email', 'local_bulkenrol', $email);
+            get_string('error_more_than_one_record_for_email', 'local_bulkenrol', s($email));
     } catch (Exception $e) {
         $userrecord = null;
         $checkedemails->error_messages[$linecnt] =
-            get_string('error_getting_user_for_email', 'local_bulkenrol', $email);
+            get_string('error_getting_user_for_email', 'local_bulkenrol', s($email));
     }
 
     if ($userrecord === null || (int)$userrecord->id === 0) {
@@ -241,8 +242,8 @@ function local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $cur
         if (!empty($result->error)) {
             $a = new stdClass();
             $a->row = $linecnt;
-            $a->email = $email;
-            $a->groupname = $currentgroup;
+            $a->email = s($email);
+            $a->groupname = s($currentgroup);
             $a->error = $result->error;
             $error = get_string('error_check_is_already_member', 'local_bulkenrol', $a);
             $checkedemails->error_messages[$linecnt] = $error;
@@ -274,7 +275,7 @@ function local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $cur
                     ['class' => 'badge bg-secondary text-dark']
                 );
         }
-        $checkedemails->user_groups[$email][] = $currentgroup . ': ' . $groupinfo;
+        $checkedemails->user_groups[$email][] = s($currentgroup) . ': ' . $groupinfo;
         // When there is the unenrol flag set but a user group exists, do not touch the user enrolment itself.
         if ($unenrol && $checkedemails->moodleusers_for_email[$email]->action === 'user_unenroled_yes') {
             $checkedemails->moodleusers_for_email[$email]->action = 'user_enroled_already';
@@ -477,7 +478,7 @@ function local_bulkenrol_users($localbulkenrolkey) {
                                     } catch (Exception $e) {
                                         $a = new stdClass();
                                         $a->email = $user->email;
-                                        $a->group = $groupname;
+                                        $a->group = s($groupname);
                                         $msg = get_string("error_group_{$member->action}_member", 'local_bulkenrol', $a);
                                         $exceptionsmsg[] = $msg;
                                     }
@@ -695,7 +696,7 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
                         $row = [];
 
                         $cell = new html_table_cell();
-                        $cell->text = $groupname;
+                        $cell->text = s($groupname);
                         $row[] = $cell;
 
                         $cell = new html_table_cell();
