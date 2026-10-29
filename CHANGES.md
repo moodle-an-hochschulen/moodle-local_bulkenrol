@@ -6,6 +6,7 @@ Changes
 
 ### Unreleased
 
+* 2026-10-29 - Bugfix: Fix the empty line check when parsing the list of e-mail addresses.
 * 2026-10-29 - Bugfix: Escape user-provided group names and e-mail lines on the confirmation page to prevent self-XSS.
 
 ### v5.3-r1
