@@ -216,7 +216,14 @@ function local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $cur
     if (!empty($context)) {
         $useralreadyenroled = is_enrolled($context, $userrecord->id);
     }
-    $checkedemails->moodleusers_for_email[$email] = (object)['user' => $userrecord];
+    // Only keep the user fields which are needed later, as this data is stored in the session.
+    $user = (object)[
+        'id' => $userrecord->id,
+        'email' => $userrecord->email,
+        'firstname' => $userrecord->firstname,
+        'lastname' => $userrecord->lastname,
+    ];
+    $checkedemails->moodleusers_for_email[$email] = (object)['user' => $user];
     if ($unenrol === true) {
         $checkedemails->moodleusers_for_email[$email]->action =
             empty($useralreadyenroled) ? 'user_unenroled_already' : 'user_unenroled_yes';
@@ -836,4 +843,24 @@ function local_bulkenrol_display_enroldetails() {
 
     echo $OUTPUT->heading(get_string('enrolinfo_headline', 'local_bulkenrol'), 3);
     echo html_writer::tag('div', html_writer::table($table), ['class' => 'flexible-wrap']);
+}
+
+/**
+ * Removes the checked data and the submitted input of a bulk enrolment from the session.
+ *
+ * @param string $localbulkenrolkey
+ */
+function local_bulkenrol_clear_session_data($localbulkenrolkey) {
+    global $SESSION;
+
+    if (empty($localbulkenrolkey)) {
+        return;
+    }
+
+    if (isset($SESSION->local_bulkenrol)) {
+        unset($SESSION->local_bulkenrol[$localbulkenrolkey]);
+    }
+    if (isset($SESSION->local_bulkenrol_inputs)) {
+        unset($SESSION->local_bulkenrol_inputs[$localbulkenrolkey . '_data']);
+    }
 }

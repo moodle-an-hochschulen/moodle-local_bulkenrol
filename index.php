@@ -104,6 +104,9 @@ if ($localbulkenrolkey) {
 
             $msg = local_bulkenrol_users($localbulkenrolkey);
 
+            // The bulk enrolment is done, so the session data is not needed anymore.
+            local_bulkenrol_clear_session_data($localbulkenrolkey);
+
             if ($msg->status == 'error') {
                 redirect(
                     $CFG->wwwroot . '/user/index.php?id=' . $id,
@@ -123,6 +126,9 @@ if ($localbulkenrolkey) {
             redirect($CFG->wwwroot . '/local/bulkenrol/index.php?id=' . $id, '', 0);
         }
     } else if ($form2->is_cancelled()) {
+        // The bulk enrolment is cancelled, so the session data is not needed anymore.
+        local_bulkenrol_clear_session_data($localbulkenrolkey);
+
         redirect($CFG->wwwroot . '/local/bulkenrol/index.php?id=' . $id, '', 0);
     } else {
         $PAGE->set_url('/local/bulkenrol/index.php', ['id' => $id]);
