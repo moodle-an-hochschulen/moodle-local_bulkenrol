@@ -4,6 +4,10 @@ moodle-local_bulkenrol
 Changes
 -------
 
+### Unreleased
+
+* 2026-10-29 - Bugfix: Escape user-provided group names and e-mail lines on the confirmation page to prevent self-XSS.
+
 ### v5.1-r1
 
 * 2025-10-26 - Make the enrolment tables a little bit prettier
