@@ -4,6 +4,10 @@ moodle-local_bulkenrol
 Changes
 -------
 
+### Unreleased
+
+* 2026-10-29 - Bugfix: Escape user-provided group names and e-mail lines on the confirmation page to prevent self-XSS.
+
 ### v5.2-r1
 
 * 2026-04-20 - Fix Behat tests which broke due to changes in Moodle 5.2
