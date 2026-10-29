@@ -97,7 +97,7 @@ function local_bulkenrol_check_user_mails($emailstextfield, $courseid) {
                 $a = new stdClass();
                 $a->line = $linecnt;
                 $a->content = s($emailline);
-                if (trim($a->content != "")) {
+                if (trim($a->content) !== "") {
                     $error = get_string('error_no_email', 'local_bulkenrol', $a);
                 } else {
                     $error = get_string('error_empty_line', 'local_bulkenrol', $a);
