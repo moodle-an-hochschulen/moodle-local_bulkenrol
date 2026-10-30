@@ -6,6 +6,7 @@ Changes
 
 ### Unreleased
 
+* 2026-10-30 - Improvement: Load the course groups only once when checking the list of e-mail addresses instead of once per e-mail address and use the cached course groups for the group overview on the confirmation page.
 * 2026-10-30 - Bugfix: Report errors which occur while checking the existing group memberships on the confirmation page instead of silently discarding them.
 * 2026-10-30 - Improvement: Always require a valid course and a login on the enrolment page and only accept session keys which belong to the given course.
 * 2026-10-30 - Improvement: Type the hidden course ID and session key fields of the forms consistently with the request parameters and use the already validated course ID when preparing the bulk enrolment.

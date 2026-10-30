@@ -61,8 +61,18 @@ function local_bulkenrol_check_user_mails($emailstextfield, $courseid) {
 
         $context = null;
 
+        $existingcoursegroups = null;
+
         if (!empty($courseid)) {
             $context = context_course::instance($courseid, MUST_EXIST);
+
+            // Load the course groups only once instead of once per e-mail address.
+            // If this fails, the group membership check will load them on its own and report the error.
+            try {
+                $existingcoursegroups = groups_get_all_groups($courseid);
+            } catch (Exception $e) {
+                $existingcoursegroups = null;
+            }
         }
 
         // Process emails from textfield.
@@ -115,7 +125,8 @@ function local_bulkenrol_check_user_mails($emailstextfield, $courseid) {
                     $context,
                     $currentgroup,
                     $checkedemails,
-                    $delenrolpos !== false
+                    $delenrolpos !== false,
+                    $existingcoursegroups
                 );
             }
             // More than one email in row/line.
@@ -143,7 +154,8 @@ function local_bulkenrol_check_user_mails($emailstextfield, $courseid) {
                             $context,
                             $currentgroup,
                             $checkedemails,
-                            $delenrolpos !== false
+                            $delenrolpos !== false,
+                            $existingcoursegroups
                         );
                     }
                 }
@@ -165,8 +177,18 @@ function local_bulkenrol_check_user_mails($emailstextfield, $courseid) {
  * @param string $currentgroup name of the group a user should be added to as member
  * @param object $checkedemails Object containing information to be displayed on confirm page and being used for bulkenrol.
  * @param bool $unenrol true if the user should be unenroled from the course
+ * @param array|null $existingcoursegroups already loaded course groups, null to load them when needed
  */
-function local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $currentgroup, &$checkedemails, $unenrol = false) {
+function local_bulkenrol_check_email(
+    $email,
+    $linecnt,
+    $courseid,
+    $context,
+    $currentgroup,
+    &$checkedemails,
+    $unenrol = false,
+    $existingcoursegroups = null
+) {
     // Check for valid email.
     $emailisvalid = validate_email($email);
 
@@ -246,7 +268,7 @@ function local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $cur
     }
     if (!array_key_exists($currentgroup, $checkedemails->user_groups[$email])) {
         // Check if user is member of the group.
-        $result = local_bulkenrol_is_already_member($courseid, $currentgroup, $userrecord->id);
+        $result = local_bulkenrol_is_already_member($courseid, $currentgroup, $userrecord->id, $existingcoursegroups);
         if (!empty($result->error)) {
             $a = new stdClass();
             $a->row = $linecnt;
@@ -687,7 +709,7 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
 
                 if (!empty($localbulkenroldata->course_groups)) {
                     $courseid = required_param('id', PARAM_INT);
-                    $existingcoursegroups = groups_get_all_groups($courseid, 0, 0, 'id, name');
+                    $existingcoursegroups = groups_get_all_groups($courseid, 0, 0, 'g.id, g.name');
 
                     foreach (array_keys($localbulkenroldata->course_groups) as $name) {
                         $groupname = trim($name);
@@ -755,9 +777,10 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
  * @param int $courseid id of the course
  * @param string $groupname
  * @param int $userid id of the user
+ * @param array|null $existingcoursegroups already loaded course groups, null to load them here
  * @return mixed Data structure containing flag 'already_member' and 'error'.
  */
-function local_bulkenrol_is_already_member($courseid, $groupname, $userid) {
+function local_bulkenrol_is_already_member($courseid, $groupname, $userid, $existingcoursegroups = null) {
     global $CFG;
 
     $result = new stdClass();
@@ -773,7 +796,9 @@ function local_bulkenrol_is_already_member($courseid, $groupname, $userid) {
     try {
         require_once($CFG->dirroot . '/group/lib.php');
 
-        $existingcoursegroups = groups_get_all_groups($courseid);
+        if ($existingcoursegroups === null) {
+            $existingcoursegroups = groups_get_all_groups($courseid);
+        }
 
         $groupname = trim($groupname);
 
