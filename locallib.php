@@ -252,7 +252,7 @@ function local_bulkenrol_check_email($email, $linecnt, $courseid, $context, $cur
             $a->row = $linecnt;
             $a->email = s($email);
             $a->groupname = s($currentgroup);
-            $a->error = $result->error;
+            $a->error = s($result->error);
             $error = get_string('error_check_is_already_member', 'local_bulkenrol', $a);
             $checkedemails->error_messages[$linecnt] = $error;
         }
@@ -797,8 +797,7 @@ function local_bulkenrol_is_already_member($courseid, $groupname, $userid) {
             }
         }
     } catch (Exception $e) {
-        $msg = get_string('error_group_add_members', 'local_bulkenrol');
-        $exceptionsmsg[] = $msg;
+        $result->error = $e->getMessage();
     }
     return $result;
 }
