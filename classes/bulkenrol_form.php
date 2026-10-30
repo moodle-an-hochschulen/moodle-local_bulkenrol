@@ -77,7 +77,7 @@ class bulkenrol_form extends moodleform {
         }
 
         $mform->addElement('hidden', 'id');
-        $mform->setType('id', PARAM_RAW);
+        $mform->setType('id', PARAM_INT);
         $mform->setDefault('id', $this->_customdata['courseid']);
 
         $this->add_action_buttons(true, get_string('enrol_users_btn', 'local_bulkenrol'));
