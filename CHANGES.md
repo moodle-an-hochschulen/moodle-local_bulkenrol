@@ -6,6 +6,7 @@ Changes
 
 ### Unreleased
 
+* 2026-10-30 - Improvement: Always require a valid course and a login on the enrolment page and only accept session keys which belong to the given course.
 * 2026-10-30 - Improvement: Type the hidden course ID and session key fields of the forms consistently with the request parameters and use the already validated course ID when preparing the bulk enrolment.
 * 2026-10-30 - Improvement: Remove the session data of edited or abandoned bulk enrolments when a new list of e-mail addresses is submitted.
 * 2026-10-29 - Improvement: Only store the necessary user fields in the session and remove the session data after the bulk enrolment was executed or cancelled.

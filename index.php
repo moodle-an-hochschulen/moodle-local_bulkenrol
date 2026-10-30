@@ -35,22 +35,20 @@ global $PAGE, $OUTPUT, $SESSION;
 $id = required_param('id', PARAM_INT);
 $localbulkenrolkey = optional_param('key', 0, PARAM_ALPHANUMEXT);
 
-$context = context_system::instance();
+$course = $DB->get_record('course', ['id' => $id], '*', MUST_EXIST);
+$context = context_course::instance($course->id, MUST_EXIST);
 
-if (!empty($id)) {
-    $course = $DB->get_record('course', ['id' => $id], '*', MUST_EXIST);
-    $context = context_course::instance($course->id, MUST_EXIST);
+$PAGE->set_context($context);
+$PAGE->set_url('/local/bulkenrol/index.php', ['id' => $id]);
+$PAGE->set_title("$course->shortname: " . get_string('pluginname', 'local_bulkenrol'));
+$PAGE->set_heading($course->fullname);
 
-    $PAGE->set_context($context);
-    $PAGE->set_url('/local/bulkenrol/index.php', ['id' => $id]);
-    $PAGE->set_title("$course->shortname: " . get_string('pluginname', 'local_bulkenrol'));
-    $PAGE->set_heading($course->fullname);
+require_login($course);
+require_capability('local/bulkenrol:enrolusers', $context);
 
-    require_login($course);
-}
-
-if (!has_capability('local/bulkenrol:enrolusers', $context)) {
-    throw new \moodle_exception('nopermissions', 'error', '', 'local/bulkenrol:enrolusers');
+// Only accept a session key which belongs to the course which the capability was checked for.
+if (!empty($localbulkenrolkey) && explode('_', $localbulkenrolkey)[0] !== (string) $id) {
+    redirect(new \core\url('/local/bulkenrol/index.php', ['id' => $id]));
 }
 
 $PAGE->set_pagelayout('incourse');
@@ -82,11 +80,7 @@ if (empty($localbulkenrolkey)) {
         $localbulkenroldata = $localbulkenrolkey . '_data';
         $SESSION->local_bulkenrol_inputs[$localbulkenroldata] = $emails;
     } else if ($form->is_cancelled()) {
-        if (!empty($id)) {
-            redirect($CFG->wwwroot . '/course/view.php?id=' . $id, '', 0);
-        } else {
-            redirect($CFG->wwwroot, '', 0);
-        }
+        redirect($CFG->wwwroot . '/course/view.php?id=' . $id, '', 0);
     } else {
         echo $OUTPUT->header();
         echo $OUTPUT->heading(get_string('pluginname', 'local_bulkenrol'));
