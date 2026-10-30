@@ -6,6 +6,7 @@ Changes
 
 ### Unreleased
 
+* 2026-10-30 - Improvement: Flag the local/bulkenrol:enrolusers capability with RISK_PERSONAL and explain in the README that the plugin resolves e-mail addresses to user names site-wide and what this means when granting the capability to other roles than the manager role.
 * 2026-10-30 - Improvement: Load the course groups only once when checking the list of e-mail addresses instead of once per e-mail address and use the cached course groups for the group overview on the confirmation page.
 * 2026-10-30 - Bugfix: Report errors which occur while checking the existing group memberships on the confirmation page instead of silently discarding them.
 * 2026-10-30 - Improvement: Always require a valid course and a login on the enrolment page and only accept session keys which belong to the given course.
