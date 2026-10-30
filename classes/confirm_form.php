@@ -51,7 +51,7 @@ class confirm_form extends moodleform {
         $mform = $this->_form;
 
         $mform->addElement('hidden', 'key');
-        $mform->setType('key', PARAM_RAW);
+        $mform->setType('key', PARAM_ALPHANUMEXT);
         $mform->setDefault('key', $localbulkenrolkey);
 
         $mform->addElement('hidden', 'id');
