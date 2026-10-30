@@ -29,6 +29,7 @@ define('LOCALBULKENROL_HINT', 'hint');
 define('LOCALBULKENROL_ENROLUSERS', 'enrolusers');
 define('LOCALBULKENROL_UNENROLUSERS', 'unenrolusers');
 define('LOCALBULKENROL_GROUPINFOS', 'groupinfos');
+define('LOCALBULKENROL_SESSIONDATA_MAXAGE', HOURSECS);
 
 /**
  * Check list of submitted user mails and creates a data structure for displaying information on the confirm page and
@@ -862,5 +863,36 @@ function local_bulkenrol_clear_session_data($localbulkenrolkey) {
     }
     if (isset($SESSION->local_bulkenrol_inputs)) {
         unset($SESSION->local_bulkenrol_inputs[$localbulkenrolkey . '_data']);
+    }
+}
+
+/**
+ * Removes stale bulk enrolment data from the session.
+ * This covers all data of the given course (which is about to be replaced by a new submission) and all data which is
+ * older than LOCALBULKENROL_SESSIONDATA_MAXAGE (which belongs to an abandoned bulk enrolment).
+ *
+ * @param int $courseid
+ */
+function local_bulkenrol_prune_session_data($courseid) {
+    global $SESSION;
+
+    // Collect the bulk enrolment keys from both session arrays.
+    $localbulkenrolkeys = [];
+    if (!empty($SESSION->local_bulkenrol)) {
+        $localbulkenrolkeys = array_keys($SESSION->local_bulkenrol);
+    }
+    if (!empty($SESSION->local_bulkenrol_inputs)) {
+        foreach (array_keys($SESSION->local_bulkenrol_inputs) as $localbulkenroldata) {
+            $localbulkenrolkeys[] = preg_replace('/_data$/', '', $localbulkenroldata);
+        }
+    }
+
+    // The keys have the format <courseid>_<timestamp>.
+    $mintime = time() - LOCALBULKENROL_SESSIONDATA_MAXAGE;
+    foreach (array_unique($localbulkenrolkeys) as $localbulkenrolkey) {
+        [$keycourseid, $keytime] = array_pad(explode('_', $localbulkenrolkey, 2), 2, 0);
+        if ((int)$keycourseid === (int)$courseid || (int)$keytime < $mintime) {
+            local_bulkenrol_clear_session_data($localbulkenrolkey);
+        }
     }
 }

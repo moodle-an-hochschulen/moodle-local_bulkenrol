@@ -64,6 +64,9 @@ if (empty($localbulkenrolkey)) {
 
         $checkedmails = local_bulkenrol_check_user_mails($emails, $courseid);
 
+        // Remove the data of previous (edited or abandoned) bulk enrolments from the session.
+        local_bulkenrol_prune_session_data($courseid);
+
         // Create local_bulkenrol array in Session.
         if (!isset($SESSION->local_bulkenrol)) {
             $SESSION->local_bulkenrol = [];
