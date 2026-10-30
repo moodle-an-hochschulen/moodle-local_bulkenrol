@@ -60,7 +60,7 @@ if (empty($localbulkenrolkey)) {
     $form = new bulkenrol_form(null, ['courseid' => $id]);
     if ($formdata = $form->get_data()) {
         $emails = $formdata->usermails;
-        $courseid = $formdata->id;
+        $courseid = $id;
 
         $checkedmails = local_bulkenrol_check_user_mails($emails, $courseid);
 
