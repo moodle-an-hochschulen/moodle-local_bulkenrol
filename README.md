@@ -69,8 +69,8 @@ Scheduled Tasks
 This plugin does not add any additional scheduled tasks.
 
 
-How this plugin works
----------------------
+How this plugin works / Pitfalls
+--------------------------------
 
 Teachers (rather users who have been granted the capability which is described in the "Capabilities" section above) will find an additional "User bulk enrolment" menu item within the jump menu on the course's participants page.
 
@@ -129,6 +129,14 @@ alice@example.com bob@example.com
 This would enrol Alice and Bob into the course as well as unenrol Carol and Dave from the course.
 
 As this syntax is likely more complicated than the normal one, it is just documented here and not on the enrolment page itself.
+
+### Possible disclosure of user accounts by e-mail address
+
+To be able to enrol users, the plugin has to look up each submitted e-mail address among all user accounts of the whole Moodle site. On the confirmation page, it then reports if no account or more than one account was found for an e-mail address and it shows the first name and last name of the user account which was found. This is needed so that the teacher can check if the right users are going to be enrolled before confirming the enrolment.
+
+As a consequence, every user who has been granted the local/bulkenrol:enrolusers capability can find out if a Moodle user account exists for any given e-mail address and which name belongs to this account, even if this user is not related to the teacher's courses at all.
+
+With Moodle's default settings, this does not disclose more than Moodle core already does: Editing teachers are allowed to enrol users manually and Moodle core's manual enrolment dialog searches all users of the site, including their e-mail addresses, and shows their names. However, if you have hardened your Moodle site in this regard, for example by removing the e-mail address from the "Show user identity" (showuseridentity) setting or by removing the moodle/site:viewuseridentity capability from teachers, this plugin will still resolve e-mail addresses to user names. Please keep this in mind when you grant the local/bulkenrol:enrolusers capability to other roles than the manager role. To remind you of this, the local/bulkenrol:enrolusers capability is flagged with the "personal information" risk (RISK_PERSONAL) in Moodle's role definitions.
 
 
 Limitations

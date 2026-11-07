@@ -224,3 +224,35 @@ Feature: Using the local_bulkenrol plugin for group management
       | Email address        | First name | Last name | Roles   | Groups  |
       | student1@example.com | Student    | 1         | Student | Group 2 |
       | student2@example.com | Student    | 2         | Student | Group 3 |
+
+  Scenario: HTML markup in group names and invalid lines is not rendered as HTML
+    When I log in as "teacher1"
+    And I am on "Course 1" course homepage
+    And I select "Participants" from secondary navigation
+    And I set the field "Participants tertiary navigation" to "User bulk enrolment"
+    And I set the field "List of e-mail addresses" to multiline:
+      """
+      # <b>Bold group</b>
+      student1@example.com
+      <b>No email</b>
+      <i>Invalid</i>@example.com
+      # R&D
+      student2@example.com
+      """
+    And I click on "Execute user enrolment" "button"
+    Then I should see "No e-mail address found in line 3 (<b>No email</b>). This line will be ignored." in the "localbulkenrol_hints" "table"
+    And I should see "Invalid e-mail address found in line 4 (<i>Invalid</i>@example.com). This line will be ignored." in the "localbulkenrol_hints" "table"
+    And the following should exist in the "localbulkenrol_groupinfos" table:
+      | Group name | Group status          |
+      | Bold group | Group will be created |
+      | R&D        | Group will be created |
+    And the following should exist in the "localbulkenrol_enrolusers" table:
+      | Email address        | First name | Last name | User enrolment        | Group membership |
+      | student1@example.com | Student    | 1         | User will be enrolled | Bold group       |
+      | student2@example.com | Student    | 2         | User will be enrolled | R&D              |
+    And "//table[starts-with(@id, 'localbulkenrol_')]//*[self::b or self::i]" "xpath_element" should not exist
+    And I click on "Execute user enrolment" "button"
+    Then the following should exist in the "participants" table:
+      | Email address        | First name | Last name | Roles   | Groups     |
+      | student1@example.com | Student    | 1         | Student | Bold group |
+      | student2@example.com | Student    | 2         | Student | R&D        |

@@ -35,22 +35,20 @@ global $PAGE, $OUTPUT, $SESSION;
 $id = required_param('id', PARAM_INT);
 $localbulkenrolkey = optional_param('key', 0, PARAM_ALPHANUMEXT);
 
-$context = context_system::instance();
+$course = $DB->get_record('course', ['id' => $id], '*', MUST_EXIST);
+$context = context_course::instance($course->id, MUST_EXIST);
 
-if (!empty($id)) {
-    $course = $DB->get_record('course', ['id' => $id], '*', MUST_EXIST);
-    $context = context_course::instance($course->id, MUST_EXIST);
+$PAGE->set_context($context);
+$PAGE->set_url('/local/bulkenrol/index.php', ['id' => $id]);
+$PAGE->set_title("$course->shortname: " . get_string('pluginname', 'local_bulkenrol'));
+$PAGE->set_heading($course->fullname);
 
-    $PAGE->set_context($context);
-    $PAGE->set_url('/local/bulkenrol/index.php', ['id' => $id]);
-    $PAGE->set_title("$course->shortname: " . get_string('pluginname', 'local_bulkenrol'));
-    $PAGE->set_heading($course->fullname);
+require_login($course);
+require_capability('local/bulkenrol:enrolusers', $context);
 
-    require_login($course);
-}
-
-if (!has_capability('local/bulkenrol:enrolusers', $context)) {
-    throw new \moodle_exception('nopermissions', 'error', '', 'local/bulkenrol:enrolusers');
+// Only accept a session key which belongs to the course which the capability was checked for.
+if (!empty($localbulkenrolkey) && explode('_', $localbulkenrolkey)[0] !== (string) $id) {
+    redirect(new \core\url('/local/bulkenrol/index.php', ['id' => $id]));
 }
 
 $PAGE->set_pagelayout('incourse');
@@ -60,9 +58,12 @@ if (empty($localbulkenrolkey)) {
     $form = new bulkenrol_form(null, ['courseid' => $id]);
     if ($formdata = $form->get_data()) {
         $emails = $formdata->usermails;
-        $courseid = $formdata->id;
+        $courseid = $id;
 
         $checkedmails = local_bulkenrol_check_user_mails($emails, $courseid);
+
+        // Remove the data of previous (edited or abandoned) bulk enrolments from the session.
+        local_bulkenrol_prune_session_data($courseid);
 
         // Create local_bulkenrol array in Session.
         if (!isset($SESSION->local_bulkenrol)) {
@@ -79,11 +80,7 @@ if (empty($localbulkenrolkey)) {
         $localbulkenroldata = $localbulkenrolkey . '_data';
         $SESSION->local_bulkenrol_inputs[$localbulkenroldata] = $emails;
     } else if ($form->is_cancelled()) {
-        if (!empty($id)) {
-            redirect($CFG->wwwroot . '/course/view.php?id=' . $id, '', 0);
-        } else {
-            redirect($CFG->wwwroot, '', 0);
-        }
+        redirect($CFG->wwwroot . '/course/view.php?id=' . $id, '', 0);
     } else {
         echo $OUTPUT->header();
         echo $OUTPUT->heading(get_string('pluginname', 'local_bulkenrol'), 2, 'mb-4');
@@ -104,6 +101,9 @@ if ($localbulkenrolkey) {
 
             $msg = local_bulkenrol_users($localbulkenrolkey);
 
+            // The bulk enrolment is done, so the session data is not needed anymore.
+            local_bulkenrol_clear_session_data($localbulkenrolkey);
+
             if ($msg->status == 'error') {
                 redirect(
                     $CFG->wwwroot . '/user/index.php?id=' . $id,
@@ -123,6 +123,9 @@ if ($localbulkenrolkey) {
             redirect($CFG->wwwroot . '/local/bulkenrol/index.php?id=' . $id, '', 0);
         }
     } else if ($form2->is_cancelled()) {
+        // The bulk enrolment is cancelled, so the session data is not needed anymore.
+        local_bulkenrol_clear_session_data($localbulkenrolkey);
+
         redirect($CFG->wwwroot . '/local/bulkenrol/index.php?id=' . $id, '', 0);
     } else {
         $PAGE->set_url('/local/bulkenrol/index.php', ['id' => $id]);

@@ -4,6 +4,18 @@ moodle-local_bulkenrol
 Changes
 -------
 
+### Unreleased
+
+* 2026-10-30 - Improvement: Flag the local/bulkenrol:enrolusers capability with RISK_PERSONAL and explain in the README that the plugin resolves e-mail addresses to user names site-wide and what this means when granting the capability to other roles than the manager role.
+* 2026-10-30 - Improvement: Load the course groups only once when checking the list of e-mail addresses instead of once per e-mail address and use the cached course groups for the group overview on the confirmation page.
+* 2026-10-30 - Bugfix: Report errors which occur while checking the existing group memberships on the confirmation page instead of silently discarding them.
+* 2026-10-30 - Improvement: Always require a valid course and a login on the enrolment page and only accept session keys which belong to the given course.
+* 2026-10-30 - Improvement: Type the hidden course ID and session key fields of the forms consistently with the request parameters and use the already validated course ID when preparing the bulk enrolment.
+* 2026-10-30 - Improvement: Remove the session data of edited or abandoned bulk enrolments when a new list of e-mail addresses is submitted.
+* 2026-10-29 - Improvement: Only store the necessary user fields in the session and remove the session data after the bulk enrolment was executed or cancelled.
+* 2026-10-29 - Bugfix: Fix the empty line check when parsing the list of e-mail addresses.
+* 2026-10-29 - Bugfix: Escape user-provided group names and e-mail lines on the confirmation page to prevent self-XSS.
+
 ### v5.3-r1
 
 * 2026-10-05 - Prepare compatibility for Moodle 5.3.
