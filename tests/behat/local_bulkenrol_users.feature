@@ -271,6 +271,28 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       | studentUPPERACCOUNT1@example.com | Student    | Upper Account 1 | Student |
       | studentupperinput2@example.com   | Student    | Upper Input 2   | Student |
 
+  Scenario: Show user names which contain HTML entities literally on the confirmation page
+    # This scenario verifies that the user fields are escaped in the table on the confirmation page.
+    # The HTML entities in the user names are harmless by themselves and only serve as an indicator:
+    # If the fields are escaped, the names are shown exactly as they are stored in the user profile.
+    # If the fields are not escaped, the browser interprets the entities and shows <b>Student</b> and Markup & Co instead.
+    # Real HTML tags can't be used here as they do not survive the creation of the user with the Behat data generator.
+    Given the following "users" exist:
+      | username      | firstname                  | lastname        | email              |
+      | studentmarkup | &lt;b&gt;Student&lt;/b&gt; | Markup &amp; Co | markup@example.com |
+    When I log in as "teacher1"
+    And I am on "Course 1" course homepage
+    And I select "Participants" from secondary navigation
+    And I set the field "Participants tertiary navigation" to "User bulk enrolment"
+    And I set the field "List of e-mail addresses" to multiline:
+      """
+      markup@example.com
+      """
+    And I click on "Execute user enrolment" "button"
+    Then the following should exist in the "localbulkenrol_enrolusers" table:
+      | Email address      | First name                 | Last name       | User enrolment        |
+      | markup@example.com | &lt;b&gt;Student&lt;/b&gt; | Markup &amp; Co | User will be enrolled |
+
   Scenario: Bulk unenrol students from the course who are already enrolled with enrolment method self
     Given the following config values are set as admin:
       | config      | value | plugin          |
