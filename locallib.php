@@ -722,15 +722,15 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
                         $row = [];
 
                         $cell = new html_table_cell();
-                        $cell->text = $user->user->email;
+                        $cell->text = s($user->user->email);
                         $row[] = $cell;
 
                         $cell = new html_table_cell();
-                        $cell->text = $user->user->firstname;
+                        $cell->text = s($user->user->firstname);
                         $row[] = $cell;
 
                         $cell = new html_table_cell();
-                        $cell->text = $user->user->lastname;
+                        $cell->text = s($user->user->lastname);
                         $row[] = $cell;
 
                         $cell = new html_table_cell();

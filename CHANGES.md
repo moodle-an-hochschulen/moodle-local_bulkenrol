@@ -6,6 +6,7 @@ Changes
 
 ### Unreleased
 
+* 2026-11-14 - Improvement: Escape the e-mail address, first name and last name of the users in the table on the confirmation page, as a defence in depth against user fields which were stored with HTML markup by third-party plugins.
 * 2026-11-14 - Bugfix: Only unenrol users from enrolment methods which allow to unenrol users manually. Until now, users were also removed from enrolment methods like cohort sync or course meta link, which deleted their grades although the enrolment was restored by the next synchronisation. Such enrolments are now left untouched and a hint is shown on the confirmation page.
 * 2026-11-14 - Improvement: Flag the local/bulkenrol:enrolusers capability with RISK_DATALOSS as well and explain in the README that this capability covers enrolling users, managing groups and unenrolling users without checking the corresponding Moodle core capabilities.
 
