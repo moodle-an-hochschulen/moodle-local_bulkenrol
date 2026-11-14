@@ -528,7 +528,7 @@ function local_bulkenrol_users($localbulkenrolkey) {
                                     }
                                 } catch (Exception $e) {
                                     $a = new stdClass();
-                                    $a->email = $email;
+                                    $a->email = s($email);
 
                                     $msg = get_string('error_enrol_user', 'local_bulkenrol', $a);
                                     $exceptionsmsg[] = $msg;
@@ -571,7 +571,7 @@ function local_bulkenrol_users($localbulkenrolkey) {
                                 foreach ($members as $member) {
                                     try {
                                         if (!array_key_exists($member->email, $localbulkenroldata->moodleusers_for_email)) {
-                                            throw new Exception('User not defined for email ' . $email);
+                                            throw new Exception('User not defined for email ' . $member->email);
                                         }
                                         $user = $localbulkenroldata->moodleusers_for_email[$member->email]->user;
 
@@ -586,7 +586,7 @@ function local_bulkenrol_users($localbulkenrolkey) {
                                         }
                                     } catch (Exception $e) {
                                         $a = new stdClass();
-                                        $a->email = $user->email;
+                                        $a->email = s($member->email);
                                         $a->group = s($groupname);
                                         $msg = get_string("error_group_{$member->action}_member", 'local_bulkenrol', $a);
                                         $exceptionsmsg[] = $msg;
@@ -620,7 +620,7 @@ function local_bulkenrol_users($localbulkenrolkey) {
                             }
                         } catch (Exception $e) {
                             $a = new stdClass();
-                            $a->email = $email;
+                            $a->email = s($email);
                             $msg = get_string('error_unenrol_user', 'local_bulkenrol', $a);
                             $exceptionsmsg[] = $msg;
                         }
