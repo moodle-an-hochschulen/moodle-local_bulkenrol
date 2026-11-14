@@ -310,6 +310,56 @@ Feature: Using the local_bulkenrol plugin for user enrolments
       | student2@example.com | Student    | 2         | Student |
       | student4@example.com | Student    | 4         | Student |
 
+  Scenario: Bulk unenrol students from the course who are enrolled with an enrolment method which does not allow to unenrol users
+    Given the following "cohorts" exist:
+      | name     | idnumber |
+      | Cohort 1 | CH1      |
+    And the following "cohort members" exist:
+      | user     | cohort |
+      | student1 | CH1    |
+      | student2 | CH1    |
+    And the following "course enrolments" exist:
+      | user     | course | role    |
+      | student2 | C1     | student |
+      | student3 | C1     | student |
+    And I log in as "admin"
+    And I add "Cohort sync" enrolment method in "Course 1" with:
+      | Cohort | Cohort 1 |
+    And I log out
+    When I log in as "teacher1"
+    And I am on "Course 1" course homepage
+    And I select "Participants" from secondary navigation
+    And I set the field "Participants tertiary navigation" to "User bulk enrolment"
+    And I set the field "List of e-mail addresses" to multiline:
+      """
+      !student1@example.com
+      !student2@example.com
+      !student3@example.com
+      """
+    And I click on "Execute user enrolment" "button"
+    Then the following should exist in the "localbulkenrol_enrolusers" table:
+      | Email address        | First name | Last name | User enrolment                 |
+      | student1@example.com | Student    | 1         | User cannot be unenrolled      |
+      | student2@example.com | Student    | 2         | User will be unenrolled partly |
+      | student3@example.com | Student    | 3         | User will be unenrolled        |
+    And the following should exist in the "localbulkenrol_hints" table:
+      | Row | Hints                                                                                          |
+      | 1   | The user with e-mail address student1@example.com in line 1 cannot be unenrolled as            |
+      | 2   | The user with e-mail address student2@example.com in line 2 cannot be unenrolled completely as |
+    And I should see "Cohort sync (Cohort 1 - Student)" in the "localbulkenrol_hints" "table"
+    And I should not see "student3@example.com" in the "localbulkenrol_hints" "table"
+    And I click on "Execute user enrolment" "button"
+    Then the following should exist in the "participants" table:
+      | Email address        | First name | Last name | Roles   |
+      | student1@example.com | Student    | 1         | Student |
+      | student2@example.com | Student    | 2         | Student |
+    And the following should not exist in the "participants" table:
+      | Email address        | First name | Last name |
+      | student3@example.com | Student    | 3         |
+    And "div[data-fullname='Student 1'][data-enrolinstancename^='Cohort sync'][data-status='Active']" "css_element" should exist
+    And "div[data-fullname='Student 2'][data-enrolinstancename^='Cohort sync'][data-status='Active']" "css_element" should exist
+    And "div[data-fullname='Student 2'][data-enrolinstancename^='Manual enrolments']" "css_element" should not exist
+
   Scenario: Bulk enrol / unenrol students into the course with multiple adresses per line
     Given the following "users" exist:
       | username | firstname | lastname | email                |
