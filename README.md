@@ -118,6 +118,10 @@ carol@example.com
 
 This would remove Alice and Bob from the course entirely. Carol will remain in the course but will be removed from group 2 and added to group 3.
 
+### Enrolment methods which do not allow unenrolments
+
+Please note that a user is only unenrolled from the enrolment methods which allow to unenrol users manually, just like on the course's participants page. Enrolment methods which synchronise their enrolments from another source, for example "Cohort sync" or "Course meta link", do not allow this as long as the enrolment is active. If a user is enrolled with such an enrolment method, this enrolment is left untouched and the user will remain enrolled in the course. The teacher is informed about this with a hint on the confirmation page before the bulk enrolment is executed.
+
 ### Multiple users per line
 
 While building the user list by placing a single user per line is the recommended default, the plugin is also able to recognize multiple users per line if they are separated with commas or spaces.
@@ -147,7 +151,7 @@ The local/bulkenrol:enrolusers capability is the only capability which is checke
 * Enrol any user of the Moodle site into the course with the role which is configured in the plugin settings (normally controlled by enrol/xxx:enrol).
 * Enable the enrolment instance of the enrolment method which is configured in the plugin settings, or add it to the course if it does not exist yet (normally controlled by enrol/xxx:config).
 * Create course groups, add users to course groups and remove users from course groups (normally controlled by moodle/course:managegroups).
-* Unenrol users from the course (normally controlled by enrol/xxx:unenrol). The users are unenrolled from all enrolment instances of the course, not only from the enrolment method which is configured in the plugin settings.
+* Unenrol users from the course (normally controlled by enrol/xxx:unenrol). The users are unenrolled from all enrolment instances of the course which allow to unenrol users manually, not only from the enrolment method which is configured in the plugin settings. Enrolment instances which do not allow to unenrol users manually (for example active "Cohort sync" enrolments) are left untouched.
 
 When a user is unenrolled from a course, Moodle removes their role assignments, their group memberships and their grades in this course. Please keep this in mind when you grant the local/bulkenrol:enrolusers capability to other roles than the manager role. To remind you of this, the local/bulkenrol:enrolusers capability is flagged with the "data loss" risk (RISK_DATALOSS) in Moodle's role definitions.
 
