@@ -31,21 +31,22 @@ if ($hassiteconfig) {
     $settings = new admin_settingpage('local_bulkenrol', get_string('pluginname', 'local_bulkenrol', null, true));
 
     if ($ADMIN->fulltree) {
+        // Require local library.
+        require_once($CFG->dirroot . '/local/bulkenrol/locallib.php');
+
         // Create enrolment chooser widget.
-        $enroloptions = [];
-        foreach (enrol_get_plugins(true) as $name => $plugin) {
-            $enroloptions[$name] = get_string('pluginname', 'enrol_' . $name);
-        }
+        // From the Moodle core enrolment methods, only the ones which are suitable for bulk enrolments are offered.
         $settings->add(
             new admin_setting_configselect(
                 'local_bulkenrol/enrolplugin',
                 get_string('enrolplugin', 'local_bulkenrol'),
-                get_string('enrolplugin_desc', 'local_bulkenrol'),
-                key($enroloptions),
-                $enroloptions
+                get_string('enrolplugin_desc', 'local_bulkenrol') . '<br /><br />' .
+                        get_string('enrolplugin_desc_defaults', 'local_bulkenrol') . '<br /><br />' .
+                        get_string('enrolplugin_desc_restriction', 'local_bulkenrol'),
+                local_bulkenrol_get_enrolplugin_default(),
+                local_bulkenrol_get_enrolplugin_options()
             )
         );
-        unset($enroloptions);
 
         // Create role chooser widget.
         $roleoptions = [];
