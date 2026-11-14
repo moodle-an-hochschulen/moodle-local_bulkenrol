@@ -138,10 +138,10 @@ if ($localbulkenrolkey) {
             $localbulkenroldata = $SESSION->local_bulkenrol[$localbulkenrolkey];
 
             if (!empty($localbulkenroldata)) {
-                local_bulkenrol_display_table($localbulkenroldata, LOCALBULKENROL_HINT);
-                local_bulkenrol_display_table($localbulkenroldata, LOCALBULKENROL_GROUPINFOS);
-                local_bulkenrol_display_table($localbulkenroldata, LOCALBULKENROL_ENROLUSERS);
-                local_bulkenrol_display_table($localbulkenroldata, LOCALBULKENROL_UNENROLUSERS);
+                local_bulkenrol_display_table($localbulkenroldata, LOCALBULKENROL_HINT, $id);
+                local_bulkenrol_display_table($localbulkenroldata, LOCALBULKENROL_GROUPINFOS, $id);
+                local_bulkenrol_display_table($localbulkenroldata, LOCALBULKENROL_ENROLUSERS, $id);
+                local_bulkenrol_display_table($localbulkenroldata, LOCALBULKENROL_UNENROLUSERS, $id);
             }
         }
 

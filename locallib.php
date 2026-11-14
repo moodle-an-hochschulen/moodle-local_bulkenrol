@@ -749,8 +749,9 @@ function local_bulkenrol_get_retval_obj(string $error, array $exceptionsmsg): st
  *
  * @param object $localbulkenroldata
  * @param string $key
+ * @param int $courseid ID of the course, used to determine which of the groups already exist in the course.
  */
-function local_bulkenrol_display_table($localbulkenroldata, $key) {
+function local_bulkenrol_display_table($localbulkenroldata, $key, $courseid) {
     global $OUTPUT;
 
     if (!empty($localbulkenroldata) && !empty($key)) {
@@ -862,7 +863,6 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
                 $data = [];
 
                 if (!empty($localbulkenroldata->course_groups)) {
-                    $courseid = required_param('id', PARAM_INT);
                     $existingcoursegroups = groups_get_all_groups($courseid, 0, 0, 'g.id, g.name');
 
                     foreach (array_keys($localbulkenroldata->course_groups) as $name) {
