@@ -47,6 +47,10 @@ There, you find two settings:
 ### 1. Enrolment plugin
 The enrolment method to be used to bulk enrol the users. If the configured enrolment method is not active / added in the course when the users are bulk-enrolled, it is automatically added / activated.
 
+Please note: If the enrolment method is added to a course automatically, it is created with the default settings which are configured in the settings of the enrolment method itself, just like Moodle does it when a new course is created. For example, a new self enrolment instance gets a random enrolment key if enrolment keys are required on the site. Please check these default settings before you use the enrolment method for bulk enrolments.
+
+From the enrolment methods which are shipped with Moodle core, only "Manual enrolments" and "Self enrolment" are offered in this setting as the other ones are not suitable for bulk-enrolling users. Enrolment methods which are provided by third-party plugins are offered as well, but they are not tested together with this plugin. Before you use a third-party enrolment method for bulk enrolments on a production site, please test thoroughly if the enrolment method is added to the courses with the expected settings and if the users are enrolled properly.
+
 ### 2. Role
 The role to be used to bulk enrol the users.
 
