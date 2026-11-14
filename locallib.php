@@ -250,6 +250,40 @@ function local_bulkenrol_check_email(
     if ($unenrol === true) {
         $checkedemails->moodleusers_for_email[$email]->action =
             empty($useralreadyenroled) ? 'user_unenroled_already' : 'user_unenroled_yes';
+
+        // If the user is really going to be unenrolled from the course (and not just removed from a group),
+        // check if all of their enrolment methods allow to unenrol them.
+        if (!empty($useralreadyenroled) && empty($currentgroup)) {
+            // Get the enrolment instances from which the user can and can't be unenrolled.
+            $unenrolinfo = local_bulkenrol_get_unenrol_info($courseid, $userrecord->id);
+
+            // If at least one enrolment instance does not allow to unenrol the user,
+            // the user will remain enrolled in the course.
+            if (!empty($unenrolinfo->blocked)) {
+                // Change the action which is shown on the confirmation page, depending on whether the user
+                // can't be unenrolled at all or can only be unenrolled from some enrolment instances.
+                $unenrolaction = empty($unenrolinfo->allowed) ? 'user_unenroled_no' : 'user_unenroled_partly';
+                $checkedemails->moodleusers_for_email[$email]->action = $unenrolaction;
+
+                // Compose a hint for the teacher which names the blocking enrolment instances.
+                $a = new stdClass();
+                $a->row = $linecnt;
+                $a->email = s($email);
+                $a->methods = implode(', ', $unenrolinfo->blocked);
+                $hint = get_string(
+                    empty($unenrolinfo->allowed) ? 'hint_unenrol_blocked' : 'hint_unenrol_partly',
+                    'local_bulkenrol',
+                    $a
+                );
+
+                // Add the hint to the hints of this line, keeping the hints which may already exist for it.
+                if (array_key_exists($linecnt, $checkedemails->error_messages)) {
+                    $checkedemails->error_messages[$linecnt] .= '<br>' . $hint;
+                } else {
+                    $checkedemails->error_messages[$linecnt] = $hint;
+                }
+            }
+        }
     } else {
         $checkedemails->moodleusers_for_email[$email]->action =
             empty($useralreadyenroled) ? 'user_enroled_yes' : 'user_enroled_already';
@@ -314,6 +348,51 @@ function local_bulkenrol_check_email(
 }
 
 /**
+ * Checks from which enrolment instances of the course the given user can be unenrolled.
+ *
+ * The enrolment methods decide on their own if a user enrolment may be removed manually. Enrolment methods which
+ * synchronise their enrolments from another source (like cohort sync or course meta link) do not allow this for
+ * active enrolments. This function respects this decision the same way as Moodle core does on the participants page.
+ *
+ * @param int $courseid id of the course
+ * @param int $userid id of the user
+ * @return stdClass Object with the properties 'allowed' (array of enrolment instances from which the user can be
+ *                  unenrolled, indexed by instance id) and 'blocked' (array of the names of the enrolment instances
+ *                  from which the user can't be unenrolled, indexed by instance id).
+ */
+function local_bulkenrol_get_unenrol_info($courseid, $userid) {
+    global $DB;
+
+    $info = new stdClass();
+    $info->allowed = [];
+    $info->blocked = [];
+
+    // Get all enrol instances of the course, including the disabled ones.
+    $enrolinstances = enrol_get_instances($courseid, false);
+    if (empty($enrolinstances)) {
+        return $info;
+    }
+
+    // Get the enrolments of the user in these enrol instances.
+    [$insql, $params] = $DB->get_in_or_equal(array_keys($enrolinstances), SQL_PARAMS_NAMED);
+    $params['userid'] = $userid;
+    $userenrolments = $DB->get_records_select('user_enrolments', "userid = :userid AND enrolid $insql", $params);
+
+    foreach ($userenrolments as $userenrolment) {
+        $instance = $enrolinstances[$userenrolment->enrolid];
+        $plugin = enrol_get_plugin($instance->enrol);
+
+        if (!empty($plugin) && $plugin->allow_unenrol_user($instance, $userenrolment)) {
+            $info->allowed[$instance->id] = $instance;
+        } else {
+            $info->blocked[$instance->id] = !empty($plugin) ? $plugin->get_instance_name($instance) : s($instance->enrol);
+        }
+    }
+
+    return $info;
+}
+
+/**
  * Takes input from text area containing a list of e-mail addresses (optionally group names starting with '#',
  * and e-mail addresses to unenroll starting with '!').
  * Returns an array representation of the input.
@@ -368,7 +447,7 @@ function local_bulkenrol_users($localbulkenrolkey) {
                 );
                 $userstounenrol = array_filter(
                     $localbulkenroldata->moodleusers_for_email,
-                    fn($f) => $f->action === 'user_unenroled_yes'
+                    fn($f) => $f->action === 'user_unenroled_yes' || $f->action === 'user_unenroled_partly'
                 );
 
                 if (empty($courseid)) {
@@ -530,20 +609,14 @@ function local_bulkenrol_users($localbulkenrolkey) {
                             }
                             $user = $localbulkenroldata->moodleusers_for_email[$email]->user;
 
-                            // Check if user is enrolled in the course.
-                            $userisenrolled = is_enrolled($coursecontext, $user->id);
-
-                            // If the user is enrolled.
-                            if ($userisenrolled) {
-                                // Loop over all enabled enrol instances, and try to unenrol the user.
-                                foreach ($enrolinstances as $instance) {
-                                    $plugin = enrol_get_plugin($instance->enrol);
-                                    $plugin->unenrol_user($instance, $user->id);
-                                }
-
-                                // Otherwise, if user is not enroled in the course.
-                            } else {
-                                continue;
+                            // Unenrol the user from all enrol instances of the course (including the disabled ones)
+                            // in which they are enrolled and which allow to unenrol them.
+                            // Enrol instances which do not allow this (e.g. cohort sync) are skipped,
+                            // the teacher has been informed about this on the confirmation page.
+                            $unenrolinfo = local_bulkenrol_get_unenrol_info($course->id, $user->id);
+                            foreach ($unenrolinfo->allowed as $instance) {
+                                $plugin = enrol_get_plugin($instance->enrol);
+                                $plugin->unenrol_user($instance, $user->id);
                             }
                         } catch (Exception $e) {
                             $a = new stdClass();
@@ -662,15 +735,19 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
 
                         $cell = new html_table_cell();
                         $cell->text = '';
+                        if (strpos($user->action, '_yes')) {
+                            $badgeclass = 'success text-light';
+                        } else if ($user->action === 'user_unenroled_partly') {
+                            $badgeclass = 'warning text-dark';
+                        } else if ($user->action === 'user_unenroled_no') {
+                            $badgeclass = 'danger text-light';
+                        } else {
+                            $badgeclass = 'secondary text-dark';
+                        }
                         $cell->text = html_writer::tag(
                             'span',
                             get_string($user->action, 'local_bulkenrol'),
-                            ['class' => 'badge bg-'
-                                . (strpos($user->action, '_yes')
-                                    ? 'success text-light'
-                                    : 'secondary text-dark'
-                                ),
-                            ]
+                            ['class' => 'badge bg-' . $badgeclass]
                         );
                         $row[] = $cell;
 
