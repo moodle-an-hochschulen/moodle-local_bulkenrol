@@ -97,7 +97,7 @@ if ($localbulkenrolkey) {
             !empty($localbulkenrolkey) && !empty($SESSION->local_bulkenrol) &&
                 array_key_exists($localbulkenrolkey, $SESSION->local_bulkenrol)
         ) {
-            set_time_limit(600);
+            \core_php_time_limit::raise(600);
 
             $msg = local_bulkenrol_users($localbulkenrolkey);
 
