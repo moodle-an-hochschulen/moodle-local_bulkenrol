@@ -4,6 +4,10 @@ moodle-local_bulkenrol
 Changes
 -------
 
+### Unreleased
+
+* 2026-11-14 - Improvement: Flag the local/bulkenrol:enrolusers capability with RISK_DATALOSS as well and explain in the README that this capability covers enrolling users, managing groups and unenrolling users without checking the corresponding Moodle core capabilities.
+
 ### v5.1-r2
 
 * 2026-10-30 - Improvement: Flag the local/bulkenrol:enrolusers capability with RISK_PERSONAL and explain in the README that the plugin resolves e-mail addresses to user names site-wide and what this means when granting the capability to other roles than the manager role.
