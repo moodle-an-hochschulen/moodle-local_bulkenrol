@@ -62,6 +62,8 @@ This plugin also introduces a new capability:
 
 By default, Moodle users are _not_ allowed to use the functionality provided by this plugin. As administrator, you can selectively grant users the ability to use this functionality by adding the local/bulkenrol:enrolusers capability to an appropriate Moodle role.
 
+Please note that this single capability covers everything the plugin does and that the plugin does not check any Moodle core capabilities in addition. See the section "Scope of the local/bulkenrol:enrolusers capability" below for details.
+
 
 Scheduled Tasks
 ---------------
@@ -137,6 +139,17 @@ To be able to enrol users, the plugin has to look up each submitted e-mail addre
 As a consequence, every user who has been granted the local/bulkenrol:enrolusers capability can find out if a Moodle user account exists for any given e-mail address and which name belongs to this account, even if this user is not related to the teacher's courses at all.
 
 With Moodle's default settings, this does not disclose more than Moodle core already does: Editing teachers are allowed to enrol users manually and Moodle core's manual enrolment dialog searches all users of the site, including their e-mail addresses, and shows their names. However, if you have hardened your Moodle site in this regard, for example by removing the e-mail address from the "Show user identity" (showuseridentity) setting or by removing the moodle/site:viewuseridentity capability from teachers, this plugin will still resolve e-mail addresses to user names. Please keep this in mind when you grant the local/bulkenrol:enrolusers capability to other roles than the manager role. To remind you of this, the local/bulkenrol:enrolusers capability is flagged with the "personal information" risk (RISK_PERSONAL) in Moodle's role definitions.
+
+### Scope of the local/bulkenrol:enrolusers capability
+
+The local/bulkenrol:enrolusers capability is the only capability which is checked by this plugin. This is done on purpose so that you can allow users to use the bulk enrolment without having to grant them the general enrolment and group management capabilities of Moodle core. However, this also means that a user who has been granted this capability in a course is able to do all of the following things in this course, even if they do not hold the Moodle core capabilities which normally control these actions:
+
+* Enrol any user of the Moodle site into the course with the role which is configured in the plugin settings (normally controlled by enrol/xxx:enrol).
+* Enable the enrolment instance of the enrolment method which is configured in the plugin settings, or add it to the course if it does not exist yet (normally controlled by enrol/xxx:config).
+* Create course groups, add users to course groups and remove users from course groups (normally controlled by moodle/course:managegroups).
+* Unenrol users from the course (normally controlled by enrol/xxx:unenrol). The users are unenrolled from all enrolment instances of the course, not only from the enrolment method which is configured in the plugin settings.
+
+When a user is unenrolled from a course, Moodle removes their role assignments, their group memberships and their grades in this course. Please keep this in mind when you grant the local/bulkenrol:enrolusers capability to other roles than the manager role. To remind you of this, the local/bulkenrol:enrolusers capability is flagged with the "data loss" risk (RISK_DATALOSS) in Moodle's role definitions.
 
 
 Limitations
