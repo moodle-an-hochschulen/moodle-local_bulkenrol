@@ -27,7 +27,6 @@ use local_bulkenrol\confirm_form;
 
 require_once('../../config.php');
 
-require_once($CFG->libdir . '/adminlib.php');
 require_once($CFG->dirroot . '/local/bulkenrol/locallib.php');
 
 global $PAGE, $OUTPUT, $SESSION;

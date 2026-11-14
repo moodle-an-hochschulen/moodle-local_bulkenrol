@@ -6,6 +6,7 @@ Changes
 
 ### Unreleased
 
+* 2026-11-14 - Improvement: Do not load the admin library on the enrolment page and the plugin library in the enrolment form anymore, as nothing from these files is used there.
 * 2026-11-14 - Improvement: Raise the PHP time limit for the bulk enrolment with the Moodle core time limit API instead of setting it directly. Due to this change, the $CFG->maxtimelimit setting is respected if it is set in config.php.
 * 2026-11-14 - Improvement: Only offer the enrolment methods 'Manual enrolments' and 'Self enrolment' from the enrolment methods which are shipped with Moodle core in the enrolment plugin setting, as the other ones are not suitable for bulk-enrolling users. Enrolment methods which are provided by third-party plugins are still offered, but have to be tested thoroughly by the admin.\
                Please note: In the unexpected case of an existing installation which is configured to use another Moodle core enrolment method, the enrolment plugin setting is reset to its default during the upgrade and a notification is shown. Please check the plugin settings after the upgrade.
