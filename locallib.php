@@ -30,6 +30,58 @@ define('LOCALBULKENROL_ENROLUSERS', 'enrolusers');
 define('LOCALBULKENROL_UNENROLUSERS', 'unenrolusers');
 define('LOCALBULKENROL_GROUPINFOS', 'groupinfos');
 define('LOCALBULKENROL_SESSIONDATA_MAXAGE', HOURSECS);
+define('LOCALBULKENROL_ALLOWED_CORE_ENROLPLUGINS', ['manual', 'self']);
+
+/**
+ * Checks if the given enrolment method may be used for bulk enrolments.
+ *
+ * From the enrolment methods which are shipped with Moodle core, only the ones which are suitable for bulk-enrolling
+ * users are allowed. Enrolment methods which are provided by third-party plugins are always allowed.
+ *
+ * @param string $name The name of the enrolment method (without the 'enrol_' prefix).
+ * @return bool
+ */
+function local_bulkenrol_is_allowed_enrolplugin(string $name): bool {
+    // Get the enrolment methods which are shipped with Moodle core.
+    $coreenrolplugins = \core\plugin_manager::standard_plugins_list('enrol') ?: [];
+
+    // Third-party enrolment methods are always allowed.
+    if (!in_array($name, $coreenrolplugins)) {
+        return true;
+    }
+
+    // Core enrolment methods are only allowed if they are on the allowlist.
+    return in_array($name, LOCALBULKENROL_ALLOWED_CORE_ENROLPLUGINS);
+}
+
+/**
+ * Returns the enrolment methods which are offered in the enrolment plugin setting.
+ *
+ * These are all enabled enrolment methods which may be used for bulk enrolments.
+ *
+ * @return array The enrolment method names (without the 'enrol_' prefix) as keys and the localised names as values.
+ */
+function local_bulkenrol_get_enrolplugin_options(): array {
+    $enroloptions = [];
+    foreach (array_keys(enrol_get_plugins(true)) as $name) {
+        if (local_bulkenrol_is_allowed_enrolplugin($name)) {
+            $enroloptions[$name] = get_string('pluginname', 'enrol_' . $name);
+        }
+    }
+
+    return $enroloptions;
+}
+
+/**
+ * Returns the default value of the enrolment plugin setting.
+ *
+ * This is the first enrolment method which is offered in the enrolment plugin setting.
+ *
+ * @return string|null The enrolment method name (without the 'enrol_' prefix) or null if no enrolment method is offered.
+ */
+function local_bulkenrol_get_enrolplugin_default(): ?string {
+    return array_key_first(local_bulkenrol_get_enrolplugin_options());
+}
 
 /**
  * Check list of submitted user mails and creates a data structure for displaying information on the confirm page and
@@ -414,6 +466,39 @@ function local_bulkenrol_parse_emails($emails) {
 }
 
 /**
+ * Add an enabled instance of the given enrolment method to the given course.
+ *
+ * The instance is created with the default settings of the enrolment method, the same way as Moodle core creates it
+ * for a new course. Regardless of the default status of the enrolment method, the instance is enabled afterwards.
+ *
+ * @param enrol_plugin $plugin The enrolment method.
+ * @param stdClass $course The course.
+ * @return stdClass The record of the new enrolment instance.
+ * @throws dml_exception If the enrolment method did not create an instance.
+ */
+function local_bulkenrol_add_enrol_instance(enrol_plugin $plugin, stdClass $course): stdClass {
+    global $DB;
+
+    // Let the enrolment method create the instance the same way as Moodle core does for a new course.
+    $id = $plugin->add_default_instance($course);
+
+    // Fallback for enrolment methods which do not support default instances:
+    // Create the instance with the instance defaults which are provided by the enrolment method.
+    if (empty($id)) {
+        $id = $plugin->add_instance($course, $plugin->get_instance_defaults());
+    }
+
+    $enrolinstance = $DB->get_record('enrol', ['id' => $id], '*', MUST_EXIST);
+
+    // Make sure that the new instance is enabled, regardless of the default status of the enrolment method.
+    if ($enrolinstance->status != ENROL_INSTANCE_ENABLED) {
+        $plugin->update_status($enrolinstance, ENROL_INSTANCE_ENABLED);
+    }
+
+    return $enrolinstance;
+}
+
+/**
  * Perform user enrolment into the course and optionally add users as member into course groups. Groups are created if necessary.
  *
  * @param string $localbulkenrolkey
@@ -493,15 +578,7 @@ function local_bulkenrol_users($localbulkenrolkey) {
                         }
 
                         if (empty($enrolinstance)) {
-                            $fields = $plugin->get_instance_defaults();
-                            $id = $plugin->add_instance($course, $fields);
-
-                            $enrolinstance = $DB->get_record('enrol', ['id' => $id]);
-                            $enrolinstance->expirynotify = $plugin->get_config('expirynotify');
-                            $enrolinstance->expirythreshold = $plugin->get_config('expirythreshold');
-                            $enrolinstance->roleid = $plugin->get_config('roleid');
-                            $enrolinstance->timemodified = time();
-                            $DB->update_record('enrol', $enrolinstance);
+                            $enrolinstance = local_bulkenrol_add_enrol_instance($plugin, $course);
                         }
 
                         if (!empty($enrolinstance)) {
