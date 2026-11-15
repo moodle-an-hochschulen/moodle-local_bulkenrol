@@ -27,6 +27,23 @@ define('LOCALBULKENROL_NAV_PARTICIPANTS', 'navpart');
 define('LOCALBULKENROL_NAV_BOTH', 'navboth');
 
 /**
+ * Get the enrolment method which is configured in the enrolment plugin setting.
+ *
+ * @return enrol_plugin|null The enrolment method or null if the enrolment plugin setting is not set
+ *                           (which may be the case after the plugin upgrade) or if the configured enrolment method
+ *                           is not installed (anymore).
+ */
+function local_bulkenrol_get_enrolplugin(): ?enrol_plugin {
+    $bulkenrolplugin = get_config('local_bulkenrol', 'enrolplugin');
+
+    if (empty($bulkenrolplugin)) {
+        return null;
+    }
+
+    return enrol_get_plugin($bulkenrolplugin);
+}
+
+/**
  * This function extends the course navigation with the bulkenrol item
  *
  * @param navigation_node $navigation The navigation node to extend
@@ -35,6 +52,12 @@ define('LOCALBULKENROL_NAV_BOTH', 'navboth');
  */
 function local_bulkenrol_extend_navigation_course($navigation, $course, $context) {
     if (has_capability('local/bulkenrol:enrolusers', $context)) {
+        // Do not add the navigation node if there isn't any usable enrolment method configured
+        // as users can't be bulk-enrolled in this case.
+        if (local_bulkenrol_get_enrolplugin() === null) {
+            return;
+        }
+
         // Create the navigation node.
         $url = new \core\url('/local/bulkenrol/index.php', ['id' => $course->id]);
         $bulkenrolnode = navigation_node::create(

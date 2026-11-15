@@ -304,6 +304,69 @@ final class locallib_test extends \advanced_testcase {
     }
 
     /**
+     * Test that the bulk enrolment reports an error instead of failing fatally if the enrolment method is not available.
+     *
+     * @covers ::local_bulkenrol_users
+     */
+    public function test_users_enrolplugin_not_available(): void {
+        global $SESSION;
+
+        $this->resetAfterTest();
+
+        $course = $this->getDataGenerator()->create_course();
+        $user = $this->getDataGenerator()->create_user();
+
+        // Store the data of a bulk enrolment which should enrol the user in the session.
+        $userdata = new \stdClass();
+        $userdata->action = 'user_enroled_yes';
+        $userdata->user = $user;
+        $localbulkenroldata = new \stdClass();
+        $localbulkenroldata->moodleusers_for_email = [$user->email => $userdata];
+        $localbulkenroldata->course_groups = [];
+        $localbulkenrolkey = $course->id . '_' . time();
+        $SESSION->local_bulkenrol[$localbulkenrolkey] = $localbulkenroldata;
+
+        // The enrolment plugin setting is not set (which may be the case after the plugin upgrade).
+        unset_config('enrolplugin', 'local_bulkenrol');
+        $retval = local_bulkenrol_users($localbulkenrolkey);
+        $this->assertEquals('error', $retval->status);
+        $this->assertEquals(get_string('error_enrol_users', 'local_bulkenrol'), $retval->text);
+        $this->assertFalse(is_enrolled(\context_course::instance($course->id), $user->id));
+
+        // The enrolment plugin setting holds an enrolment method which is not installed (anymore).
+        set_config('enrolplugin', 'doesnotexist', 'local_bulkenrol');
+        $retval = local_bulkenrol_users($localbulkenrolkey);
+        $this->assertEquals('error', $retval->status);
+        $this->assertEquals(get_string('error_enrol_users', 'local_bulkenrol'), $retval->text);
+        $this->assertFalse(is_enrolled(\context_course::instance($course->id), $user->id));
+    }
+
+    /**
+     * Test that the configured enrolment method is only returned if it is usable.
+     *
+     * @covers ::local_bulkenrol_get_enrolplugin
+     */
+    public function test_get_enrolplugin(): void {
+        $this->resetAfterTest();
+
+        // The enrolment plugin setting holds an installed enrolment method.
+        set_config('enrolplugin', 'manual', 'local_bulkenrol');
+        $this->assertInstanceOf(\enrol_manual_plugin::class, local_bulkenrol_get_enrolplugin());
+        set_config('enrolplugin', 'self', 'local_bulkenrol');
+        $this->assertInstanceOf(\enrol_self_plugin::class, local_bulkenrol_get_enrolplugin());
+
+        // The enrolment plugin setting holds an enrolment method which is not installed (anymore).
+        set_config('enrolplugin', 'doesnotexist', 'local_bulkenrol');
+        $this->assertNull(local_bulkenrol_get_enrolplugin());
+
+        // The enrolment plugin setting is empty or not set (which may be the case after the plugin upgrade).
+        set_config('enrolplugin', '', 'local_bulkenrol');
+        $this->assertNull(local_bulkenrol_get_enrolplugin());
+        unset_config('enrolplugin', 'local_bulkenrol');
+        $this->assertNull(local_bulkenrol_get_enrolplugin());
+    }
+
+    /**
      * Test which enrolment methods are offered in the enrolment plugin setting.
      *
      * @covers ::local_bulkenrol_is_allowed_enrolplugin
