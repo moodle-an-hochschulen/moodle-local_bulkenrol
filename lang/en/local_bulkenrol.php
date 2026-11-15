@@ -37,6 +37,7 @@ $string['error_check_is_already_member'] = 'Error checking if the user (<em>{$a-
 $string['error_empty_line'] = 'Line {$a->line} is empty and will be ignored.';
 $string['error_enrol_user'] = 'There was a problem when enrolling the user with e-mail <em>{$a->email}</em> to the course.';
 $string['error_enrol_users'] = 'There was a problem when enrolling the users to the course.';
+$string['error_enrolplugin_not_available'] = 'User bulk enrolment is not available as there isn\'t any usable enrolment method configured. Please contact your Moodle administrator.';
 $string['error_exception_info'] = 'Exception information';
 $string['error_getting_user_for_email'] = 'There was a problem when getting the user record for e-mail address <em>{$a}</em> from the database.';
 $string['error_group_add_member'] = 'There was a problem when adding the user with e-mail <em>{$a->email}</em> to the course group <em>{$a->group}</em>.';

@@ -55,3 +55,14 @@ Feature: Using the local_bulkenrol plugin
       | navigation |
       | navcourse  |
       | navboth    |
+
+  Scenario: Do not offer the bulk enrolment page if there isn't any usable enrolment method configured
+    Given the following config values are set as admin:
+      | config      | value   | plugin          |
+      | navigation  | navboth | local_bulkenrol |
+      | enrolplugin |         | local_bulkenrol |
+    When I log in as "teacher1"
+    And I am on "Course 1" course homepage
+    Then "User bulk enrolment" "link" should not exist in current page administration
+    And I select "Participants" from secondary navigation
+    And the "Participants tertiary navigation" select box should not contain "User bulk enrolment"
