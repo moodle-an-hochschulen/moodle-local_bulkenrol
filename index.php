@@ -45,6 +45,12 @@ $PAGE->set_heading($course->fullname);
 require_login($course);
 require_capability('local/bulkenrol:enrolusers', $context);
 
+// Do not allow to access the page if there isn't any usable enrolment method configured
+// (the navigation node is not added in this case either).
+if (local_bulkenrol_get_enrolplugin() === null) {
+    throw new \core\exception\moodle_exception('error_enrolplugin_not_available', 'local_bulkenrol');
+}
+
 // Only accept a session key which belongs to the course which the capability was checked for.
 if (!empty($localbulkenrolkey) && explode('_', $localbulkenrolkey)[0] !== (string) $id) {
     redirect(new \core\url('/local/bulkenrol/index.php', ['id' => $id]));

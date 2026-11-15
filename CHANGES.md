@@ -6,6 +6,7 @@ Changes
 
 ### Unreleased
 
+* 2026-11-15 - Bugfix: Do not add the bulk enrolment menu item to the course navigation and do not allow to access the bulk enrolment page if the enrolment plugin setting is not set or the configured enrolment method is not installed anymore. Until now, the bulk enrolment ended with a fatal error in this case.
 * 2026-11-14 - Improvement: Pass the course ID to the function which displays the tables on the confirmation page as an argument instead of reading it from the request within the function.
 * 2026-11-14 - Improvement: Do not load the admin library on the enrolment page and the plugin library in the enrolment form anymore, as nothing from these files is used there.
 * 2026-11-14 - Improvement: Raise the PHP time limit for the bulk enrolment with the Moodle core time limit API instead of setting it directly. Due to this change, the $CFG->maxtimelimit setting is respected if it is set in config.php.
