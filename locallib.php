@@ -25,6 +25,10 @@
 use core_table\output\html_table_cell;
 use core\output\html_writer;
 
+defined('MOODLE_INTERNAL') || die();
+
+require_once($CFG->dirroot . '/local/bulkenrol/lib.php');
+
 define('LOCALBULKENROL_HINT', 'hint');
 define('LOCALBULKENROL_ENROLUSERS', 'enrolusers');
 define('LOCALBULKENROL_UNENROLUSERS', 'unenrolusers');
@@ -554,15 +558,16 @@ function local_bulkenrol_users($localbulkenrolkey) {
                 if (!empty($userstoenrol)) {
                     try {
                         // Get enrolment for bulkenrol.
-                        $bulkenrolplugin = get_config('local_bulkenrol', 'enrolplugin');
+                        $plugin = local_bulkenrol_get_enrolplugin();
 
-                        // Check if string contains "enrol_".
-                        if (strpos($bulkenrolplugin, 'enrol_') === 0) {
-                            // This is needed because enrol_get_plugin needs the string without the "enrol_".
-                            $bulkenrolplugin = substr($bulkenrolplugin, 6);
+                        // Stop if the enrolment method is not available.
+                        // The bulk enrolment page is not accessible in this case, this is just a safety net
+                        // for the case that the enrolment plugin setting was changed while the user was on the page.
+                        if (empty($plugin)) {
+                            throw new Exception('Enrolment method not available');
                         }
 
-                        $plugin = enrol_get_plugin($bulkenrolplugin);
+                        $bulkenrolplugin = $plugin->get_name();
 
                         $enrolinstance = null;
 
