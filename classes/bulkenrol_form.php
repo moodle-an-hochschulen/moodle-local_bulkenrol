@@ -43,9 +43,7 @@ class bulkenrol_form extends moodleform {
      * Form definition. Abstract method - always override!
      */
     protected function definition() {
-        global $CFG, $SESSION;
-
-        require_once($CFG->dirroot . '/local/bulkenrol/lib.php');
+        global $SESSION;
 
         $mform = $this->_form;
 

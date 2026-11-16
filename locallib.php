@@ -25,11 +25,67 @@
 use core_table\output\html_table_cell;
 use core\output\html_writer;
 
+defined('MOODLE_INTERNAL') || die();
+
+require_once($CFG->dirroot . '/local/bulkenrol/lib.php');
+
 define('LOCALBULKENROL_HINT', 'hint');
 define('LOCALBULKENROL_ENROLUSERS', 'enrolusers');
 define('LOCALBULKENROL_UNENROLUSERS', 'unenrolusers');
 define('LOCALBULKENROL_GROUPINFOS', 'groupinfos');
 define('LOCALBULKENROL_SESSIONDATA_MAXAGE', HOURSECS);
+define('LOCALBULKENROL_ALLOWED_CORE_ENROLPLUGINS', ['manual', 'self']);
+
+/**
+ * Checks if the given enrolment method may be used for bulk enrolments.
+ *
+ * From the enrolment methods which are shipped with Moodle core, only the ones which are suitable for bulk-enrolling
+ * users are allowed. Enrolment methods which are provided by third-party plugins are always allowed.
+ *
+ * @param string $name The name of the enrolment method (without the 'enrol_' prefix).
+ * @return bool
+ */
+function local_bulkenrol_is_allowed_enrolplugin(string $name): bool {
+    // Get the enrolment methods which are shipped with Moodle core.
+    $coreenrolplugins = \core\plugin_manager::standard_plugins_list('enrol') ?: [];
+
+    // Third-party enrolment methods are always allowed.
+    if (!in_array($name, $coreenrolplugins)) {
+        return true;
+    }
+
+    // Core enrolment methods are only allowed if they are on the allowlist.
+    return in_array($name, LOCALBULKENROL_ALLOWED_CORE_ENROLPLUGINS);
+}
+
+/**
+ * Returns the enrolment methods which are offered in the enrolment plugin setting.
+ *
+ * These are all enabled enrolment methods which may be used for bulk enrolments.
+ *
+ * @return array The enrolment method names (without the 'enrol_' prefix) as keys and the localised names as values.
+ */
+function local_bulkenrol_get_enrolplugin_options(): array {
+    $enroloptions = [];
+    foreach (array_keys(enrol_get_plugins(true)) as $name) {
+        if (local_bulkenrol_is_allowed_enrolplugin($name)) {
+            $enroloptions[$name] = get_string('pluginname', 'enrol_' . $name);
+        }
+    }
+
+    return $enroloptions;
+}
+
+/**
+ * Returns the default value of the enrolment plugin setting.
+ *
+ * This is the first enrolment method which is offered in the enrolment plugin setting.
+ *
+ * @return string|null The enrolment method name (without the 'enrol_' prefix) or null if no enrolment method is offered.
+ */
+function local_bulkenrol_get_enrolplugin_default(): ?string {
+    return array_key_first(local_bulkenrol_get_enrolplugin_options());
+}
 
 /**
  * Check list of submitted user mails and creates a data structure for displaying information on the confirm page and
@@ -250,6 +306,40 @@ function local_bulkenrol_check_email(
     if ($unenrol === true) {
         $checkedemails->moodleusers_for_email[$email]->action =
             empty($useralreadyenroled) ? 'user_unenroled_already' : 'user_unenroled_yes';
+
+        // If the user is really going to be unenrolled from the course (and not just removed from a group),
+        // check if all of their enrolment methods allow to unenrol them.
+        if (!empty($useralreadyenroled) && empty($currentgroup)) {
+            // Get the enrolment instances from which the user can and can't be unenrolled.
+            $unenrolinfo = local_bulkenrol_get_unenrol_info($courseid, $userrecord->id);
+
+            // If at least one enrolment instance does not allow to unenrol the user,
+            // the user will remain enrolled in the course.
+            if (!empty($unenrolinfo->blocked)) {
+                // Change the action which is shown on the confirmation page, depending on whether the user
+                // can't be unenrolled at all or can only be unenrolled from some enrolment instances.
+                $unenrolaction = empty($unenrolinfo->allowed) ? 'user_unenroled_no' : 'user_unenroled_partly';
+                $checkedemails->moodleusers_for_email[$email]->action = $unenrolaction;
+
+                // Compose a hint for the teacher which names the blocking enrolment instances.
+                $a = new stdClass();
+                $a->row = $linecnt;
+                $a->email = s($email);
+                $a->methods = implode(', ', $unenrolinfo->blocked);
+                $hint = get_string(
+                    empty($unenrolinfo->allowed) ? 'hint_unenrol_blocked' : 'hint_unenrol_partly',
+                    'local_bulkenrol',
+                    $a
+                );
+
+                // Add the hint to the hints of this line, keeping the hints which may already exist for it.
+                if (array_key_exists($linecnt, $checkedemails->error_messages)) {
+                    $checkedemails->error_messages[$linecnt] .= '<br>' . $hint;
+                } else {
+                    $checkedemails->error_messages[$linecnt] = $hint;
+                }
+            }
+        }
     } else {
         $checkedemails->moodleusers_for_email[$email]->action =
             empty($useralreadyenroled) ? 'user_enroled_yes' : 'user_enroled_already';
@@ -314,6 +404,51 @@ function local_bulkenrol_check_email(
 }
 
 /**
+ * Checks from which enrolment instances of the course the given user can be unenrolled.
+ *
+ * The enrolment methods decide on their own if a user enrolment may be removed manually. Enrolment methods which
+ * synchronise their enrolments from another source (like cohort sync or course meta link) do not allow this for
+ * active enrolments. This function respects this decision the same way as Moodle core does on the participants page.
+ *
+ * @param int $courseid id of the course
+ * @param int $userid id of the user
+ * @return stdClass Object with the properties 'allowed' (array of enrolment instances from which the user can be
+ *                  unenrolled, indexed by instance id) and 'blocked' (array of the names of the enrolment instances
+ *                  from which the user can't be unenrolled, indexed by instance id).
+ */
+function local_bulkenrol_get_unenrol_info($courseid, $userid) {
+    global $DB;
+
+    $info = new stdClass();
+    $info->allowed = [];
+    $info->blocked = [];
+
+    // Get all enrol instances of the course, including the disabled ones.
+    $enrolinstances = enrol_get_instances($courseid, false);
+    if (empty($enrolinstances)) {
+        return $info;
+    }
+
+    // Get the enrolments of the user in these enrol instances.
+    [$insql, $params] = $DB->get_in_or_equal(array_keys($enrolinstances), SQL_PARAMS_NAMED);
+    $params['userid'] = $userid;
+    $userenrolments = $DB->get_records_select('user_enrolments', "userid = :userid AND enrolid $insql", $params);
+
+    foreach ($userenrolments as $userenrolment) {
+        $instance = $enrolinstances[$userenrolment->enrolid];
+        $plugin = enrol_get_plugin($instance->enrol);
+
+        if (!empty($plugin) && $plugin->allow_unenrol_user($instance, $userenrolment)) {
+            $info->allowed[$instance->id] = $instance;
+        } else {
+            $info->blocked[$instance->id] = !empty($plugin) ? $plugin->get_instance_name($instance) : s($instance->enrol);
+        }
+    }
+
+    return $info;
+}
+
+/**
  * Takes input from text area containing a list of e-mail addresses (optionally group names starting with '#',
  * and e-mail addresses to unenroll starting with '!').
  * Returns an array representation of the input.
@@ -332,6 +467,39 @@ function local_bulkenrol_parse_emails($emails) {
         }
         return $result;
     }
+}
+
+/**
+ * Add an enabled instance of the given enrolment method to the given course.
+ *
+ * The instance is created with the default settings of the enrolment method, the same way as Moodle core creates it
+ * for a new course. Regardless of the default status of the enrolment method, the instance is enabled afterwards.
+ *
+ * @param enrol_plugin $plugin The enrolment method.
+ * @param stdClass $course The course.
+ * @return stdClass The record of the new enrolment instance.
+ * @throws dml_exception If the enrolment method did not create an instance.
+ */
+function local_bulkenrol_add_enrol_instance(enrol_plugin $plugin, stdClass $course): stdClass {
+    global $DB;
+
+    // Let the enrolment method create the instance the same way as Moodle core does for a new course.
+    $id = $plugin->add_default_instance($course);
+
+    // Fallback for enrolment methods which do not support default instances:
+    // Create the instance with the instance defaults which are provided by the enrolment method.
+    if (empty($id)) {
+        $id = $plugin->add_instance($course, $plugin->get_instance_defaults());
+    }
+
+    $enrolinstance = $DB->get_record('enrol', ['id' => $id], '*', MUST_EXIST);
+
+    // Make sure that the new instance is enabled, regardless of the default status of the enrolment method.
+    if ($enrolinstance->status != ENROL_INSTANCE_ENABLED) {
+        $plugin->update_status($enrolinstance, ENROL_INSTANCE_ENABLED);
+    }
+
+    return $enrolinstance;
 }
 
 /**
@@ -368,7 +536,7 @@ function local_bulkenrol_users($localbulkenrolkey) {
                 );
                 $userstounenrol = array_filter(
                     $localbulkenroldata->moodleusers_for_email,
-                    fn($f) => $f->action === 'user_unenroled_yes'
+                    fn($f) => $f->action === 'user_unenroled_yes' || $f->action === 'user_unenroled_partly'
                 );
 
                 if (empty($courseid)) {
@@ -390,15 +558,16 @@ function local_bulkenrol_users($localbulkenrolkey) {
                 if (!empty($userstoenrol)) {
                     try {
                         // Get enrolment for bulkenrol.
-                        $bulkenrolplugin = get_config('local_bulkenrol', 'enrolplugin');
+                        $plugin = local_bulkenrol_get_enrolplugin();
 
-                        // Check if string contains "enrol_".
-                        if (strpos($bulkenrolplugin, 'enrol_') === 0) {
-                            // This is needed because enrol_get_plugin needs the string without the "enrol_".
-                            $bulkenrolplugin = substr($bulkenrolplugin, 6);
+                        // Stop if the enrolment method is not available.
+                        // The bulk enrolment page is not accessible in this case, this is just a safety net
+                        // for the case that the enrolment plugin setting was changed while the user was on the page.
+                        if (empty($plugin)) {
+                            throw new Exception('Enrolment method not available');
                         }
 
-                        $plugin = enrol_get_plugin($bulkenrolplugin);
+                        $bulkenrolplugin = $plugin->get_name();
 
                         $enrolinstance = null;
 
@@ -414,15 +583,7 @@ function local_bulkenrol_users($localbulkenrolkey) {
                         }
 
                         if (empty($enrolinstance)) {
-                            $fields = $plugin->get_instance_defaults();
-                            $id = $plugin->add_instance($course, $fields);
-
-                            $enrolinstance = $DB->get_record('enrol', ['id' => $id]);
-                            $enrolinstance->expirynotify = $plugin->get_config('expirynotify');
-                            $enrolinstance->expirythreshold = $plugin->get_config('expirythreshold');
-                            $enrolinstance->roleid = $plugin->get_config('roleid');
-                            $enrolinstance->timemodified = time();
-                            $DB->update_record('enrol', $enrolinstance);
+                            $enrolinstance = local_bulkenrol_add_enrol_instance($plugin, $course);
                         }
 
                         if (!empty($enrolinstance)) {
@@ -449,7 +610,7 @@ function local_bulkenrol_users($localbulkenrolkey) {
                                     }
                                 } catch (Exception $e) {
                                     $a = new stdClass();
-                                    $a->email = $email;
+                                    $a->email = s($email);
 
                                     $msg = get_string('error_enrol_user', 'local_bulkenrol', $a);
                                     $exceptionsmsg[] = $msg;
@@ -492,7 +653,7 @@ function local_bulkenrol_users($localbulkenrolkey) {
                                 foreach ($members as $member) {
                                     try {
                                         if (!array_key_exists($member->email, $localbulkenroldata->moodleusers_for_email)) {
-                                            throw new Exception('User not defined for email ' . $email);
+                                            throw new Exception('User not defined for email ' . $member->email);
                                         }
                                         $user = $localbulkenroldata->moodleusers_for_email[$member->email]->user;
 
@@ -507,7 +668,7 @@ function local_bulkenrol_users($localbulkenrolkey) {
                                         }
                                     } catch (Exception $e) {
                                         $a = new stdClass();
-                                        $a->email = $user->email;
+                                        $a->email = s($member->email);
                                         $a->group = s($groupname);
                                         $msg = get_string("error_group_{$member->action}_member", 'local_bulkenrol', $a);
                                         $exceptionsmsg[] = $msg;
@@ -530,24 +691,18 @@ function local_bulkenrol_users($localbulkenrolkey) {
                             }
                             $user = $localbulkenroldata->moodleusers_for_email[$email]->user;
 
-                            // Check if user is enrolled in the course.
-                            $userisenrolled = is_enrolled($coursecontext, $user->id);
-
-                            // If the user is enrolled.
-                            if ($userisenrolled) {
-                                // Loop over all enabled enrol instances, and try to unenrol the user.
-                                foreach ($enrolinstances as $instance) {
-                                    $plugin = enrol_get_plugin($instance->enrol);
-                                    $plugin->unenrol_user($instance, $user->id);
-                                }
-
-                                // Otherwise, if user is not enroled in the course.
-                            } else {
-                                continue;
+                            // Unenrol the user from all enrol instances of the course (including the disabled ones)
+                            // in which they are enrolled and which allow to unenrol them.
+                            // Enrol instances which do not allow this (e.g. cohort sync) are skipped,
+                            // the teacher has been informed about this on the confirmation page.
+                            $unenrolinfo = local_bulkenrol_get_unenrol_info($course->id, $user->id);
+                            foreach ($unenrolinfo->allowed as $instance) {
+                                $plugin = enrol_get_plugin($instance->enrol);
+                                $plugin->unenrol_user($instance, $user->id);
                             }
                         } catch (Exception $e) {
                             $a = new stdClass();
-                            $a->email = $email;
+                            $a->email = s($email);
                             $msg = get_string('error_unenrol_user', 'local_bulkenrol', $a);
                             $exceptionsmsg[] = $msg;
                         }
@@ -599,8 +754,9 @@ function local_bulkenrol_get_retval_obj(string $error, array $exceptionsmsg): st
  *
  * @param object $localbulkenroldata
  * @param string $key
+ * @param int $courseid ID of the course, used to determine which of the groups already exist in the course.
  */
-function local_bulkenrol_display_table($localbulkenroldata, $key) {
+function local_bulkenrol_display_table($localbulkenroldata, $key, $courseid) {
     global $OUTPUT;
 
     if (!empty($localbulkenroldata) && !empty($key)) {
@@ -649,28 +805,32 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
                         $row = [];
 
                         $cell = new html_table_cell();
-                        $cell->text = $user->user->email;
+                        $cell->text = s($user->user->email);
                         $row[] = $cell;
 
                         $cell = new html_table_cell();
-                        $cell->text = $user->user->firstname;
+                        $cell->text = s($user->user->firstname);
                         $row[] = $cell;
 
                         $cell = new html_table_cell();
-                        $cell->text = $user->user->lastname;
+                        $cell->text = s($user->user->lastname);
                         $row[] = $cell;
 
                         $cell = new html_table_cell();
                         $cell->text = '';
+                        if (strpos($user->action, '_yes')) {
+                            $badgeclass = 'success text-light';
+                        } else if ($user->action === 'user_unenroled_partly') {
+                            $badgeclass = 'warning text-dark';
+                        } else if ($user->action === 'user_unenroled_no') {
+                            $badgeclass = 'danger text-light';
+                        } else {
+                            $badgeclass = 'secondary text-dark';
+                        }
                         $cell->text = html_writer::tag(
                             'span',
                             get_string($user->action, 'local_bulkenrol'),
-                            ['class' => 'badge bg-'
-                                . (strpos($user->action, '_yes')
-                                    ? 'success text-light'
-                                    : 'secondary text-dark'
-                                ),
-                            ]
+                            ['class' => 'badge bg-' . $badgeclass]
                         );
                         $row[] = $cell;
 
@@ -708,7 +868,6 @@ function local_bulkenrol_display_table($localbulkenroldata, $key) {
                 $data = [];
 
                 if (!empty($localbulkenroldata->course_groups)) {
-                    $courseid = required_param('id', PARAM_INT);
                     $existingcoursegroups = groups_get_all_groups($courseid, 0, 0, 'g.id, g.name');
 
                     foreach (array_keys($localbulkenroldata->course_groups) as $name) {

@@ -27,7 +27,6 @@ use local_bulkenrol\confirm_form;
 
 require_once('../../config.php');
 
-require_once($CFG->libdir . '/adminlib.php');
 require_once($CFG->dirroot . '/local/bulkenrol/locallib.php');
 
 global $PAGE, $OUTPUT, $SESSION;
@@ -45,6 +44,12 @@ $PAGE->set_heading($course->fullname);
 
 require_login($course);
 require_capability('local/bulkenrol:enrolusers', $context);
+
+// Do not allow to access the page if there isn't any usable enrolment method configured
+// (the navigation node is not added in this case either).
+if (local_bulkenrol_get_enrolplugin() === null) {
+    throw new \core\exception\moodle_exception('error_enrolplugin_not_available', 'local_bulkenrol');
+}
 
 // Only accept a session key which belongs to the course which the capability was checked for.
 if (!empty($localbulkenrolkey) && explode('_', $localbulkenrolkey)[0] !== (string) $id) {
@@ -97,7 +102,7 @@ if ($localbulkenrolkey) {
             !empty($localbulkenrolkey) && !empty($SESSION->local_bulkenrol) &&
                 array_key_exists($localbulkenrolkey, $SESSION->local_bulkenrol)
         ) {
-            set_time_limit(600);
+            \core_php_time_limit::raise(600);
 
             $msg = local_bulkenrol_users($localbulkenrolkey);
 
@@ -139,10 +144,10 @@ if ($localbulkenrolkey) {
             $localbulkenroldata = $SESSION->local_bulkenrol[$localbulkenrolkey];
 
             if (!empty($localbulkenroldata)) {
-                local_bulkenrol_display_table($localbulkenroldata, LOCALBULKENROL_HINT);
-                local_bulkenrol_display_table($localbulkenroldata, LOCALBULKENROL_GROUPINFOS);
-                local_bulkenrol_display_table($localbulkenroldata, LOCALBULKENROL_ENROLUSERS);
-                local_bulkenrol_display_table($localbulkenroldata, LOCALBULKENROL_UNENROLUSERS);
+                local_bulkenrol_display_table($localbulkenroldata, LOCALBULKENROL_HINT, $id);
+                local_bulkenrol_display_table($localbulkenroldata, LOCALBULKENROL_GROUPINFOS, $id);
+                local_bulkenrol_display_table($localbulkenroldata, LOCALBULKENROL_ENROLUSERS, $id);
+                local_bulkenrol_display_table($localbulkenroldata, LOCALBULKENROL_UNENROLUSERS, $id);
             }
         }
 

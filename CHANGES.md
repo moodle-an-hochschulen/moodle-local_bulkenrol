@@ -4,6 +4,21 @@ moodle-local_bulkenrol
 Changes
 -------
 
+### Unreleased
+
+* 2026-11-15 - Bugfix: Do not add the bulk enrolment menu item to the course navigation and do not allow to access the bulk enrolment page if the enrolment plugin setting is not set or the configured enrolment method is not installed anymore. Until now, the bulk enrolment ended with a fatal error in this case.
+* 2026-11-14 - Improvement: Pass the course ID to the function which displays the tables on the confirmation page as an argument instead of reading it from the request within the function.
+* 2026-11-14 - Improvement: Do not load the admin library on the enrolment page and the plugin library in the enrolment form anymore, as nothing from these files is used there.
+* 2026-11-14 - Improvement: Raise the PHP time limit for the bulk enrolment with the Moodle core time limit API instead of setting it directly. Due to this change, the $CFG->maxtimelimit setting is respected if it is set in config.php.
+* 2026-11-14 - Improvement: Only offer the enrolment methods 'Manual enrolments' and 'Self enrolment' from the enrolment methods which are shipped with Moodle core in the enrolment plugin setting, as the other ones are not suitable for bulk-enrolling users. Enrolment methods which are provided by third-party plugins are still offered, but have to be tested thoroughly by the admin.\
+               Please note: In the unexpected case of an existing installation which is configured to use another Moodle core enrolment method, the enrolment plugin setting is reset to its default during the upgrade and a notification is shown. Please check the plugin settings after the upgrade.
+* 2026-11-14 - Improvement: If the configured enrolment method has to be added to a course during a bulk enrolment, create it with the default settings of the enrolment method, the same way as Moodle core does it for a new course, instead of modifying the enrolment instance directly in the database afterwards.\
+               Please note: Due to this change, new manual enrolment instances also get the default enrolment duration and the default expiry notification recipients, new self enrolment instances get a random enrolment key if enrolment keys are required on the site, and new enrolment instances are always enabled even if the enrolment method is configured to be disabled by default. For the enrolment method 'Self enrolment', this means that every logged-in user will be able to enrol themselves into a course as soon as the enrolment method was added to the course by a bulk enrolment, if the default settings of the enrolment method allow new self enrolments and do not require an enrolment key. Please check the default settings of the configured enrolment method after the upgrade.
+* 2026-11-14 - Improvement: Escape the e-mail address in the error messages which are shown if enrolling a user, unenrolling a user or changing the group membership of a user failed, and build the group membership error message from the submitted e-mail address instead of the user record.
+* 2026-11-14 - Improvement: Escape the e-mail address, first name and last name of the users in the table on the confirmation page, as a defence in depth against user fields which were stored with HTML markup by third-party plugins.
+* 2026-11-14 - Bugfix: Only unenrol users from enrolment methods which allow to unenrol users manually. Until now, users were also removed from enrolment methods like cohort sync or course meta link, which deleted their grades although the enrolment was restored by the next synchronisation. Such enrolments are now left untouched and a hint is shown on the confirmation page.
+* 2026-11-14 - Improvement: Flag the local/bulkenrol:enrolusers capability with RISK_DATALOSS as well and explain in the README that this capability covers enrolling users, managing groups and unenrolling users without checking the corresponding Moodle core capabilities.
+
 ### v5.3-r2
 
 * 2026-10-30 - Improvement: Flag the local/bulkenrol:enrolusers capability with RISK_PERSONAL and explain in the README that the plugin resolves e-mail addresses to user names site-wide and what this means when granting the capability to other roles than the manager role.
