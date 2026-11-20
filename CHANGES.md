@@ -4,7 +4,7 @@ moodle-local_bulkenrol
 Changes
 -------
 
-### Unreleased
+### v5.1-r3
 
 * 2026-11-15 - Bugfix: Do not add the bulk enrolment menu item to the course navigation and do not allow to access the bulk enrolment page if the enrolment plugin setting is not set or the configured enrolment method is not installed anymore. Until now, the bulk enrolment ended with a fatal error in this case.
 * 2026-11-14 - Improvement: Pass the course ID to the function which displays the tables on the confirmation page as an argument instead of reading it from the request within the function.
